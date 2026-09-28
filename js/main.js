@@ -390,57 +390,49 @@
     if (!boton || !escena) return;
     gsap.set(pandeireta, { transformOrigin: '50% 50%' });
 
-    /* el vuelo acaba exactamente sobre el botón atracado: mismo centro y el
-       aro al mismo diámetro. Mientras dura el pin la sección está en y=0,
-       así que sus coordenadas locales son las del viewport. */
+    /* SIN pin: fijar el hero dejaba la pantalla vacía mientras la pandereta
+       se iba. La página hace scroll normal (el texto sube, «A casa» llega) y
+       solo la pandereta vuela: su contenedor compensa el scroll 1:1 y la SVG
+       viaja hasta el botón atracado, con el aro al mismo diámetro. */
     var ARO_PANDEIRETA = 471 / 520; /* diámetro exterior del aro / viewBox */
     var ARO_BOTON = 111 / 120;
+    function recorrido() { return window.innerHeight * 0.6; }
     function vuelo() {
+      /* origen en coordenadas de documento con scroll 0; offset* ignora
+         transforms, así da igual en qué punto del vuelo se recalcule */
       var s = seccion.getBoundingClientRect();
-      var e = escena.getBoundingClientRect();
+      var origenX = s.left + escena.offsetLeft + escena.offsetWidth / 2;
+      var origenY = s.top + window.scrollY + escena.offsetTop + escena.offsetHeight / 2;
       var b = boton.getBoundingClientRect();
       var ancho = parseFloat(getComputedStyle(pandeireta).width);
       return {
-        x: (b.left + b.width / 2) - (e.left - s.left + e.width / 2),
-        y: (b.top + b.height / 2) - (e.top - s.top + e.height / 2),
+        x: (b.left + b.width / 2) - origenX,
+        y: (b.top + b.height / 2) - origenY,
         escala: (b.width * ARO_BOTON) / (ancho * ARO_PANDEIRETA)
       };
     }
 
-    /* en móvil la pandereta va encima del texto: al irse, el texto sube a
-       ocupar su sitio para no dejar media pantalla vacía */
-    var contenido = seccion.querySelector('.hero__marco');
-    var unaColumna = window.matchMedia('(max-width: 980px)');
-
     var tl2 = gsap.timeline({ defaults: { ease: 'none' } });
-    tl2.to(pandeireta, {
-      x: function () { return vuelo().x; },
-      y: function () { return vuelo().y; },
-      scale: function () { return vuelo().escala; },
-      rotation: 360,
-      ease: 'power2.inOut',
-      duration: 1
-    }, 0)
-      .to(contenido, {
-        /* a medias: lo que sube durante el vuelo deja hueco debajo al soltar
-           el pin, así que se reparte en dos huecos pequeños en vez de uno grande */
-        y: function () { return unaColumna.matches ? -escena.offsetHeight * 0.5 : 0; },
+    tl2.to(escena, { y: recorrido, duration: 1 }, 0) /* compensa el scroll, lineal */
+      .to(pandeireta, {
+        x: function () { return vuelo().x; },
+        y: function () { return vuelo().y; },
+        scale: function () { return vuelo().escala; },
+        rotation: 360,
         ease: 'power2.inOut',
         duration: 1
       }, 0);
 
     heroST = window.ScrollTrigger.create({
       trigger: seccion,
-      start: 'top top',
-      end: '+=70%',
-      pin: true,
-      scrub: 0.6,
-      anticipatePin: 1,
+      start: 0,
+      end: recorrido,
+      scrub: true, /* la compensación tiene que ir pegada al scroll: sin retardo */
       invalidateOnRefresh: true,
       animation: tl2,
-      /* mientras vuela, el hero va por encima de la cabecera: si no, el
-         último tramo del vuelo pasa borroso por detrás del blur */
-      onToggle: function (self) { seccion.classList.toggle('volando', self.isActive); },
+      /* mientras vuela, la pandereta va por encima de la cabecera: si no, el
+         último tramo pasa borroso por detrás del blur */
+      onToggle: function (self) { escena.classList.toggle('volando', self.isActive); },
       onUpdate: function (self) {
         if (inclinaX && self.progress > 0.001) inclinaX(0);
         /* abre el hueco (y retira la hamburguesa) antes de que llegue */

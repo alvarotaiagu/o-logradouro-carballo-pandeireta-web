@@ -45,21 +45,29 @@ function datosPin(page) {
   return page.evaluate(() => { const s = window.ScrollTrigger.getAll().find((s) => s.trigger && s.trigger.id === 'inicio'); return { start: s.start, end: s.end }; });
 }
 
-/* con la sección fijada (y=0), lleva el vuelo a su final y compara la
-   pandereta con el botón atracado: mismo centro y mismo diámetro de aro */
+/* ya pasado el final del vuelo: la pandereta se quedó donde aterrizó y
+   desde ahí sube con la página, así que se descuenta lo scrolleado de más */
 function medirAterrizaje(page) {
   return page.evaluate(() => {
     const s = window.ScrollTrigger.getAll().find((s) => s.trigger && s.trigger.id === 'inicio');
-    const antes = s.animation.progress();
-    s.animation.progress(1);
     const pand = document.getElementById('pandeireta');
     const a = pand.getBoundingClientRect();
     const c = document.getElementById('pandeireta-boton').getBoundingClientRect();
+    const extra = window.scrollY - s.end;
     const escala = window.gsap.getProperty(pand, 'scale');
     const aroPand = parseFloat(getComputedStyle(pand).width) * escala * (471 / 520);
     const aroBoton = c.width * (111 / 120);
-    s.animation.progress(antes);
-    return { dx: Math.abs((a.x + a.width / 2) - (c.x + c.width / 2)), dy: Math.abs((a.y + a.height / 2) - (c.y + c.height / 2)), dAro: Math.abs(aroPand - aroBoton) };
+    return { dx: Math.abs((a.x + a.width / 2) - (c.x + c.width / 2)), dy: Math.abs((a.y + a.height / 2) + extra - (c.y + c.height / 2)), dAro: Math.abs(aroPand - aroBoton), progreso: s.progress };
+  });
+}
+
+/* ¿hay contenido en pantalla o un hueco vacío? distancia del final del texto
+   del hero al principio de «A casa», y si «A casa» ya asoma */
+function huecoHero(page) {
+  return page.evaluate(() => {
+    const m = document.querySelector('.hero__marco').getBoundingClientRect();
+    const c = document.querySelector('.casa__datos').getBoundingClientRect();
+    return { hueco: Math.round(c.top - m.bottom), casaAsoma: c.top < window.innerHeight, alto: window.innerHeight };
   });
 }
 
@@ -136,12 +144,16 @@ try {
 
   // vuelo del hero: aterriza sobre el botón, el texto no desaparece, el botón no queda tapado
   const pin = await datosPin(page);
-  comprobar(pin.end - pin.start < 900 * 0.75, 'el pin del hero dura menos de 3/4 de pantalla (' + (pin.end - pin.start) + ' px)');
+  const fijado = await page.evaluate(() => !!document.getElementById('inicio').closest('.pin-spacer'));
+  comprobar(!fijado, 'el hero no se fija: la página sigue avanzando mientras vuela la pandereta');
   await bajarHasta(page, pin.start + (pin.end - pin.start) * 0.5);
-  const at = await medirAterrizaje(page);
-  comprobar(at.dx < 2 && at.dy < 2 && at.dAro < 2, 'la pandereta aterriza exactamente sobre el botón (Δx ' + at.dx.toFixed(1) + ', Δy ' + at.dy.toFixed(1) + ', Δaro ' + at.dAro.toFixed(1) + ' px)');
   const opTexto = await page.$eval('.hero__marco', (el) => getComputedStyle(el).opacity);
   comprobar(opTexto === '1', 'el texto del hero sigue visible durante el vuelo (opacity ' + opTexto + ')');
+  await bajarHasta(page, pin.end + 40, 60);
+  const at = await medirAterrizaje(page);
+  comprobar(at.dx < 2 && at.dy < 2 && at.dAro < 2, 'la pandereta aterriza exactamente sobre el botón (Δx ' + at.dx.toFixed(1) + ', Δy ' + at.dy.toFixed(1) + ', Δaro ' + at.dAro.toFixed(1) + ' px)');
+  const hh = await huecoHero(page);
+  comprobar(hh.casaAsoma && hh.hueco < hh.alto * 0.35, 'al acabar el vuelo «A casa» ya está en pantalla y el hueco es corto (' + hh.hueco + ' px de ' + hh.alto + ')');
   await bajarHasta(page, pin.end + 200);
   comprobar(await botonSinTapar(page), 'la pandereta atracada se ve: en su centro no hay otra cosa encima');
   const solape = await page.evaluate(() => {
@@ -265,9 +277,11 @@ try {
   comprobar(!pildoraAntes, 'la píldora de copla no se ve en el hero');
 
   const pinM = await datosPin(page3);
-  await bajarHasta(page3, pinM.start + (pinM.end - pinM.start) * 0.5);
+  await bajarHasta(page3, pinM.end + 40, 60);
   const atM = await medirAterrizaje(page3);
   comprobar(atM.dx < 2 && atM.dy < 2 && atM.dAro < 2, 'móvil: la pandereta aterriza exactamente sobre el botón (Δx ' + atM.dx.toFixed(1) + ', Δy ' + atM.dy.toFixed(1) + ', Δaro ' + atM.dAro.toFixed(1) + ' px)');
+  const hhM = await huecoHero(page3);
+  comprobar(hhM.casaAsoma && hhM.hueco < hhM.alto * 0.35, 'móvil: al acabar el vuelo «A casa» ya está en pantalla y el hueco es corto (' + hhM.hueco + ' px de ' + hhM.alto + ')');
   await bajarHasta(page3, pinM.end + 200);
   const hamb = await page3.$eval('#hamburguesa', (el) => getComputedStyle(el).visibility);
   comprobar(hamb === 'hidden' && await botonSinTapar(page3), 'móvil: la pandereta atracada sustituye a la hamburguesa y se ve (hamburguesa ' + hamb + ')');

@@ -186,11 +186,11 @@ html.con-cursor, html.con-cursor * { cursor: none !important; }
 .pandeireta-boton.visible { opacity: 1; visibility: visible; transition: opacity .15s ease; }
 .cabecera { transition: padding-right .45s cubic-bezier(.2,.8,.2,1); }
 html.pandeireta-llegando .cabecera, html.pandeireta-atracada .cabecera { padding-right: calc(var(--gutter) + 58px + 18px); }
-/* solo mientras dura el pin: el hero sube sobre la cabecera para que la
-   pandereta no vuele por detrás del blur; su caja no captura clics */
-.hero.volando { z-index: 305; pointer-events: none; }
-.hero.volando .hero__marco, .hero.volando .pandeireta { pointer-events: auto; }
-.cabecera.menu-abierto ~ main .hero.volando { z-index: auto; }
+/* solo mientras vuela: el contenedor de la pandereta sube sobre la cabecera
+   (el .hero no tiene z-index, así que no la encierra) y su caja no captura clics */
+.hero__escena.volando { z-index: 305; pointer-events: none; }
+.hero__escena.volando .pandeireta { pointer-events: auto; }
+.cabecera.menu-abierto ~ main .hero__escena.volando { z-index: auto; }
 /* con el menú abierto, los puntos del nav no se montan encima */
 .cabecera.menu-abierto ~ .seccion-nav { visibility: hidden; }
 .pandeireta-boton svg { width: 100%; height: 100%; }
@@ -235,9 +235,11 @@ html.pandeireta-llegando .cabecera, html.pandeireta-atracada .cabecera { padding
 }
 
 /* ═══════════════════════ HERO ═══════════════════════ */
+/* tope de 900 px: en pantallas altas un hero de 100svh con el texto
+   centrado dejaba cientos de px negros debajo; así «A casa» asoma antes */
 .hero {
-  min-height: 100svh; display: grid; grid-template-columns: 1fr 1fr; align-items: center;
-  gap: 24px; padding-top: calc(var(--cab) + 3vh); overflow: hidden;
+  min-height: min(100svh, 900px); display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+  gap: 24px; padding-top: calc(var(--cab) + 3vh); padding-bottom: clamp(2rem, 4vw, 3rem); overflow: hidden;
 }
 .hero__ubi { font-size: 13px; letter-spacing: .18em; text-transform: uppercase; opacity: .65; margin-bottom: 20px; }
 .hero__titular {
@@ -262,7 +264,7 @@ html.pandeireta-llegando .cabecera, html.pandeireta-atracada .cabecera { padding
 .pandeireta__parche { transform-origin: 260px 260px; }
 
 /* ═══════════════════════ A CASA ═══════════════════════ */
-.casa { background: var(--noche); padding-top: clamp(2.5rem, 5vw, 4.5rem); }
+.casa { background: var(--noche); padding-top: clamp(2rem, 4vw, 3rem); }
 .casa__datos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1180px; margin: 0 auto; }
 .dato { border-top: 2px solid color-mix(in srgb, var(--aro) 55%, transparent); padding-top: 16px; }
 .dato__num { display: block; font-family: var(--f-display); font-size: clamp(1.7rem, 3vw, 2.5rem); }
