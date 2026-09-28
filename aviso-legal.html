@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="gl" data-titulo-es="Aviso legal · O Logradouro">
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aviso legal · O Logradouro</title>
+<script>
+/* Idioma: ?lang= › elección guardada en la portada › galego. */
+(function () {
+  var h = document.documentElement, l = (/[?&]lang=(gl|es)\b/.exec(location.search) || [])[1];
+  if (l) { try { localStorage.setItem('logradouro-idioma', l); } catch (e) {} }
+  else { try { l = localStorage.getItem('logradouro-idioma'); } catch (e) {} }
+  l = l === 'es' ? 'es' : 'gl';
+  h.lang = l;
+  h.setAttribute('data-idioma', l);
+  if (l === 'es' && h.getAttribute('data-titulo-es')) document.title = h.getAttribute('data-titulo-es');
+})();
+</script>
 <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Karla:wght@400;700&display=swap">
 <style>
@@ -15,23 +27,42 @@
   .pendiente { font-family: ui-monospace, Consolas, monospace; font-size: .82em; color: #7A1418; background: rgba(196,38,46,.14); padding: .1em .35em; border-radius: 4px; }
   .aviso { background: #E4D9C0; border-radius: 12px; padding: 1rem 1.2rem; }
   a { color: #7A1418; }
+  /* sin JS no hay data-idioma: se ve el galego */
+  html:not([data-idioma="es"]) [data-idioma-bloque="es"], html[data-idioma="es"] [data-idioma-bloque="gl"] { display: none; }
 </style>
 </head>
 <body>
 <main>
   <p><a href="./">← Volver a O Logradouro</a></p>
   <h1>Aviso legal</h1>
-  <p class="aviso">Borrador de traballo para a maqueta. Débese completar cos datos fiscais reais antes de publicar.</p>
 
-  <h2>Titular</h2>
-  <p>O Logradouro · Rúa Lugo, 2 · 15100 Carballo, A Coruña · <span class="pendiente">[PENDIENTE: razón social e NIF/CIF]</span></p>
-  <p>Teléfono: <a href="tel:+34637085037">637 08 50 37</a></p>
+  <div data-idioma-bloque="gl" lang="gl">
+    <p class="aviso">Borrador de traballo para a maqueta. Débese completar cos datos fiscais reais antes de publicar.</p>
 
-  <h2>Obxecto</h2>
-  <p>Este sitio é un escaparate informativo (carta, horario, localización) dunha taberna real en Carballo. Non vende produtos en liña nin recolle pagamentos.</p>
+    <h2>Titular</h2>
+    <p>O Logradouro · Rúa Lugo, 2 · 15100 Carballo, A Coruña · <span class="pendiente">[PENDIENTE: razón social e NIF/CIF]</span></p>
+    <p>Teléfono: <a href="tel:+34637085037">637 08 50 37</a></p>
 
-  <h2>Contido</h2>
-  <p>A carta e os prezos amosados proceden do material fornecido polo propio negocio; onde hai dúbida entre fontes, márcase para revisar co titular antes de publicar de forma definitiva.</p>
+    <h2>Obxecto</h2>
+    <p>Este sitio é un escaparate informativo (carta, horario, localización) dunha taberna real en Carballo. Non vende produtos en liña nin recolle pagamentos.</p>
+
+    <h2>Contido</h2>
+    <p>A carta e os prezos amosados proceden do material fornecido polo propio negocio; onde hai dúbida entre fontes, márcase para revisar co titular antes de publicar de forma definitiva.</p>
+  </div>
+
+  <div data-idioma-bloque="es" lang="es">
+    <p class="aviso">Borrador de trabajo para la maqueta. Hay que completarlo con los datos fiscales reales antes de publicar.</p>
+
+    <h2>Titular</h2>
+    <p>O Logradouro · Rúa Lugo, 2 · 15100 Carballo, A Coruña · <span class="pendiente">[PENDIENTE: razón social y NIF/CIF]</span></p>
+    <p>Teléfono: <a href="tel:+34637085037">637 08 50 37</a></p>
+
+    <h2>Objeto</h2>
+    <p>Este sitio es un escaparate informativo (carta, horario, ubicación) de una taberna real en Carballo. No vende productos en línea ni recoge pagos.</p>
+
+    <h2>Contenido</h2>
+    <p>La carta y los precios que se muestran proceden del material facilitado por el propio negocio; donde hay dudas entre fuentes, se marca para revisarlo con el titular antes de publicar de forma definitiva.</p>
+  </div>
 </main>
 </body>
 </html>

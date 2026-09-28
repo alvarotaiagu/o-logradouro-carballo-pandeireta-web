@@ -15,7 +15,7 @@
   Facebook). Lo que no se pudo confirmar en fuente propia del negocio va
   marcado [VERIFICAR] en README.md, nunca afirmado en la web.
 -->
-<html lang="es" class="sin-js densidad-pandeireta">
+<html lang="gl" class="sin-js densidad-pandeireta">
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
@@ -32,7 +32,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=b8962ba2">
+<link rel="stylesheet" href="css/estilos.css?v=743b7da7">
+<script>
+/* Idioma: ?lang= › elección guardada › galego. Bloqueante: se resuelve antes
+   de pintar, y main.js traduce antes de partir los titulares. */
+(function () {
+  var h = document.documentElement, l = (/[?&]lang=(gl|es)\b/.exec(location.search) || [])[1];
+  if (l) { try { localStorage.setItem('logradouro-idioma', l); } catch (e) {} }
+  else { try { l = localStorage.getItem('logradouro-idioma'); } catch (e) {} }
+  l = l === 'es' ? 'es' : 'gl';
+  h.lang = l;
+  h.setAttribute('data-idioma', l);
+})();
+</script>
 <script>
 /* Bloqueante a propósito: la densidad se resuelve antes del primer pintado.
    [MANDO DE MAQUETA] — bloque completo eliminable, ver README. */
@@ -53,7 +65,7 @@
 </head>
 <body>
 
-<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+<a class="salto-contenido" href="#contenido" data-i18n="salto">Saltar ao contido</a>
 
 <!-- ═══════════════════════ CORTINA DE ENTRADA ═══════════════════════
      1. Negro total, se dibuja el aro. 2. Golpe seco: el parche se hunde,
@@ -78,46 +90,52 @@
   <a class="cabecera__marca" href="#inicio" aria-label="O Logradouro, inicio">
     <img src="assets/logo/rotulo.svg" alt="O Logradouro" width="150" height="44">
   </a>
-  <nav class="cabecera__nav" aria-label="Secciones">
-    <a href="#casa">A casa</a>
-    <a href="#carta">O cancioneiro</a>
+  <nav class="cabecera__nav" aria-label="Secciones" data-i18n-attr="aria-label:nav.aria">
+    <a href="#casa" data-i18n="nav.casa">A casa</a>
+    <a href="#carta" data-i18n="nav.cancioneiro">O cancioneiro</a>
     <a href="#destacados">Destacados</a>
-    <a href="#resenas">Reseñas</a>
+    <a href="#resenas" data-i18n="nav.resenas">Opinións</a>
     <a href="#horario">Horario</a>
   </nav>
-  <a class="cabecera__tel iman" href="tel:+34637085037">637 08 50 37</a>
+  <div class="cabecera__acciones">
+    <div class="idioma" role="group" aria-label="Idioma">
+      <button type="button" data-idioma="gl" lang="gl" aria-label="Galego" aria-pressed="true">GL</button>
+      <button type="button" data-idioma="es" lang="es" aria-label="Español" aria-pressed="false">ES</button>
+    </div>
+    <a class="cabecera__tel iman" href="tel:+34637085037">637 08 50 37</a>
+  </div>
   <button class="hamburguesa" id="hamburguesa" type="button" aria-expanded="false" aria-controls="menu-movil">
     <span aria-hidden="true"></span>
-    <span class="visualmente-oculto">Abrir menú</span>
+    <span class="visualmente-oculto" data-i18n="menu.abrir">Abrir menú</span>
   </button>
 </header>
 
 <div class="menu-movil" id="menu-movil">
-  <nav aria-label="Secciones, móvil">
-    <a href="#casa">A casa</a>
-    <a href="#carta">O cancioneiro</a>
-    <a href="#destacados">Os destacados</a>
-    <a href="#resenas">Reseñas</a>
-    <a href="#horario">Horario e onde</a>
+  <nav aria-label="Secciones, móvil" data-i18n-attr="aria-label:nav.aria">
+    <a href="#casa" data-i18n="nav.casa">A casa</a>
+    <a href="#carta" data-i18n="nav.cancioneiro">O cancioneiro</a>
+    <a href="#destacados" data-i18n="menu.destacados">Os destacados</a>
+    <a href="#resenas" data-i18n="nav.resenas">Opinións</a>
+    <a href="#horario" data-i18n="menu.horario">Horario e onde</a>
   </nav>
-  <a class="boton boton--lazo" href="tel:+34637085037">Chamar · 637 08 50 37</a>
+  <a class="boton boton--lazo" href="tel:+34637085037" data-i18n="menu.chamar">Chamar · 637 08 50 37</a>
 </div>
 
 <!-- navegación de puntos: un punto por sección, mismo lenguaje que el compás de la carta -->
-<nav class="seccion-nav" id="seccion-nav" aria-label="Ir a sección">
-  <a href="#inicio" data-seccion="inicio" aria-label="Ir a Hero"><span></span></a>
-  <a href="#casa" data-seccion="casa" aria-label="Ir a A casa"><span></span></a>
-  <a href="#carta" data-seccion="carta" aria-label="Ir a O cancioneiro"><span></span></a>
-  <a href="#destacados" data-seccion="destacados" aria-label="Ir a Os destacados"><span></span></a>
-  <a href="#resenas" data-seccion="resenas" aria-label="Ir a Reseñas"><span></span></a>
-  <a href="#horario" data-seccion="horario" aria-label="Ir a Horario e onde"><span></span></a>
+<nav class="seccion-nav" id="seccion-nav" aria-label="Ir a unha sección" data-i18n-attr="aria-label:ir.aria">
+  <a href="#inicio" data-seccion="inicio" aria-label="Ir ao inicio" data-i18n-attr="aria-label:ir.inicio"><span></span></a>
+  <a href="#casa" data-seccion="casa" aria-label="Ir a A casa" data-i18n-attr="aria-label:ir.casa"><span></span></a>
+  <a href="#carta" data-seccion="carta" aria-label="Ir a O cancioneiro" data-i18n-attr="aria-label:ir.cancioneiro"><span></span></a>
+  <a href="#destacados" data-seccion="destacados" aria-label="Ir a Os destacados" data-i18n-attr="aria-label:ir.destacados"><span></span></a>
+  <a href="#resenas" data-seccion="resenas" aria-label="Ir a Opinións" data-i18n-attr="aria-label:ir.resenas"><span></span></a>
+  <a href="#horario" data-seccion="horario" aria-label="Ir a Horario e onde" data-i18n-attr="aria-label:ir.horario"><span></span></a>
 </nav>
 
 <!-- móvil: en qué copla de la carta estás (duplica la cabecera de cada copla, por eso aria-hidden) -->
 <p class="copla-actual" id="copla-actual" aria-hidden="true"><span class="copla-actual__num"></span><span class="copla-actual__tit"></span></p>
 
 <!-- botón fijo: la pandereta atraca aquí tras el hero y abre a carta -->
-<button class="pandeireta-boton" id="pandeireta-boton" type="button" hidden aria-label="Abrir o cancioneiro (a carta)">
+<button class="pandeireta-boton" id="pandeireta-boton" type="button" hidden aria-label="Abrir menú" aria-expanded="false" aria-controls="menu-movil">
   <svg viewBox="0 0 120 120" aria-hidden="true">
     <circle class="pandeireta-boton__progreso" cx="60" cy="60" r="57" fill="none" stroke="#E9B949" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 60 60)"/>
     <circle cx="60" cy="60" r="52" fill="none" stroke="#A87B4F" stroke-width="7"/>
@@ -136,20 +154,20 @@
   <section class="hero" id="inicio">
     <div class="hero__marco">
       <p class="hero__ubi">Taberna · Rúa Lugo, 2 · Carballo</p>
-      <h1 class="hero__titular" data-revelar="palabras">Bar de sempre, a ritmo novo.</h1>
-      <p class="hero__sub">Raxo, tortilla á feira e o cancioneiro enteiro da casa. De mércores a domingo, das 10:00 á 1:00.</p>
+      <h1 class="hero__titular" data-revelar="palabras" data-i18n="hero.titular">Bar de sempre, a ritmo novo.</h1>
+      <p class="hero__sub" data-i18n="hero.sub">Raxo, tortilla á feira e o cancioneiro enteiro da casa. De mércores a domingo, das 10:00 á 1:00.</p>
       <div class="hero__cta">
-        <a class="boton boton--lazo iman" href="#carta">Ver o cancioneiro</a>
+        <a class="boton boton--lazo iman" href="#carta" data-i18n="hero.cta">Ver o cancioneiro</a>
         <button class="boton boton--fantasma iman" id="boton-son" type="button" aria-pressed="false">
           <span class="boton-son__on" aria-hidden="true">🔊</span><span class="boton-son__off" aria-hidden="true">🔈</span>
           <span id="boton-son-texto">Son: apagado</span>
         </button>
       </div>
-      <p class="hero__nota">4,6★ · 246 reseñas en Google</p>
+      <p class="hero__nota" data-i18n="hero.nota">4,6★ · 246 opinións en Google</p>
     </div>
 
     <div class="hero__escena">
-      <svg class="pandeireta" id="pandeireta" viewBox="0 0 520 520" role="button" tabindex="0" aria-label="Tocar a pandeireta">
+      <svg class="pandeireta" id="pandeireta" viewBox="0 0 520 520" role="button" tabindex="0" aria-label="Tocar a pandeireta" data-i18n-attr="aria-label:hero.pandeireta">
         <defs>
           <radialGradient id="veta-piel" cx="42%" cy="38%" r="68%">
             <stop offset="0" stop-color="#F7F1E4"/>
@@ -205,15 +223,15 @@
         <span class="dato__etq">Carballo, A Coruña</span>
       </div>
       <div class="dato">
-        <span class="dato__num">Mér–Dom</span>
-        <span class="dato__etq">luns e martes, pechado</span>
+        <span class="dato__num" data-i18n="casa.dias">Mér–Dom</span>
+        <span class="dato__etq" data-i18n="casa.pechado">luns e martes, pechado</span>
       </div>
       <div class="dato">
         <span class="dato__num">10:00–1:00</span>
-        <span class="dato__etq">desayunos ata as 13:00</span>
+        <span class="dato__etq" data-i18n="casa.almorzos">almorzos ata as 13:00</span>
       </div>
     </div>
-    <p class="casa__texto" data-revelar="palabras">Unha taberna de sempre na Rúa Lugo, con carta propia en galego e almorzos que levan o nome de quen os pide dende hai anos. O de sempre, servido ao ritmo de agora.</p>
+    <p class="casa__texto" data-revelar="palabras" data-i18n="casa.texto">Unha taberna de sempre na Rúa Lugo, con carta propia en galego e almorzos con nome propio. O de sempre, servido ao ritmo de agora.</p>
 
     <div class="marquee" aria-hidden="true">
       <div class="marquee__pista marquee__pista--1" id="marquee-1"></div>
@@ -226,9 +244,9 @@
   <!-- ═══════════════════════ O CANCIONEIRO ═══════════════════════ -->
   <section class="cancioneiro" id="carta">
     <header class="cancioneiro__cab">
-      <p class="cancioneiro__kicker">O cancioneiro</p>
-      <h2 class="cancioneiro__h2" data-revelar="palabras">A carta, en once coplas.</h2>
-      <p class="cancioneiro__sub">68 pratos. Prezo <code>—</code> significa que aínda non o confirmamos.</p>
+      <p class="cancioneiro__kicker" data-i18n="nav.cancioneiro">O cancioneiro</p>
+      <h2 class="cancioneiro__h2" data-revelar="palabras" data-i18n="carta.h2">A carta, en once coplas.</h2>
+      <p class="cancioneiro__sub" data-i18n-html="carta.sub">68 pratos. Prezo <code>—</code> significa que aínda non o confirmamos.</p>
     </header>
     <div id="coplas" class="coplas"><!-- pintado desde data/carta.json por js/main.js --></div>
   </section>
@@ -236,8 +254,8 @@
   <!-- ═══════════════════════ OS DESTACADOS ═══════════════════════ -->
   <section class="destacados" id="destacados">
     <header class="destacados__cab">
-      <p class="destacados__kicker">Os destacados</p>
-      <h2 data-revelar="palabras">O repertorio da casa.</h2>
+      <p class="destacados__kicker" data-i18n="menu.destacados">Os destacados</p>
+      <h2 data-revelar="palabras" data-i18n="dest.h2">O repertorio da casa.</h2>
     </header>
     <div class="destacados__lista" id="destacados-lista"><!-- pintado desde carta.json --></div>
   </section>
@@ -248,7 +266,7 @@
       <div class="resenas__cifra">
         <span class="resenas__estrelas" aria-hidden="true">★★★★★</span>
         <p class="resenas__num"><span data-contador="4.6" data-decimales="1">0,0</span></p>
-        <p class="resenas__etq"><span data-contador="246">0</span> reseñas en Google</p>
+        <p class="resenas__etq"><span data-contador="246">0</span> <span data-i18n="resenas.etq">opinións en Google</span></p>
         <a class="boton boton--fantasma iman" href="https://www.google.com/maps/place/O+Logradouro/@43.2135971,-8.6912385,17z/data=!3m1!4b1!4m6!3m5!1s0xd2e931c29699a0b:0xb48bc248204f7cd7!8m2!3d43.2135971!4d-8.6912385" target="_blank" rel="noopener">Ver en Google →</a>
       </div>
       <ul class="resenas__citas">
@@ -264,10 +282,10 @@
     <div class="horario__marco">
       <div class="horario__estado">
         <p class="horario__kicker">Horario</p>
-        <h2 data-revelar="palabras">Onde e cando.</h2>
+        <h2 data-revelar="palabras" data-i18n="horario.h2">Onde e cando.</h2>
         <p class="estado" id="estado"><i></i><span>Calculando…</span></p>
         <ul class="horario__tabla" id="horario-tabla" aria-label="Horario semanal"></ul>
-        <p class="horario__aviso">Almorzos ata as 13:00, con café con leite dobre e zume de laranxa natural.</p>
+        <p class="horario__aviso" data-i18n="horario.aviso">Almorzos ata as 13:00, con café con leite dobre e zume de laranxa natural.</p>
       </div>
       <div class="horario__mapa">
         <address class="horario__direccion">Rúa Lugo, 2 · 15100 Carballo, A Coruña</address>
@@ -275,7 +293,7 @@
           <button class="map-consent" type="button" data-map-title="Mapa: O Logradouro en Rúa Lugo, Carballo" data-map-src="https://www.google.com/maps?q=O+Logradouro,+R%C3%BAa+Lugo+2,+15100+Carballo,+A+Coru%C3%B1a&output=embed">
             <svg viewBox="0 0 24 24" aria-hidden="true" width="26" height="26"><path fill="currentColor" d="M12 2C7.6 2 4 5.6 4 10c0 5.5 7 12 8 12s8-6.5 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
             <span>Ver mapa</span>
-            <small>Carga un iframe de Google Maps só ao premer aquí.</small>
+            <small data-i18n="mapa.nota">Carga un iframe de Google Maps só ao premer aquí.</small>
           </button>
         </div>
       </div>
@@ -290,12 +308,12 @@
     <div class="pie__lockup">
       <img src="assets/logo/lockup.svg" alt="O Logradouro" width="150" height="181">
     </div>
-    <nav class="pie__enlaces" aria-label="Redes e legal">
+    <nav class="pie__enlaces" aria-label="Redes e legal" data-i18n-attr="aria-label:pie.aria">
       <a href="https://www.instagram.com/ologradouro/" target="_blank" rel="noopener">Instagram</a>
       <a href="https://www.facebook.com/OLogradouro" target="_blank" rel="noopener">Facebook</a>
       <a href="tel:+34637085037">637 08 50 37</a>
       <a href="aviso-legal.html">Aviso legal</a>
-      <a href="privacidad.html">Privacidade</a>
+      <a href="privacidad.html" data-i18n="pie.privacidade">Privacidade</a>
     </nav>
     <p class="pie__nota">O Logradouro · Rúa Lugo, 2 · 15100 Carballo · © <span id="anio">2026</span></p>
   </div>
@@ -303,12 +321,12 @@
 
 <!-- ═══════════════════════ COOKIES ═══════════════════════ -->
 <div class="cookies" id="cookies" hidden>
-  <p class="cookies__texto">
-    Este sitio non usa cookies de seguimento. Só garda no teu navegador que xa viches este aviso
-    e, se o pides, carga o mapa de Google, que si pon as súas. <a href="privacidad.html">Máis detalle</a>.
+  <p class="cookies__texto" data-i18n-html="cookies.texto">
+    Este sitio non usa cookies de seguimento. Só garda no teu navegador o idioma e que xa viches este
+    aviso; se o pides, carga o mapa de Google, que si pon as súas. <a href="privacidad.html">Máis detalle</a>.
   </p>
   <div class="cookies__acciones">
-    <button class="boton boton--mini" id="cookies-aceptar" type="button">De acordo</button>
+    <button class="boton boton--mini" id="cookies-aceptar" type="button" data-i18n="cookies.ok">De acordo</button>
   </div>
 </div>
 
@@ -352,6 +370,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-<script src="js/main.js?v=ac19a237" defer></script>
+<script src="js/main.js?v=0fbdb961" defer></script>
 </body>
 </html>

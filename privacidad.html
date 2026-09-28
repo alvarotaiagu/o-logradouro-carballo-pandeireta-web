@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="gl" data-titulo-es="Privacidad y cookies · O Logradouro">
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacidade e cookies · O Logradouro</title>
+<script>
+/* Idioma: ?lang= › elección guardada en la portada › galego. */
+(function () {
+  var h = document.documentElement, l = (/[?&]lang=(gl|es)\b/.exec(location.search) || [])[1];
+  if (l) { try { localStorage.setItem('logradouro-idioma', l); } catch (e) {} }
+  else { try { l = localStorage.getItem('logradouro-idioma'); } catch (e) {} }
+  l = l === 'es' ? 'es' : 'gl';
+  h.lang = l;
+  h.setAttribute('data-idioma', l);
+  if (l === 'es' && h.getAttribute('data-titulo-es')) document.title = h.getAttribute('data-titulo-es');
+})();
+</script>
 <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Karla:wght@400;700&display=swap">
 <style>
@@ -17,37 +29,57 @@
   table { width: 100%; border-collapse: collapse; font-size: .92rem; }
   th, td { text-align: left; vertical-align: top; padding: .7rem .5rem; border-bottom: 1px solid rgba(22,19,15,.15); }
   a { color: #7A1418; }
+  /* sin JS no hay data-idioma: se ve el galego */
+  html:not([data-idioma="es"]) [data-idioma-bloque="es"], html[data-idioma="es"] [data-idioma-bloque="gl"] { display: none; }
 </style>
 </head>
 <body>
 <main>
   <p><a href="./">← Volver a O Logradouro</a></p>
-  <h1>Privacidade e cookies</h1>
-  <p class="aviso">Borrador de traballo para a maqueta. Débese revisar antes de publicar.</p>
 
-  <h2>Datos persoais</h2>
-  <p>Este sitio non ten formularios nin recolle datos persoais. As reservas fanse por teléfono.</p>
-  <p>Responsable: <span class="pendiente">[PENDIENTE: razón social e NIF]</span> · Rúa Lugo, 2 · 15100 Carballo, A Coruña.</p>
+  <div data-idioma-bloque="gl" lang="gl">
+    <h1>Privacidade e cookies</h1>
+    <p class="aviso">Borrador de traballo para a maqueta. Débese revisar antes de publicar.</p>
 
-  <h2>Que garda o sitio no teu navegador</h2>
-  <table>
-    <thead><tr><th scope="col">Nome</th><th scope="col">Tipo</th><th scope="col">Para que</th></tr></thead>
-    <tbody>
-      <tr>
-        <td>logradouro-cookies</td>
-        <td>localStorage</td>
-        <td>Lembrar que xa pechaches o aviso de cookies, para non amosalo de novo.</td>
-      </tr>
-      <tr>
-        <td>logradouro-densidad</td>
-        <td>localStorage</td>
-        <td>Lembrar a densidade visual elixida no mando de revisión da maqueta. Ese mando é interno e desaparece na versión publicada; con el desaparece tamén esta fila.</td>
-      </tr>
-    </tbody>
-  </table>
+    <h2>Datos persoais</h2>
+    <p>Este sitio non ten formularios nin recolle datos persoais. As reservas fanse por teléfono.</p>
+    <p>Responsable: <span class="pendiente">[PENDIENTE: razón social e NIF]</span> · Rúa Lugo, 2 · 15100 Carballo, A Coruña.</p>
 
-  <h2>Servizos de terceiros</h2>
-  <p>O mapa de Google só se carga se premes «Ver mapa». A partir dese momento Google pode instalar as súas propias cookies, segundo a súa política de privacidade. As tipografías sírvense desde Google Fonts.</p>
+    <h2>Que garda o sitio no teu navegador</h2>
+    <table>
+      <thead><tr><th scope="col">Nome</th><th scope="col">Tipo</th><th scope="col">Para que</th></tr></thead>
+      <tbody>
+        <tr><td>logradouro-cookies</td><td>localStorage</td><td>Lembrar que xa pechaches o aviso de cookies, para non amosalo de novo.</td></tr>
+        <tr><td>logradouro-idioma</td><td>localStorage</td><td>Lembrar o idioma escollido (galego ou castelán).</td></tr>
+        <tr><td>logradouro-densidad</td><td>localStorage</td><td>Lembrar a densidade visual elixida no mando de revisión da maqueta. Ese mando é interno e desaparece na versión publicada; con el desaparece tamén esta fila.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Servizos de terceiros</h2>
+    <p>O mapa de Google só se carga se premes «Ver mapa». A partir dese momento Google pode instalar as súas propias cookies, segundo a súa política de privacidade. As tipografías sírvense desde Google Fonts.</p>
+  </div>
+
+  <div data-idioma-bloque="es" lang="es">
+    <h1>Privacidad y cookies</h1>
+    <p class="aviso">Borrador de trabajo para la maqueta. Hay que revisarlo antes de publicar.</p>
+
+    <h2>Datos personales</h2>
+    <p>Este sitio no tiene formularios ni recoge datos personales. Las reservas se hacen por teléfono.</p>
+    <p>Responsable: <span class="pendiente">[PENDIENTE: razón social y NIF]</span> · Rúa Lugo, 2 · 15100 Carballo, A Coruña.</p>
+
+    <h2>Qué guarda el sitio en tu navegador</h2>
+    <table>
+      <thead><tr><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>logradouro-cookies</td><td>localStorage</td><td>Recordar que ya has cerrado el aviso de cookies, para no volver a mostrarlo.</td></tr>
+        <tr><td>logradouro-idioma</td><td>localStorage</td><td>Recordar el idioma elegido (gallego o castellano).</td></tr>
+        <tr><td>logradouro-densidad</td><td>localStorage</td><td>Recordar la densidad visual elegida en el mando de revisión de la maqueta. Ese mando es interno y desaparece en la versión publicada; con él desaparece también esta fila.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Servicios de terceros</h2>
+    <p>El mapa de Google solo se carga si pulsas «Ver mapa». A partir de ese momento Google puede instalar sus propias cookies, según su política de privacidad. Las tipografías se sirven desde Google Fonts.</p>
+  </div>
 </main>
 </body>
 </html>

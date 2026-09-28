@@ -25,6 +25,81 @@
   if (gsapReady) gsap.registerPlugin(window.ScrollTrigger);
   if (movimiento) html.classList.add('con-movimiento');
 
+  /* ───────────────────────── idioma (galego / castellano) ─────────────────────────
+     El HTML trae el galego (lo que se ve sin JS). El script del <head> ya
+     decidió el idioma; aquí se traduce ANTES de partir los titulares. La carta
+     no se traduce: sale de carta.json tal como la escribe la casa. Las citas
+     de las reseñas tampoco: son palabras de quien las firma. */
+  var idioma = html.getAttribute('data-idioma') === 'es' ? 'es' : 'gl';
+  var TXT = {
+    'salto': { gl: 'Saltar ao contido', es: 'Saltar al contenido' },
+    'nav.aria': { gl: 'Seccións', es: 'Secciones' },
+    'nav.casa': { gl: 'A casa', es: 'La casa' },
+    'nav.cancioneiro': { gl: 'O cancioneiro', es: 'El cancionero' },
+    'nav.resenas': { gl: 'Opinións', es: 'Reseñas' },
+    'menu.destacados': { gl: 'Os destacados', es: 'Los destacados' },
+    'menu.horario': { gl: 'Horario e onde', es: 'Horario y dónde' },
+    'menu.chamar': { gl: 'Chamar · 637 08 50 37', es: 'Llamar · 637 08 50 37' },
+    'menu.abrir': { gl: 'Abrir menú', es: 'Abrir menú' },
+    'menu.cerrar': { gl: 'Pechar menú', es: 'Cerrar menú' },
+    'ir.aria': { gl: 'Ir a unha sección', es: 'Ir a una sección' },
+    'ir.inicio': { gl: 'Ir ao inicio', es: 'Ir al inicio' },
+    'ir.casa': { gl: 'Ir a A casa', es: 'Ir a La casa' },
+    'ir.cancioneiro': { gl: 'Ir a O cancioneiro', es: 'Ir a El cancionero' },
+    'ir.destacados': { gl: 'Ir a Os destacados', es: 'Ir a Los destacados' },
+    'ir.resenas': { gl: 'Ir a Opinións', es: 'Ir a Reseñas' },
+    'ir.horario': { gl: 'Ir a Horario e onde', es: 'Ir a Horario y dónde' },
+    'hero.titular': { gl: 'Bar de sempre, a ritmo novo.', es: 'Bar de siempre, a ritmo nuevo.' },
+    'hero.sub': { gl: 'Raxo, tortilla á feira e o cancioneiro enteiro da casa. De mércores a domingo, das 10:00 á 1:00.', es: 'Raxo, tortilla á feira y el cancionero entero de la casa. De miércoles a domingo, de 10:00 a 1:00.' },
+    'hero.cta': { gl: 'Ver o cancioneiro', es: 'Ver el cancionero' },
+    'hero.nota': { gl: '4,6★ · 246 opinións en Google', es: '4,6★ · 246 reseñas en Google' },
+    'hero.pandeireta': { gl: 'Tocar a pandeireta', es: 'Tocar la pandereta' },
+    'son.off': { gl: 'Son: apagado', es: 'Sonido: apagado' },
+    'son.on': { gl: 'Son: aceso', es: 'Sonido: encendido' },
+    'casa.dias': { gl: 'Mér–Dom', es: 'Mié–Dom' },
+    'casa.pechado': { gl: 'luns e martes, pechado', es: 'lunes y martes, cerrado' },
+    'casa.almorzos': { gl: 'almorzos ata as 13:00', es: 'desayunos hasta las 13:00' },
+    'casa.texto': { gl: 'Unha taberna de sempre na Rúa Lugo, con carta propia en galego e almorzos con nome propio. O de sempre, servido ao ritmo de agora.', es: 'Una taberna de siempre en la Rúa Lugo, con carta propia en gallego y almuerzos con nombre propio. Lo de siempre, servido al ritmo de ahora.' },
+    'carta.h2': { gl: 'A carta, en once coplas.', es: 'La carta, en once coplas.' },
+    'carta.sub': { gl: '68 pratos. Prezo <code>—</code> significa que aínda non o confirmamos.', es: '68 platos. Precio <code>—</code> significa que aún no lo hemos confirmado.' },
+    'carta.error': { gl: 'Non se puido cargar a carta.', es: 'No se pudo cargar la carta.' },
+    'dest.h2': { gl: 'O repertorio da casa.', es: 'El repertorio de la casa.' },
+    'resenas.etq': { gl: 'opinións en Google', es: 'reseñas en Google' },
+    'horario.h2': { gl: 'Onde e cando.', es: 'Dónde y cuándo.' },
+    'horario.aviso': { gl: 'Almorzos ata as 13:00, con café con leite dobre e zume de laranxa natural.', es: 'Desayunos hasta las 13:00, con café con leche doble y zumo de naranja natural.' },
+    'mapa.nota': { gl: 'Carga un iframe de Google Maps só ao premer aquí.', es: 'Carga un iframe de Google Maps solo al pulsar aquí.' },
+    'pie.aria': { gl: 'Redes e legal', es: 'Redes y legal' },
+    'pie.privacidade': { gl: 'Privacidade', es: 'Privacidad' },
+    'cookies.texto': { gl: 'Este sitio non usa cookies de seguimento. Só garda no teu navegador o idioma e que xa viches este aviso; se o pides, carga o mapa de Google, que si pon as súas. <a href="privacidad.html">Máis detalle</a>.', es: 'Este sitio no usa cookies de seguimiento. Solo guarda en tu navegador el idioma y que ya has visto este aviso; si lo pides, carga el mapa de Google, que sí pone las suyas. <a href="privacidad.html">Más detalle</a>.' },
+    'cookies.ok': { gl: 'De acordo', es: 'De acuerdo' }
+  };
+  function t(k) { var e = TXT[k]; return e ? e[idioma] : k; }
+
+  /* los titulares partidos (data-revelar) se rehacen aparte: aquí solo el
+     texto; al cambiar de idioma en vivo, cambiarIdioma() los vuelve a partir */
+  function traducir() {
+    html.lang = idioma;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (el) {
+      if (!el.hasAttribute('data-revelar') || !el.querySelector('.palabra')) el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-i18n-html]'), function (el) {
+      el.innerHTML = t(el.getAttribute('data-i18n-html')); /* solo cadenas propias del diccionario */
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-i18n-attr]'), function (el) {
+      el.getAttribute('data-i18n-attr').split(';').forEach(function (par) {
+        var p = par.split(':');
+        el.setAttribute(p[0], t(p[1]));
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.idioma [data-idioma]'), function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-idioma') === idioma ? 'true' : 'false');
+    });
+  }
+  if (idioma !== 'gl') traducir();
+  else Array.prototype.forEach.call(document.querySelectorAll('.idioma [data-idioma]'), function (b) {
+    b.setAttribute('aria-pressed', b.getAttribute('data-idioma') === 'gl' ? 'true' : 'false');
+  });
+
   function alturaCabecera() {
     return parseFloat(getComputedStyle(html).getPropertyValue('--cab')) || 84;
   }
@@ -116,6 +191,31 @@
     cuandoVisible([el], 0.3, function () { revelar(piezas); });
   });
 
+  /* cambio en vivo: textos, atributos y titulares partidos (que se vuelven a
+     partir y se revelan al momento); lo que pinta el JS escucha 'idioma-cambiado' */
+  function cambiarIdioma(l) {
+    if (l === idioma || (l !== 'gl' && l !== 'es')) return;
+    idioma = l;
+    html.setAttribute('data-idioma', l);
+    try { localStorage.setItem('logradouro-idioma', l); } catch (e) {}
+    if (/[?&]lang=/.test(location.search) && window.history && window.URL) {
+      var u = new URL(location.href);
+      u.searchParams.set('lang', l);
+      history.replaceState(null, '', u);
+    }
+    traducir();
+    Array.prototype.forEach.call(document.querySelectorAll('[data-revelar][data-i18n]'), function (el) {
+      el.textContent = t(el.getAttribute('data-i18n'));
+      var piezas = partir(el);
+      if (movimiento) revelar(piezas);
+    });
+    document.dispatchEvent(new CustomEvent('idioma-cambiado'));
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.idioma [data-idioma]');
+    if (b) cambiarIdioma(b.getAttribute('data-idioma'));
+  });
+
   /* ───────────────── construir un par de ferreñas (nunca <use>: cada
      instancia necesita animarse por su cuenta) ───────────────── */
   var nsSVG = 'http://www.w3.org/2000/svg';
@@ -205,10 +305,13 @@
     var btn = document.getElementById('boton-son');
     var txt = document.getElementById('boton-son-texto');
     if (!btn) return;
+    function rotular() { if (txt) txt.textContent = t(sonidoActivo ? 'son.on' : 'son.off'); }
+    rotular();
+    document.addEventListener('idioma-cambiado', rotular);
     btn.addEventListener('click', function () {
       sonidoActivo = !sonidoActivo;
       btn.setAttribute('aria-pressed', sonidoActivo ? 'true' : 'false');
-      if (txt) txt.textContent = sonidoActivo ? 'Son: aceso' : 'Son: apagado';
+      rotular();
       if (sonidoActivo) { contexto(); golpeSonido(0.7); }
     });
   })();
@@ -562,15 +665,20 @@
     if (!cabecera) return;
     if (abrir === undefined) abrir = !cabecera.classList.contains('menu-abierto');
     cabecera.classList.toggle('menu-abierto', abrir);
-    var etiqueta = abrir ? 'Cerrar menú' : 'Abrir menú';
+    rotularMenu(abrir);
+    if (lenis) { if (abrir) lenis.stop(); else lenis.start(); }
+  }
+  function rotularMenu(abrir) {
+    var etiqueta = t(abrir ? 'menu.cerrar' : 'menu.abrir');
     if (hamburguesa) {
       hamburguesa.setAttribute('aria-expanded', abrir ? 'true' : 'false');
       hamburguesa.querySelector('.visualmente-oculto').textContent = etiqueta;
     }
     var pb = document.getElementById('pandeireta-boton');
     if (pb) { pb.setAttribute('aria-expanded', abrir ? 'true' : 'false'); pb.setAttribute('aria-label', etiqueta); }
-    if (lenis) { if (abrir) lenis.stop(); else lenis.start(); }
   }
+  rotularMenu(false);
+  document.addEventListener('idioma-cambiado', function () { rotularMenu(!!cabecera && cabecera.classList.contains('menu-abierto')); });
   function cerrarMenu() {
     if (cabecera && cabecera.classList.contains('menu-abierto')) alternarMenu(false);
   }
@@ -632,8 +740,16 @@
   (function horario() {
     var turnos = [[3, 600, 1500], [4, 600, 1500], [5, 600, 1500], [6, 600, 1500], [0, 600, 1500]];
     var SEM = 7 * 1440;
-    var nombres = ['domingo', 'luns', 'martes', 'mércores', 'xoves', 'venres', 'sábado'];
-    var abrev = ['Dom', 'Lun', 'Mar', 'Mér', 'Xov', 'Ven', 'Sáb'];
+    var DIAS = {
+      gl: { nombres: ['domingo', 'luns', 'martes', 'mércores', 'xoves', 'venres', 'sábado'], abrev: ['Dom', 'Lun', 'Mar', 'Mér', 'Xov', 'Ven', 'Sáb'] },
+      es: { nombres: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'], abrev: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'] }
+    };
+    /* «á 1:00» / «a la 1:00», pero «ás 10:00» / «a las 10:00» */
+    function aLas(m) {
+      var una = Math.floor((((m % 1440) + 1440) % 1440) / 60) === 1;
+      if (idioma === 'es') return (una ? 'a la ' : 'a las ') + hhmm(m);
+      return (una ? 'á ' : 'ás ') + hhmm(m);
+    }
 
     function ahora() {
       var p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Madrid', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
@@ -666,12 +782,13 @@
       var txt = el.querySelector('span');
       var r = calcular(t);
       el.classList.toggle('abierto', r.abierto);
+      var es = idioma === 'es';
       if (r.abierto) {
-        txt.textContent = 'Aberto · pecha ás ' + hhmm(r.cierra);
+        txt.textContent = (es ? 'Abierto · cierra ' : 'Aberto · pecha ') + aLas(r.cierra);
       } else if (r.hoyMismo) {
-        txt.textContent = 'Abrimos ás ' + hhmm(r.proximaHora);
+        txt.textContent = 'Abrimos ' + aLas(r.proximaHora);
       } else {
-        txt.textContent = 'Volvemos o ' + nombres[r.proximoDia] + ' ás ' + hhmm(r.proximaHora);
+        txt.textContent = (es ? 'Volvemos el ' : 'Volvemos o ') + DIAS[idioma].nombres[r.proximoDia] + ' ' + aLas(r.proximaHora);
       }
       pintarTabla(t.dia);
     }
@@ -679,20 +796,26 @@
     function pintarTabla(diaHoy) {
       var ul = document.getElementById('horario-tabla');
       if (!ul || ul.childElementCount) return;
+      var cerrado = idioma === 'es' ? 'Cerrado' : 'Pechado';
       var filas = [
-        [1, 'Pechado'], [2, 'Pechado'], [3, '10:00–1:00'], [4, '10:00–1:00'],
+        [1, cerrado], [2, cerrado], [3, '10:00–1:00'], [4, '10:00–1:00'],
         [5, '10:00–1:00'], [6, '10:00–1:00'], [0, '10:00–1:00']
       ];
       filas.forEach(function (f) {
         var li = document.createElement('li');
         if (f[0] === diaHoy) li.className = 'hoy';
-        li.innerHTML = '<span>' + abrev[f[0]] + '</span><span>' + f[1] + '</span>';
+        li.innerHTML = '<span>' + DIAS[idioma].abrev[f[0]] + '</span><span>' + f[1] + '</span>';
         ul.appendChild(li);
       });
     }
 
     pinta();
     setInterval(pinta, 30000);
+    document.addEventListener('idioma-cambiado', function () {
+      var ul = document.getElementById('horario-tabla');
+      if (ul) ul.innerHTML = '';
+      pinta();
+    });
     window.__horarioTest = { calcular: calcular, hhmm: hhmm }; /* enganche para verify.mjs */
   })();
 
@@ -828,7 +951,7 @@
       construirMarquee(datos);
     }).catch(function (err) {
       console.error('No se pudo cargar data/carta.json', err);
-      if (contCoplas) contCoplas.innerHTML = '<p style="padding:2rem;opacity:.6">Non se puido cargar a carta.</p>';
+      if (contCoplas) contCoplas.innerHTML = '<p style="padding:2rem;opacity:.6">' + t('carta.error') + '</p>';
     });
 
     function construirMarquee(datos) {

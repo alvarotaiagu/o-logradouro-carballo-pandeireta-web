@@ -139,6 +139,15 @@ html.con-cursor, html.con-cursor * { cursor: none !important; }
 .cabecera__nav { display: flex; gap: 26px; font-size: 14px; font-weight: 600; }
 .cabecera__nav a { text-decoration: none; opacity: .82; }
 .cabecera__nav a:hover { opacity: 1; }
+.cabecera__acciones { display: flex; align-items: center; gap: 14px; }
+.idioma { display: flex; gap: 2px; padding: 3px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--piel) 22%, transparent); }
+.idioma button {
+  font: 700 11.5px/1 var(--f-texto); letter-spacing: .08em; color: var(--piel);
+  padding: 6px 9px; border-radius: 999px; opacity: .72; transition: background .2s, color .2s, opacity .2s;
+}
+.idioma button:hover { opacity: 1; }
+.idioma button[aria-pressed="true"] { background: var(--piel); color: var(--noche); opacity: 1; }
+html.sin-js .idioma { display: none; }
 .cabecera__tel { font-size: 14px; font-weight: 700; text-decoration: none; background: var(--lazo); padding: 9px 16px; border-radius: 999px; }
 
 .hamburguesa {
@@ -438,6 +447,7 @@ html.densidad-sobria .resenas__estrelas { display: none; }
   .cabecera__nav { display: none; }
   .cabecera__tel { display: none; }
   .hamburguesa { display: block; }
+  .cabecera__acciones { margin-left: auto; }
   /* en móvil la pandereta atracada ocupa el sitio de la hamburguesa */
   html.pandeireta-llegando .cabecera, html.pandeireta-atracada .cabecera { padding-right: var(--gutter); }
   .hamburguesa { transition: opacity .2s, visibility 0s linear 0s; }
