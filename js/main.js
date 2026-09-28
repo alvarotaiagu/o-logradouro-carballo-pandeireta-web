@@ -55,6 +55,14 @@
   }
 
   function irA(destino) {
+    /* el hero está "pineado" por GSAP y se transforma/encoge al pasarlo: su
+       rect deja de representar el principio de la página, así que ir a
+       "#inicio" (logo, punto de nav) sube al 0 absoluto en vez de fiarse
+       del elemento. */
+    if (destino === '#inicio' || destino === document.getElementById('inicio')) {
+      if (lenis) { lenis.scrollTo(0, { duration: 1.5 }); } else { window.scrollTo(0, 0); }
+      return;
+    }
     var desfase = -alturaCabecera() + 1;
     if (lenis) { lenis.scrollTo(destino, { offset: desfase, duration: 1.5 }); return; }
     var el = typeof destino === 'string' ? document.querySelector(destino) : destino;
@@ -374,17 +382,18 @@
     }
   })();
 
-  /* ───────────────── golpe suave en cada cambio de sección ───────────────── */
+  /* ───────────────── golpe suave en cada cambio de sección + punto activo ───────────────── */
   (function golpesDeSeccion() {
     if (!gsapReady) return;
     var secciones = Array.prototype.slice.call(document.querySelectorAll('main > section'));
     var boton = document.getElementById('pandeireta-boton');
+    var puntosNav = Array.prototype.slice.call(document.querySelectorAll('.seccion-nav a'));
     secciones.forEach(function (s) {
       window.ScrollTrigger.create({
         trigger: s,
         start: 'top 55%',
-        onEnter: function () { marcarCompas(s); },
-        onEnterBack: function () { marcarCompas(s); }
+        onEnter: function () { marcarCompas(s); marcarActiva(s.id); },
+        onEnterBack: function () { marcarCompas(s); marcarActiva(s.id); }
       });
     });
     function marcarCompas(s) {
@@ -395,6 +404,27 @@
       }
       if (sonidoActivo) golpeSonido(0.3);
     }
+    /* qué sección está en pantalla es contenido, no decoración: se actualiza
+       también con reduced-motion (ver feedback_reduced_motion_content_vs_motion) */
+    function marcarActiva(id) {
+      puntosNav.forEach(function (a) { a.classList.toggle('activo', a.dataset.seccion === id); });
+    }
+  })();
+
+  /* ───────────────── anillo de progreso en el botón-pandeireta ───────────────── */
+  (function progresoPagina() {
+    var anillo = document.querySelector('.pandeireta-boton__progreso');
+    if (!anillo || !gsapReady) return;
+    var largo = 0;
+    try { largo = Math.ceil(anillo.getTotalLength()); } catch (e) { largo = 358; }
+    gsap.set(anillo, { strokeDasharray: largo, strokeDashoffset: largo });
+    window.ScrollTrigger.create({
+      trigger: document.documentElement,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: true,
+      onUpdate: function (self) { gsap.set(anillo, { strokeDashoffset: largo * (1 - self.progress) }); }
+    });
   })();
 
   /* ───────────────── botones magnéticos ───────────────── */
@@ -740,9 +770,22 @@
     }
   })();
 
-  /* las medidas cambian cuando llega la webfont: recalcular anclajes */
-  if (gsapReady && document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(function () { window.ScrollTrigger.refresh(); });
+  /* las medidas cambian cuando llega la webfont, y también cada vez que una
+     copla con content-visibility:auto pasa de su altura estimada
+     (contain-intrinsic-size) a su altura real al acercarse al viewport: sin
+     este reajuste, el final de página que maneja ScrollTrigger (anillo de
+     progreso, punto activo) se queda corto — ver feedback_content_visibility_calle_larga. */
+  if (gsapReady) {
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { window.ScrollTrigger.refresh(); });
+    }
+    if ('ResizeObserver' in window) {
+      var refrescoPend;
+      new ResizeObserver(function () {
+        clearTimeout(refrescoPend);
+        refrescoPend = setTimeout(function () { window.ScrollTrigger.refresh(); }, 150);
+      }).observe(document.documentElement);
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════

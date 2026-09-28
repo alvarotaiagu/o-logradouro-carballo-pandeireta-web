@@ -103,9 +103,20 @@
   <a class="boton boton--lazo" href="tel:+34637085037">Chamar · 637 08 50 37</a>
 </div>
 
+<!-- navegación de puntos: un punto por sección, mismo lenguaje que el compás de la carta -->
+<nav class="seccion-nav" id="seccion-nav" aria-label="Ir a sección">
+  <a href="#inicio" data-seccion="inicio" aria-label="Ir a Hero"><span></span></a>
+  <a href="#casa" data-seccion="casa" aria-label="Ir a A casa"><span></span></a>
+  <a href="#carta" data-seccion="carta" aria-label="Ir a O cancioneiro"><span></span></a>
+  <a href="#destacados" data-seccion="destacados" aria-label="Ir a Os destacados"><span></span></a>
+  <a href="#resenas" data-seccion="resenas" aria-label="Ir a Reseñas"><span></span></a>
+  <a href="#horario" data-seccion="horario" aria-label="Ir a Horario e onde"><span></span></a>
+</nav>
+
 <!-- botón fijo: la pandereta atraca aquí tras el hero y abre a carta -->
 <button class="pandeireta-boton" id="pandeireta-boton" type="button" hidden aria-label="Abrir o cancioneiro (a carta)">
   <svg viewBox="0 0 120 120" aria-hidden="true">
+    <circle class="pandeireta-boton__progreso" cx="60" cy="60" r="57" fill="none" stroke="#E9B949" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 60 60)"/>
     <circle cx="60" cy="60" r="52" fill="none" stroke="#A87B4F" stroke-width="7"/>
     <circle cx="60" cy="60" r="45" fill="#EFE7D6"/>
     <circle class="pandeireta-boton__golpe" cx="60" cy="60" r="45" fill="none" stroke="#C4262E" stroke-width="2" opacity="0"/>
