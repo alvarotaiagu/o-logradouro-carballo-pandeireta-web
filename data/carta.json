@@ -1,0 +1,170 @@
+{
+  "_fuente": "Cinco fotos que mandó el dueño el 2026-09-12. Están en o-logradouro-carballo-web/assets/img/: unnamed.webp y unnamed (1).webp son las dos cartas ilustradas (diseño digital en castellano, no pizarras de tiza); unnamed (2).webp «¿Veuche a fame?», unnamed (3).webp «Almorzos» y unnamed (4).webp «¿Uns petiscos?» son hojas impresas en gallego. El dueño avisó de que hay platos repetidos. No se sabe cuál es la más reciente.",
+  "_campos": {
+    "precio": "euros (número) o null si no se conoce. NUNCA inventar.",
+    "media": "precio de media ración/media tortilla cuando la carta lo da",
+    "desc": "texto literal de la carta (traducido al castellano solo si la sección se pinta en castellano). No añadir adjetivos.",
+    "fuente": "ilustrada-1 | ilustrada-2 | impresa-veuche | impresa-almorzos | impresa-petiscos",
+    "verificar": "motivo por el que hay que confirmarlo con el cliente; todo lo que lo lleve va al informe final"
+  },
+  "_regla_conflictos": "Si un plato sale en una carta ilustrada y en una hoja impresa con precio distinto, manda la ilustrada y se marca verificar. Los platos que solo salen en las hojas impresas se muestran, pero marcados verificar («¿sigue en carta?»).",
+  "destacados": ["Hamburguesa «Logradouro»", "Tortilla á feira", "Raxo"],
+  "_destacados_nota": "La Hamburguesa «Logradouro» es el único plato con el nombre de la casa. Tortilla á feira y raxo son los que más se repiten entre cartas ilustradas y hojas. No hay dato de «lo más pedido»: no lo llames así.",
+  "secciones": [
+    {
+      "id": "desayunos",
+      "titulo": "Desayunos",
+      "gl": "Almorzos",
+      "nota": "Hasta las 13:00. Todos incluyen café con leche doble y zumo de naranja natural. «Algunos días puede haber sorpresas.»",
+      "precio_comun": 6.5,
+      "fuente": "ilustrada-2",
+      "platos": [
+        {"nombre": "N.º 1", "desc": "Tostada con mantequilla y mermelada", "precio": 6.5},
+        {"nombre": "N.º 2", "desc": "Tostada con aceite y tomate", "precio": 6.5},
+        {"nombre": "N.º 3", "desc": "Tostada con aceite, tomate y jamón", "precio": 6.5},
+        {"nombre": "N.º 4", "desc": "Tostada con Nocilla", "precio": 6.5},
+        {"nombre": "N.º 5", "desc": "Una pieza de bollería o bizcocho", "precio": 6.5}
+      ]
+    },
+    {
+      "id": "almorzos",
+      "titulo": "Almuerzos con nombre propio",
+      "gl": "Almorzos",
+      "nota": "Hoja impresa en gallego: cada almuerzo lleva nombre de persona. Conviven con los desayunos n.º 1–5 de la carta ilustrada a precios distintos.",
+      "fuente": "impresa-almorzos",
+      "verificar": "¿Siguen vigentes o los sustituyeron los desayunos n.º 1–5 de la carta ilustrada?",
+      "platos": [
+        {"nombre": "Do avó", "desc": "Tazón de sopas de pan con leche, café o Cola Cao", "precio": 2.2},
+        {"nombre": "Meli", "desc": "Bol de cereales muesli (integral ecológico) con leche, café o Cola Cao", "precio": 3.5},
+        {"nombre": "Silvia", "desc": "Trozo de bizcocho o tarta, café, Cola Cao o infusión", "precio": 2.8},
+        {"nombre": "Antón", "desc": "Dos tostadas con Nocilla, café, Cola Cao o infusión", "precio": 2.3},
+        {"nombre": "Susoserrano", "desc": "Trozo de bizcocho o tarta, tostada de tomate y jamón, café, Cola Cao o infusión", "precio": 3.5},
+        {"nombre": "Tania", "desc": "Dos tostadas con tomate y aguacate, café, Cola Cao o infusión", "precio": 2.8},
+        {"nombre": "Garban", "desc": "Trozo de tortilla, café, Cola Cao o infusión", "precio": 3.8},
+        {"nombre": "Tova", "desc": "Dos tostadas con tomate y jamón, café, Cola Cao o infusión", "precio": 3.5},
+        {"nombre": "Little Green", "desc": "Dos tostadas con tomate, jamón y queso del país", "precio": 4.5}
+      ]
+    },
+    {
+      "id": "tapas",
+      "titulo": "Tapas",
+      "fuente": "ilustrada-1",
+      "platos": [
+        {"nombre": "Ensaladilla", "precio": 4.0, "verificar": "La hoja «¿Uns petiscos?» la pone a 2,00 €"},
+        {"nombre": "Tortilla", "precio": 3.5},
+        {"nombre": "Tortilla á feira", "precio": 4.5},
+        {"nombre": "Croquetas ibéricas o de setas", "desc": "4 unidades", "precio": 4.0, "verificar": "La hoja «¿Uns petiscos?» pone croquetas a 2,50 € sin decir unidades"},
+        {"nombre": "Zorza", "precio": 4.5},
+        {"nombre": "Raxo", "precio": 4.5},
+        {"nombre": "Albóndigas", "precio": 4.5},
+        {"nombre": "Mini burger", "precio": 2.5, "fuente": "impresa-petiscos", "verificar": "Solo en la hoja impresa: ¿sigue en carta?"}
+      ]
+    },
+    {
+      "id": "raciones",
+      "titulo": "Raciones",
+      "fuente": "ilustrada-1",
+      "platos": [
+        {"nombre": "Raxo", "precio": 12.0, "verificar": "Las hojas impresas ponen «Raxo de porco» a 10 € (la de petiscos, con o sin salsa de setas)"},
+        {"nombre": "Raxo completo", "desc": "Con champiñones y pimientos", "precio": 13.5},
+        {"nombre": "Zorza", "precio": 12.0},
+        {"nombre": "Chipirones", "desc": "Fritos o a la plancha", "precio": 13.0},
+        {"nombre": "Huevos con chorizo o bacon", "precio": 10.0, "verificar": "Las hojas impresas tienen «Plato de ovos fritidos, patacas e xamón ou chourizo» a 8 €: ¿es el mismo plato?"},
+        {"nombre": "Albóndigas", "precio": 10.0},
+        {"nombre": "Ensaladilla", "precio": 9.0},
+        {"nombre": "Croquetas ibéricas o de setas", "desc": "8 unidades", "precio": 8.0},
+        {"nombre": "Ración de patatas fritas", "precio": 3.0},
+        {"nombre": "Ración de pan", "precio": 1.0}
+      ]
+    },
+    {
+      "id": "tortillas",
+      "titulo": "Tortillas",
+      "fuente": "ilustrada-1",
+      "platos": [
+        {"nombre": "Tortilla entera", "precio": 15.0, "media": 9.0, "verificar": "Las hojas impresas: «Tortilla» 12 € (petiscos: media 7 €)"},
+        {"nombre": "Tortilla con…", "desc": "Á feira, zorza, chorizo, cebolla, etc.", "precio": 22.0, "media": 12.0, "verificar": "La hoja de petiscos: «Tortilla con chourizo, ou grelos, ou setas» 16 €, media 9 €"}
+      ]
+    },
+    {
+      "id": "bocatas",
+      "titulo": "Bocadillos y hamburguesas",
+      "fuente": "ilustrada-2",
+      "platos": [
+        {"nombre": "Bocata «Serranito»", "desc": "Jamón con tomate en rodajas o pimientos rojos", "precio": 6.0},
+        {"nombre": "Hamburguesa simple", "precio": 4.5},
+        {"nombre": "Hamburguesa completa", "precio": 5.5},
+        {"nombre": "Hamburguesa «Logradouro»", "desc": "Carne, queso, lechuga, tomate, cebolla, huevo o bacon", "precio": 6.5},
+        {"nombre": "Menú perrito caliente gigante (30 cm)", "desc": "Con cebolla crujiente", "precio": 9.5},
+        {"nombre": "Hamburguesa de porco celta", "desc": "150 g, lechuga, lombarda encurtida, cebolla caramelizada, patatas fritas y salsa tártara (petiscos: también tomate)", "precio": 9.0, "fuente": "impresa-veuche", "verificar": "Solo en las hojas impresas: ¿sigue en carta?"},
+        {"nombre": "Bocata de huevos fritos", "desc": "Con jamón o chorizo y patatas", "precio": 4.0, "fuente": "impresa-veuche", "verificar": "Solo en hojas impresas; la de petiscos lo pone a 4,50 €"}
+      ]
+    },
+    {
+      "id": "cocina",
+      "titulo": "De la cocina",
+      "gl": "¿Veuche a fame?",
+      "nota": "Platos que solo salen en las hojas impresas en gallego.",
+      "fuente": "impresa-veuche",
+      "verificar": "Toda la sección: ¿siguen en carta? Ninguno sale en las cartas ilustradas.",
+      "platos": [
+        {"nombre": "Plato de huevos fritos", "desc": "Con patatas y jamón o chorizo", "precio": 8.0},
+        {"nombre": "Tabla de ibéricos o de cerdo celta", "gl": "Taboa ibéricos ou celta", "precio": 16.0},
+        {"nombre": "Tabla surtida", "gl": "Taboa surtida", "precio": 14.0},
+        {"nombre": "Tabla de quesos gallegos", "gl": "Taboa queixos galegos", "precio": 12.0},
+        {"nombre": "Escalivada", "desc": "Pimiento, berenjena y puerro", "precio": 9.0},
+        {"nombre": "Escalivada con bacalao", "precio": 12.0},
+        {"nombre": "Ensalada verde", "desc": "Con salmón, pollo o portobello", "precio": 9.0},
+        {"nombre": "Ensalada de pollo crujiente", "desc": "Lechuga, tomate, calabacín, pollo crujiente y parmesano", "precio": 9.0, "fuente": "impresa-petiscos"},
+        {"nombre": "Wok vegano o de cerdo", "precio": 8.0},
+        {"nombre": "Wok de langostinos", "precio": 10.0},
+        {"nombre": "Salteado de arroz y grelos con pollo a la marroquí", "precio": 9.0, "fuente": "impresa-petiscos", "verificar": "La columna de precios de esa hoja está desalineada; 9 € es la lectura coherente con la otra hoja"},
+        {"nombre": "Secreto de cerdo", "gl": "Segredo de porco", "precio": 11.0},
+        {"nombre": "Tiras de pollo al curry", "precio": 9.0},
+        {"nombre": "Albóndigas veganas", "precio": 7.0},
+        {"nombre": "Sushi bowl Logradouro", "desc": "Arroz de sushi, verduritas de temporada, mayonesa de soja, berenjena encurtida y salmón", "precio": 9.0, "fuente": "impresa-petiscos", "verificar": "Columna desalineada, como el salteado"},
+        {"nombre": "Ramen", "desc": "Cazuela de caldo con pasta, verduras de temporada, panceta tostada y huevo cocido", "precio": 9.0},
+        {"nombre": "Ramen vegano", "desc": "Caldo, verduras de temporada, boliños do pote y champiñones confitados", "precio": 9.0}
+      ]
+    },
+    {
+      "id": "ensaladas",
+      "titulo": "Ensaladas",
+      "fuente": "ilustrada-2",
+      "platos": [
+        {"nombre": "Ensalada simple", "precio": 5.5},
+        {"nombre": "Ensalada completa", "desc": "Lechuga, tomate, cebolla, maíz, atún, surimi, nuez y huevo cocido", "precio": 8.5}
+      ]
+    },
+    {
+      "id": "veganas",
+      "titulo": "Opciones veganas",
+      "fuente": "ilustrada-1",
+      "platos": [
+        {"nombre": "Hamburguesa de zanahoria", "desc": "Con pan de remolacha y sticks de verduras", "precio": 10.0, "verificar": "Las hojas impresas tienen otra hamburguesa vegana a 7 € (lechuga, lombarda encurtida, cebolla caramelizada, patatas y salsa tártara)"},
+        {"nombre": "Canelones veganos de hummus", "desc": "Envueltos en berenjena, con sticks de verduras", "precio": 11.0},
+        {"nombre": "Croquetas de setas", "desc": "8 unidades", "precio": 8.0}
+      ]
+    },
+    {
+      "id": "postres",
+      "titulo": "Postres",
+      "fuente": "ilustrada-2",
+      "platos": [
+        {"nombre": "Tarta tiramisú", "desc": "Sin gluten", "precio": 5.5},
+        {"nombre": "Tarta de chocolate", "precio": 5.5},
+        {"nombre": "Tarta Red Velvet", "precio": 5.5}
+      ]
+    },
+    {
+      "id": "bebidas",
+      "titulo": "Bebidas",
+      "fuente": "impresa-petiscos",
+      "nota": "Solo se ve un trozo de la hoja: «café, infusións, leites e bebidas vexetais varias» y «auténticos zumos de froita». No hay más precios de bebida.",
+      "platos": [
+        {"nombre": "Zumos de fruta", "precio": 2.5, "verificar": "Hoja cortada en la foto"},
+        {"nombre": "Café, infusiones, leches y bebidas vegetales", "precio": null}
+      ]
+    }
+  ]
+}

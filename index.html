@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<!--
+  O Logradouro · Rúa Lugo, 2 · Carballo · concepto «Pandeireta»
+  El logo real va pintado sobre el parche de una pandereta. La web ES esa
+  pandereta: noche, ritmo y folclore galego sin postureo. La música en
+  directo no tiene fecha confirmada, así que el ritmo es solo visual — no
+  hay sección de conciertos.
+
+  AVISO 1 — Esta maqueta lleva un MANDO DE DEMOSTRACIÓN (abajo a la
+  izquierda, solo visible con ?revision en la URL) que cambia entre dos
+  densidades visuales. NO DEBE VIAJAR A PRODUCCIÓN. Receta de borrado en
+  README.md § «Quitar el mando de maqueta».
+
+  AVISO 2 — Datos verificados en vivo el 2026-09-28 (Google Maps, Instagram,
+  Facebook). Lo que no se pudo confirmar en fuente propia del negocio va
+  marcado [VERIFICAR] en README.md, nunca afirmado en la web.
+-->
+<html lang="es" class="sin-js densidad-pandeireta">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O Logradouro · Taberna en Carballo — Rúa Lugo, 2</title>
+<meta name="description" content="O Logradouro, taberna en Rúa Lugo 2, Carballo. Raxo, tortilla á feira, almuerzos con nombre propio. De mércores a domingo, das 10:00 á 1:00. 4,6★ en Google.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="O Logradouro · Carballo">
+<meta property="og:description" content="Bar de sempre, a ritmo novo. Raxo, tortilla á feira e o cancioneiro enteiro da casa. Rúa Lugo, 2, Carballo.">
+<meta property="og:image" content="assets/og-logradouro.jpg">
+<meta property="og:locale" content="es_ES">
+<meta name="theme-color" content="#16130F">
+<link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="css/estilos.css">
+<script>
+/* Bloqueante a propósito: la densidad se resuelve antes del primer pintado.
+   [MANDO DE MAQUETA] — bloque completo eliminable, ver README. */
+(function () {
+  var h = document.documentElement;
+  h.classList.remove('sin-js');
+  h.classList.add('con-js');
+  if (!/[?&]revision\b/.test(location.search)) return;
+  try {
+    var d = localStorage.getItem('logradouro-densidad');
+    if (d === 'sobria' || d === 'pandeireta') {
+      h.classList.remove('densidad-pandeireta', 'densidad-sobria');
+      h.classList.add('densidad-' + d);
+    }
+  } catch (e) {}
+})();
+</script>
+</head>
+<body>
+
+<a class="salto-contenido" href="#contenido">Saltar al contenido</a>
+
+<!-- ═══════════════════════ CORTINA DE ENTRADA ═══════════════════════
+     1. Negro total, se dibuja el aro. 2. Golpe seco: el parche se hunde,
+     las ferreñas tiemblan. 3. Una onda concéntrica crece desde el centro
+     y descubre la página. Encadenada, expo.inOut. -->
+<div class="cortina" id="cortina">
+  <svg class="cortina__muro" id="cortina-muro" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+    <path id="cortina-relleno" fill="#16130F" fill-rule="evenodd"></path>
+  </svg>
+  <div class="cortina__centro">
+    <svg class="cortina__pandeireta" viewBox="0 0 400 400" aria-hidden="true">
+      <g id="cortina-ferrenas"></g>
+      <circle id="cortina-aro" class="cortina__aro" cx="200" cy="200" r="150" fill="none" stroke="#A87B4F" stroke-width="16"/>
+      <circle id="cortina-parche" class="cortina__parche" cx="200" cy="200" r="132" fill="#EFE7D6" opacity="0"/>
+    </svg>
+    <p class="cortina__pie" id="cortina-pie">O Logradouro</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════ CABECERA ═══════════════════════ -->
+<header class="cabecera" id="cabecera">
+  <a class="cabecera__marca" href="#inicio" aria-label="O Logradouro, inicio">
+    <img src="assets/logo/rotulo.svg" alt="O Logradouro" width="150" height="44">
+  </a>
+  <nav class="cabecera__nav" aria-label="Secciones">
+    <a href="#casa">A casa</a>
+    <a href="#carta">O cancioneiro</a>
+    <a href="#destacados">Destacados</a>
+    <a href="#resenas">Reseñas</a>
+    <a href="#horario">Horario</a>
+  </nav>
+  <a class="cabecera__tel iman" href="tel:+34637085037">637 08 50 37</a>
+  <button class="hamburguesa" id="hamburguesa" type="button" aria-expanded="false" aria-controls="menu-movil">
+    <span aria-hidden="true"></span>
+    <span class="visualmente-oculto">Abrir menú</span>
+  </button>
+</header>
+
+<div class="menu-movil" id="menu-movil">
+  <nav aria-label="Secciones, móvil">
+    <a href="#casa">A casa</a>
+    <a href="#carta">O cancioneiro</a>
+    <a href="#destacados">Os destacados</a>
+    <a href="#resenas">Reseñas</a>
+    <a href="#horario">Horario e onde</a>
+  </nav>
+  <a class="boton boton--lazo" href="tel:+34637085037">Chamar · 637 08 50 37</a>
+</div>
+
+<!-- botón fijo: la pandereta atraca aquí tras el hero y abre a carta -->
+<button class="pandeireta-boton" id="pandeireta-boton" type="button" hidden aria-label="Abrir o cancioneiro (a carta)">
+  <svg viewBox="0 0 120 120" aria-hidden="true">
+    <circle cx="60" cy="60" r="52" fill="none" stroke="#A87B4F" stroke-width="7"/>
+    <circle cx="60" cy="60" r="45" fill="#EFE7D6"/>
+    <circle class="pandeireta-boton__golpe" cx="60" cy="60" r="45" fill="none" stroke="#C4262E" stroke-width="2" opacity="0"/>
+    <g stroke="#16130F" stroke-width="2.6" stroke-linecap="round" fill="none">
+      <path d="M42 46h20M42 52h20M42 70h20M42 76h20"/>
+      <rect x="68" y="42" width="14" height="34" rx="2"/>
+    </g>
+  </svg>
+</button>
+
+<main id="contenido">
+
+  <!-- ═══════════════════════ HERO ═══════════════════════ -->
+  <section class="hero" id="inicio">
+    <div class="hero__marco">
+      <p class="hero__ubi">Taberna · Rúa Lugo, 2 · Carballo</p>
+      <h1 class="hero__titular" data-revelar="palabras">Bar de sempre, a ritmo novo.</h1>
+      <p class="hero__sub">Raxo, tortilla á feira e o cancioneiro enteiro da casa. De mércores a domingo, das 10:00 á 1:00.</p>
+      <div class="hero__cta">
+        <a class="boton boton--lazo iman" href="#carta">Ver o cancioneiro</a>
+        <button class="boton boton--fantasma iman" id="boton-son" type="button" aria-pressed="false">
+          <span class="boton-son__on" aria-hidden="true">🔊</span><span class="boton-son__off" aria-hidden="true">🔈</span>
+          <span id="boton-son-texto">Son: apagado</span>
+        </button>
+      </div>
+      <p class="hero__nota">4,6★ · 246 reseñas en Google</p>
+    </div>
+
+    <div class="hero__escena">
+      <svg class="pandeireta" id="pandeireta" viewBox="0 0 520 520" role="button" tabindex="0" aria-label="Tocar a pandeireta">
+        <defs>
+          <radialGradient id="veta-piel" cx="42%" cy="38%" r="68%">
+            <stop offset="0" stop-color="#F7F1E4"/>
+            <stop offset=".6" stop-color="#EFE7D6"/>
+            <stop offset="1" stop-color="#D8C9A8"/>
+          </radialGradient>
+          <g id="ferrena-par">
+            <rect x="-16" y="-8" width="32" height="16" rx="3" fill="#2A241C"/>
+            <g class="ferrena__disco">
+              <ellipse cx="0" cy="-3.6" rx="14" ry="5.6" fill="#D6D1C4" stroke="#847E70" stroke-width="1.1"/>
+              <ellipse cx="0" cy="3.6" rx="14" ry="5.6" fill="#BEB8AA" stroke="#736D60" stroke-width="1.1"/>
+              <circle r="2" fill="#4a463e"/>
+            </g>
+          </g>
+        </defs>
+
+        <circle class="pandeireta__sombra" cx="262" cy="266" r="222" fill="#000" opacity=".28"/>
+        <circle class="pandeireta__aro" cx="260" cy="260" r="222" fill="none" stroke="#A87B4F" stroke-width="27"/>
+        <circle class="pandeireta__filo" cx="260" cy="260" r="236" fill="none" stroke="#7B5634" stroke-width="2"/>
+        <circle class="pandeireta__filo" cx="260" cy="260" r="208" fill="none" stroke="#7B5634" stroke-width="1.4" opacity=".6"/>
+
+        <g class="pandeireta__parche">
+          <circle cx="260" cy="260" r="207" fill="url(#veta-piel)"/>
+          <g class="pandeireta__vetas" stroke="#D8C9A8" stroke-width="1" fill="none" opacity=".55">
+            <path d="M90 220c60-14 220-14 340 6"/>
+            <path d="M88 260c62-8 222-8 344 4"/>
+            <path d="M92 300c58-4 216 2 336 14"/>
+            <path d="M100 180c54-16 200-18 300-4"/>
+            <path d="M96 340c56 6 204 10 296-6"/>
+          </g>
+          <circle class="pandeireta__onda" cx="260" cy="260" r="60"/>
+          <circle class="pandeireta__onda" cx="260" cy="260" r="60"/>
+          <circle class="pandeireta__onda" cx="260" cy="260" r="60"/>
+          <image class="pandeireta__fachada" href="assets/logo/fachada.svg" x="176" y="98" width="168" height="168" preserveAspectRatio="xMidYMid meet"/>
+          <image class="pandeireta__rotulo" href="assets/logo/rotulo.svg" x="112" y="300" width="296" height="82" preserveAspectRatio="xMidYMid meet"/>
+        </g>
+
+        <g id="aro-ferrenas" class="ferrenas"></g>
+
+        <g class="lazos">
+          <path d="M436 402C458 452 434 494 458 546" stroke="#C4262E" stroke-width="13" fill="none" stroke-linecap="round"/>
+          <path d="M446 396C478 440 478 482 508 522" stroke="#EFE7D6" stroke-width="8" fill="none" stroke-linecap="round" opacity=".9"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ A CASA ═══════════════════════ -->
+  <section class="casa" id="casa">
+    <div class="casa__datos">
+      <div class="dato">
+        <span class="dato__num">Rúa Lugo, 2</span>
+        <span class="dato__etq">Carballo, A Coruña</span>
+      </div>
+      <div class="dato">
+        <span class="dato__num">Mér–Dom</span>
+        <span class="dato__etq">luns e martes, pechado</span>
+      </div>
+      <div class="dato">
+        <span class="dato__num">10:00–1:00</span>
+        <span class="dato__etq">desayunos ata as 13:00</span>
+      </div>
+    </div>
+    <p class="casa__texto" data-revelar="palabras">Unha taberna de sempre na Rúa Lugo, con carta propia en galego e almorzos que levan o nome de quen os pide dende hai anos. O de sempre, servido ao ritmo de agora.</p>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__pista marquee__pista--1" id="marquee-1"></div>
+    </div>
+    <div class="marquee marquee--reversa" aria-hidden="true">
+      <div class="marquee__pista marquee__pista--2" id="marquee-2"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ O CANCIONEIRO ═══════════════════════ -->
+  <section class="cancioneiro" id="carta">
+    <header class="cancioneiro__cab">
+      <p class="cancioneiro__kicker">O cancioneiro</p>
+      <h2 class="cancioneiro__h2" data-revelar="palabras">A carta, en once coplas.</h2>
+      <p class="cancioneiro__sub">68 pratos. Prezo <code>—</code> significa que aínda non o confirmamos.</p>
+    </header>
+    <div id="coplas" class="coplas"><!-- pintado desde data/carta.json por js/main.js --></div>
+  </section>
+
+  <!-- ═══════════════════════ OS DESTACADOS ═══════════════════════ -->
+  <section class="destacados" id="destacados">
+    <header class="destacados__cab">
+      <p class="destacados__kicker">Os destacados</p>
+      <h2 data-revelar="palabras">O repertorio da casa.</h2>
+    </header>
+    <div class="destacados__lista" id="destacados-lista"><!-- pintado desde carta.json --></div>
+  </section>
+
+  <!-- ═══════════════════════ RESEÑAS ═══════════════════════ -->
+  <section class="resenas" id="resenas">
+    <div class="resenas__marco">
+      <div class="resenas__cifra">
+        <span class="resenas__estrelas" aria-hidden="true">★★★★★</span>
+        <p class="resenas__num"><span data-contador="4.6" data-decimales="1">0,0</span></p>
+        <p class="resenas__etq"><span data-contador="246">0</span> reseñas en Google</p>
+        <a class="boton boton--fantasma iman" href="https://www.google.com/maps/place/O+Logradouro/@43.2135971,-8.6912385,17z/data=!3m1!4b1!4m6!3m5!1s0xd2e931c29699a0b:0xb48bc248204f7cd7!8m2!3d43.2135971!4d-8.6912385" target="_blank" rel="noopener">Ver en Google →</a>
+      </div>
+      <ul class="resenas__citas">
+        <li><p>«Destaco o chuletón, tenro, saboroso e no seu punto. E as tapas de tortilla, riquísimas.»</p><span>Beatriz G., Local Guide</span></li>
+        <li><p>«Estaba todo delicioso. Probamos langostinos rebozados, rape, tosta de xamón… e tarta de Santiago.»</p><span>Ana T., Local Guide</span></li>
+        <li><p>«Comemos un pincho de patacas que, sen esaxerar, foi dos mellores que probei.»</p><span>Paula V.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════ HORARIO E ONDE ═══════════════════════ -->
+  <section class="horario" id="horario">
+    <div class="horario__marco">
+      <div class="horario__estado">
+        <p class="horario__kicker">Horario</p>
+        <h2 data-revelar="palabras">Onde e cando.</h2>
+        <p class="estado" id="estado"><i></i><span>Calculando…</span></p>
+        <ul class="horario__tabla" id="horario-tabla" aria-label="Horario semanal"></ul>
+        <p class="horario__aviso">Almorzos ata as 13:00, con café con leite dobre e zume de laranxa natural.</p>
+      </div>
+      <div class="horario__mapa">
+        <address class="horario__direccion">Rúa Lugo, 2 · 15100 Carballo, A Coruña</address>
+        <div class="mapa" id="mapa-consentimiento">
+          <button class="map-consent" type="button" data-map-title="Mapa: O Logradouro en Rúa Lugo, Carballo" data-map-src="https://www.google.com/maps?q=O+Logradouro,+R%C3%BAa+Lugo+2,+15100+Carballo,+A+Coru%C3%B1a&output=embed">
+            <svg viewBox="0 0 24 24" aria-hidden="true" width="26" height="26"><path fill="currentColor" d="M12 2C7.6 2 4 5.6 4 10c0 5.5 7 12 8 12s8-6.5 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+            <span>Ver mapa</span>
+            <small>Carga un iframe de Google Maps só ao premer aquí.</small>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════ PIE ═══════════════════════ -->
+<footer class="pie" id="pie">
+  <div class="pie__marco">
+    <div class="pie__lockup">
+      <img src="assets/logo/lockup.svg" alt="O Logradouro" width="150" height="181">
+    </div>
+    <nav class="pie__enlaces" aria-label="Redes e legal">
+      <a href="https://www.instagram.com/ologradouro/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/OLogradouro" target="_blank" rel="noopener">Facebook</a>
+      <a href="tel:+34637085037">637 08 50 37</a>
+      <a href="aviso-legal.html">Aviso legal</a>
+      <a href="privacidad.html">Privacidade</a>
+    </nav>
+    <p class="pie__nota">O Logradouro · Rúa Lugo, 2 · 15100 Carballo · © <span id="anio">2026</span></p>
+  </div>
+</footer>
+
+<!-- ═══════════════════════ COOKIES ═══════════════════════ -->
+<div class="cookies" id="cookies" hidden>
+  <p class="cookies__texto">
+    Este sitio non usa cookies de seguimento. Só garda no teu navegador que xa viches este aviso
+    e, se o pides, carga o mapa de Google, que si pon as súas. <a href="privacidad.html">Máis detalle</a>.
+  </p>
+  <div class="cookies__acciones">
+    <button class="boton boton--mini" id="cookies-aceptar" type="button">De acordo</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     [MANDO DE MAQUETA] — SOLO REVISIÓN INTERNA. NO PUBLICAR.
+     Borrar este bloque, el bloque CSS marcado igual en estilos.css, el
+     bloque JS marcado igual en main.js y el script bloqueante del <head>.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="mando" id="mando" hidden>
+  <span class="mando__titulo">Versión</span>
+  <div class="mando__botones" role="group" aria-label="Densidade visual da maqueta">
+    <button type="button" data-densidad="pandeireta" aria-pressed="true">Pandeireta</button>
+    <button type="button" data-densidad="sobria" aria-pressed="false">Sobria</button>
+  </div>
+  <span class="mando__pie">Dúas versións da mesma web</span>
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BarOrPub",
+  "name": "O Logradouro",
+  "telephone": "+34637085037",
+  "servesCuisine": ["Galega", "Taberna"],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Rúa Lugo, 2",
+    "addressLocality": "Carballo",
+    "postalCode": "15100",
+    "addressRegion": "A Coruña",
+    "addressCountry": "ES"
+  },
+  "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "reviewCount": "246", "bestRating": "5" },
+  "sameAs": [
+    "https://www.instagram.com/ologradouro/",
+    "https://www.facebook.com/OLogradouro"
+  ]
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<script src="js/main.js" defer></script>
+</body>
+</html>
