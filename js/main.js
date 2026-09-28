@@ -128,7 +128,9 @@
       tUltimoScroll = performance.now();
     });
     gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
-    gsap.ticker.lagSmoothing(0);
+    /* lagSmoothing(0) (lo que pide Lenis) se pone al retirar la cortina: con
+       él activo, el tirón de la carga en frío hace que la cortina salte su
+       trazado y el aro «aparece dibujado» (feedback_cortina_reloj_atascos) */
   }
 
   function irA(destino) {
@@ -185,7 +187,7 @@
     var piezas = partir(el);
     if (!movimiento) return;
     if (el.closest('.hero')) {
-      document.addEventListener('cortina-retirada', function () { revelar(piezas); }, { once: true });
+      document.addEventListener('cortina-abriendo', function () { revelar(piezas); }, { once: true });
       return;
     }
     cuandoVisible([el], 0.3, function () { revelar(piezas); });
@@ -247,7 +249,6 @@
   }
 
   var ferrenasHero = repartirFerrenas(document.getElementById('aro-ferrenas'), 10, 260, 260, 234);
-  var ferrenasCortina = repartirFerrenas(document.getElementById('cortina-ferrenas'), 8, 200, 200, 150, 0.6);
 
   /* ───────────────── WebAudio: ferreñas sintetizadas, sin muestras ───────────────── */
   var actx = null;
@@ -316,37 +317,120 @@
     });
   })();
 
-  /* ───────────────── cortina: aro que se dibuja, golpe, onda que descubre ───────────────── */
+  /* ───────────────── cortina: la pandereta se monta, golpe, y la onda
+     del golpe descubre la página mientras la pandereta vuela a su sitio ─────────────────
+     1. Negro con un foco cálido. El aro se traza desde arriba y cada par de
+        ferreñas se coloca cuando pasa el trazo; el parche se tensa, el dibujo
+        de la fachada se imprime de arriba abajo y el rótulo de izquierda a
+        derecha; caen los lazos.
+     2. Golpe seco: el parche se hunde, la pandereta tiembla, las ferreñas
+        vibran, un destello recorre el parche.
+     3. La onda sale del golpe con tres anillos de sonido en su borde y abre
+        un agujero en el muro que descubre la página; a la vez la pandereta
+        (un clon exacto de la del hero) aterriza sobre la de verdad. */
   (function cortina() {
     var cort = document.getElementById('cortina');
     if (!cort) return;
     var muro = document.getElementById('cortina-muro');
     var relleno = document.getElementById('cortina-relleno');
-    var aro = document.getElementById('cortina-aro');
-    var parche = document.getElementById('cortina-parche');
+    var ondas = Array.prototype.slice.call(document.querySelectorAll('#cortina-ondas circle'));
+    var luz = document.getElementById('cortina-luz');
+    var vuelo = document.getElementById('cortina-vuelo');
     var pie = document.getElementById('cortina-pie');
-    var hecho = false;
+    var heroSvg = document.getElementById('pandeireta');
+    var hecho = false, abierto = false;
 
+    /* el hero empieza a revelarse cuando la onda empieza a abrir, no al final */
+    function abrir() {
+      if (abierto) return;
+      abierto = true;
+      document.dispatchEvent(new CustomEvent('cortina-abriendo'));
+    }
     function retirar() {
       if (hecho) return;
       hecho = true;
+      abrir();
       cort.classList.add('fuera');
+      if (vuelo) vuelo.innerHTML = '';
+      if (heroSvg) heroSvg.style.removeProperty('visibility');
       document.body.style.removeProperty('overflow');
-      if (lenis) lenis.start();
+      if (lenis) { gsap.ticker.lagSmoothing(0); lenis.start(); }
       if (window.ScrollTrigger) window.ScrollTrigger.refresh();
       document.dispatchEvent(new CustomEvent('cortina-retirada'));
     }
 
-    if (!movimiento) {
+    if (!movimiento || !heroSvg || !vuelo) {
       setTimeout(retirar, reduce ? 250 : 120);
       return;
     }
 
     document.body.style.overflow = 'hidden';
     if (lenis) lenis.stop();
+    /* un tirón de carga cuenta como 1/30 s: el trazado no se salta */
+    gsap.ticker.lagSmoothing(100, 33);
 
+    /* ── clon de la pandereta del hero (ids renombrados para no chocar) ── */
+    var clon = heroSvg.cloneNode(true);
+    ['id', 'role', 'tabindex', 'aria-label', 'data-i18n-attr', 'style'].forEach(function (a) { clon.removeAttribute(a); });
+    clon.setAttribute('class', 'cortina__svg');
+    clon.setAttribute('aria-hidden', 'true');
+    Array.prototype.forEach.call(clon.querySelectorAll('[id]'), function (n) { n.id = n.id + '-cortina'; });
+    Array.prototype.forEach.call(clon.querySelectorAll('[fill^="url(#"]'), function (n) {
+      n.setAttribute('fill', n.getAttribute('fill').replace(')', '-cortina)'));
+    });
+    vuelo.appendChild(clon);
+    heroSvg.style.visibility = 'hidden';
+
+    var q = function (s) { return clon.querySelector(s); };
+    var qa = function (s) { return Array.prototype.slice.call(clon.querySelectorAll(s)); };
+    var aroBanda = q('.pandeireta__aro');
+    var filos = qa('.pandeireta__filo');
+    var sombra = q('.pandeireta__sombra');
+    var parche = q('.pandeireta__parche');
+    var vetas = q('.pandeireta__vetas');
+    var fachada = q('.pandeireta__fachada');
+    var rotulo = q('.pandeireta__rotulo');
+    var lazos = q('.lazos');
+    var ferrenas = qa('.ferrena');
+    var discos = qa('.ferrena .ferrena__disco');
+    var defs = q('defs');
+
+    /* tinta: dos clipPath que crecen (la fachada de arriba abajo, el rótulo de izquierda a derecha) */
+    function recorte(id, x, y, ancho, alto) {
+      var cp = document.createElementNS(nsSVG, 'clipPath');
+      cp.setAttribute('id', id);
+      var r = document.createElementNS(nsSVG, 'rect');
+      r.setAttribute('x', x); r.setAttribute('y', y); r.setAttribute('width', ancho); r.setAttribute('height', alto);
+      cp.appendChild(r);
+      defs.appendChild(cp);
+      return r;
+    }
+    var tintaF = recorte('tinta-fachada-cortina', 168, 90, 184, 0);
+    var tintaR = recorte('tinta-rotulo-cortina', 104, 292, 0, 98);
+    fachada.setAttribute('clip-path', 'url(#tinta-fachada-cortina)');
+    rotulo.setAttribute('clip-path', 'url(#tinta-rotulo-cortina)');
+
+    var destello = document.createElementNS(nsSVG, 'circle');
+    destello.setAttribute('cx', 260); destello.setAttribute('cy', 260); destello.setAttribute('r', 207);
+    destello.setAttribute('fill', 'none'); destello.setAttribute('stroke', '#E9B949'); destello.setAttribute('stroke-width', 6);
+    destello.setAttribute('opacity', 0);
+    clon.appendChild(destello);
+
+    /* ── medidas: la pandereta de la cortina se monta en el centro, a tamaño
+       de cortina, y viaja hasta el rect de la del hero ── */
     var w = 0, h = 0;
-    var onda = { r: 0 };
+    var ancho = heroSvg.getBoundingClientRect().width || 420;
+    var tamCortina = Math.min(window.innerWidth * 0.46, 320);
+    var centro = { x: window.innerWidth / 2, y: window.innerHeight * 0.44 };
+    vuelo.style.width = ancho + 'px';
+    vuelo.style.height = ancho + 'px';
+    gsap.set(vuelo, { x: centro.x - ancho / 2, y: centro.y - ancho / 2, scale: tamCortina / ancho });
+    pie.style.top = (centro.y + tamCortina / 2 + 34) + 'px';
+
+    var onda = { r: 0, p: 0 };
+    var plan = null;
+    var HUECOS = [16, 40, 70];
+    var ALFAS = [0.9, 0.65, 0.4];
 
     function medir() {
       w = window.innerWidth; h = window.innerHeight;
@@ -354,44 +438,117 @@
       pintar();
     }
 
-    /* rect completo + círculo interior en sentido de giro contrario: un
-       solo path con un agujero circular que crece (mismo truco que las
-       webs hermanas para la cortina de arco). */
+    /* rect completo + círculo interior en sentido contrario: un solo path con
+       un agujero que crece, centrado siempre en la pandereta aunque vuele */
     function pintar() {
-      var cx = w / 2, cy = h * 0.42, r = onda.r;
+      var b = vuelo.getBoundingClientRect();
+      var cx = b.left + b.width / 2, cy = b.top + b.height / 2, r = onda.r;
       var d = 'M0 0H' + w + 'V' + h + 'H0Z';
-      if (r > 0) {
+      if (r > 0.5) {
         d += ' M' + (cx - r) + ' ' + cy +
           ' A' + r + ' ' + r + ' 0 1 0 ' + (cx + r) + ' ' + cy +
           ' A' + r + ' ' + r + ' 0 1 0 ' + (cx - r) + ' ' + cy + 'Z';
       }
       relleno.setAttribute('d', d);
+      ondas.forEach(function (c, i) {
+        c.setAttribute('cx', cx.toFixed(1));
+        c.setAttribute('cy', cy.toFixed(1));
+        c.setAttribute('r', r > 0.5 ? (r + HUECOS[i]).toFixed(1) : 0);
+        c.setAttribute('opacity', r > 0.5 ? (ALFAS[i] * (1 - onda.p)).toFixed(3) : 0);
+      });
     }
 
     medir();
+    cort.classList.add('cortina--muro');
     window.addEventListener('resize', medir);
 
-    var lAro = 0;
-    try { lAro = Math.ceil(aro.getTotalLength()) + 2; } catch (e) { lAro = 943; }
-    gsap.set(aro, { strokeDasharray: lAro, strokeDashoffset: lAro });
-    gsap.set(ferrenasCortina, { rotation: 0, transformOrigin: '50% 50%' });
+    /* ── estado inicial ── */
+    var O = { svgOrigin: '260 260' };
+    var largos = [aroBanda].concat(filos).map(function (c) {
+      c.setAttribute('transform', 'rotate(-90 260 260)'); /* el trazo arranca arriba, como las ferreñas */
+      var l = 0;
+      try { l = Math.ceil(c.getTotalLength()) + 2; } catch (e) { l = 1500; }
+      gsap.set(c, { strokeDasharray: l, strokeDashoffset: l });
+      return l;
+    });
+    gsap.set(sombra, { opacity: 0 });
+    gsap.set(parche, Object.assign({ opacity: 0, scale: 0.82 }, O));
+    gsap.set(vetas, { opacity: 0 });
+    gsap.set(lazos, { opacity: 0, rotation: -38, svgOrigin: '441 399' });
+    gsap.set(ferrenas, { opacity: 0 });
+    gsap.set(discos, { scale: 0, transformOrigin: '50% 50%' });
+    gsap.set(pie, { letterSpacing: '0.6em' });
 
+    /* cada ferreña aparece cuando la cabeza del trazo pasa por ella: se
+       invierte el ease del trazo para saber cuándo llega a su ángulo */
+    var T_ARO = 0.15, D_ARO = 0.95, EASE_ARO = 'power3.inOut';
+    var easeAro = gsap.parseEase(EASE_ARO);
+    function cuandoLlega(f) {
+      var lo = 0, hi = 1;
+      for (var k = 0; k < 22; k++) { var m = (lo + hi) / 2; if (easeAro(m) < f) lo = m; else hi = m; }
+      return T_ARO + D_ARO * (lo + hi) / 2;
+    }
+
+    var T_GOLPE = 1.95, T_ONDA = 2.1, D_ONDA = 1.4;
     var tl = gsap.timeline({ onComplete: retirar });
-    tl.to(aro, { strokeDashoffset: 0, duration: 1.05, ease: 'power2.inOut' }, 0)
-      .to(parche, { opacity: 1, duration: 0.5, ease: 'power1.out' }, 0.65)
-      .to(pie, { opacity: 1, duration: 0.5 }, 0.95)
-      /* golpe seco: el parche se hunde, las ferreñas tiemblan */
-      .to(parche, { scale: 0.93, duration: 0.09, ease: 'power2.in' }, 1.35)
-      .to(parche, { scale: 1, duration: 0.5, ease: 'elastic.out(1,0.4)' }, 1.44)
-      .to(ferrenasCortina, { rotation: 14, duration: 0.07, ease: 'power1.inOut', stagger: 0.015 }, 1.35)
-      .to(ferrenasCortina, { rotation: -10, duration: 0.09, ease: 'power1.inOut', stagger: 0.015 }, 1.43)
-      .to(ferrenasCortina, { rotation: 0, duration: 0.4, ease: 'elastic.out(1,0.5)', stagger: 0.015 }, 1.53)
-      .call(function () { golpeSonido(0.85); }, null, 1.35)
-      /* onda concéntrica: crece y descubre la página, expo.inOut */
-      .to([pie], { opacity: 0, duration: 0.3 }, 1.9)
-      .to(onda, { r: Math.hypot(w, h) * 0.75, duration: 1.3, ease: 'expo.inOut', onUpdate: pintar }, 2.0);
 
-    setTimeout(retirar, 6500);
+    /* 1 · la pandereta se monta */
+    tl.to(luz, { opacity: 1, duration: 1.2, ease: 'power1.out' }, 0)
+      .to(filos[0], { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut' }, 0.05)
+      .to(filos[1], { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut' }, 0.1)
+      .to(aroBanda, { strokeDashoffset: 0, duration: D_ARO, ease: EASE_ARO }, T_ARO);
+    ferrenas.forEach(function (f, i) {
+      var t = cuandoLlega(i / ferrenas.length) + 0.02;
+      tl.to(f, { opacity: 1, duration: 0.12 }, t)
+        .fromTo(discos[i], { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.45, ease: 'back.out(3)', immediateRender: false }, t);
+    });
+    tl.to(sombra, { opacity: 0.28, duration: 0.6 }, 0.8)
+      .to(parche, Object.assign({ opacity: 1, scale: 1, duration: 0.65, ease: 'expo.out' }, O), 0.85)
+      .to(vetas, { opacity: 0.55, duration: 0.8 }, 0.95)
+      .to(tintaF, { attr: { height: 184 }, duration: 0.55, ease: 'power2.inOut' }, 1.05)
+      .to(tintaR, { attr: { width: 312 }, duration: 0.6, ease: 'power2.inOut' }, 1.3)
+      .to(lazos, { opacity: 1, rotation: 0, svgOrigin: '441 399', duration: 1.3, ease: 'elastic.out(1, 0.32)' }, 1.1)
+      .to(pie, { opacity: 0.85, letterSpacing: '0.24em', duration: 0.9, ease: 'expo.out' }, 1.0);
+
+    /* 2 · golpe seco */
+    tl.call(function () { golpeSonido(0.85); }, null, T_GOLPE)
+      .to(parche, Object.assign({ scale: 0.9, duration: 0.07, ease: 'power2.in' }, O), T_GOLPE)
+      .to(parche, Object.assign({ scale: 1, duration: 0.7, ease: 'elastic.out(1, 0.3)' }, O), T_GOLPE + 0.07)
+      .to(clon, { keyframes: { x: [0, -6, 5, -3, 2, 0] }, duration: 0.32, ease: 'none' }, T_GOLPE)
+      .to(ferrenas, { rotation: '+=18', duration: 0.05, ease: 'power1.inOut', yoyo: true, repeat: 5, stagger: 0.012 }, T_GOLPE)
+      .fromTo(destello, Object.assign({ scale: 0.55, opacity: 0.9, attr: { 'stroke-width': 6 } }, O),
+        Object.assign({ scale: 1.1, opacity: 0, attr: { 'stroke-width': 1 }, duration: 0.55, ease: 'power2.out', immediateRender: false }, O), T_GOLPE)
+      .to(luz, { scale: 1.12, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 }, T_GOLPE);
+
+    /* 3 · la onda descubre la página y la pandereta aterriza en el hero.
+       Si la página arrancó con scroll (el navegador lo restaura), el hero no
+       está a la vista: la pandereta no vuela, se desvanece donde está. */
+    tl.call(function () {
+      var r = heroSvg.getBoundingClientRect();
+      var vuela = r.bottom > 0 && r.top < window.innerHeight && r.width > 0;
+      var cx = vuela ? r.left + r.width / 2 : centro.x;
+      var cy = vuela ? r.top + r.height / 2 : centro.y;
+      plan = {
+        vuela: vuela,
+        x: vuela ? r.left : centro.x - ancho / 2,
+        y: vuela ? r.top : centro.y - ancho / 2,
+        escala: vuela ? r.width / ancho : (tamCortina / ancho) * 1.15,
+        R: Math.hypot(Math.max(cx, w - cx), Math.max(cy, h - cy)) + HUECOS[2] + 20
+      };
+      abrir();
+    }, null, T_ONDA - 0.001)
+      .to(vuelo, {
+        x: function () { return plan.x; },
+        y: function () { return plan.y; },
+        scale: function () { return plan.escala; },
+        opacity: function () { return plan.vuela ? 1 : 0; },
+        duration: D_ONDA, ease: 'expo.inOut'
+      }, T_ONDA)
+      .to(onda, { r: function () { return plan.R; }, p: 1, duration: D_ONDA, ease: 'expo.inOut', onUpdate: pintar }, T_ONDA)
+      .to(pie, { opacity: 0, y: -12, duration: 0.45, ease: 'power2.in' }, T_ONDA)
+      .to(luz, { opacity: 0, duration: 0.8, ease: 'power2.out' }, T_ONDA);
+
+    setTimeout(retirar, 7000);
   })();
 
   /* ───────────────── hero: tocar, imán, encoger hasta el botón ───────────────── */

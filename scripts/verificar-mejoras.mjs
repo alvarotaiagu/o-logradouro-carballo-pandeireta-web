@@ -120,6 +120,44 @@ await new Promise((r) => setTimeout(r, 400));
 
 const browser = await chromium.launch();
 try {
+  /* ═════════ cortina ═════════ */
+  const pc = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  await pc.addInitScript(() => {
+    /* tirón de 700 ms en cuanto existe el clon: el aro no puede aparecer ya dibujado */
+    document.addEventListener('DOMContentLoaded', () => {
+      const iv = setInterval(() => {
+        if (!document.querySelector('.cortina__svg')) return;
+        clearInterval(iv);
+        requestAnimationFrame(() => {
+          const t = performance.now();
+          while (performance.now() - t < 700) {}
+          /* se mide dentro de la página 60 ms después: el 'load' de Playwright
+             llega mucho más tarde (fuentes, imágenes) y el aro ya estaría hecho */
+          setTimeout(() => {
+            const aro = document.querySelector('.cortina__svg .pandeireta__aro');
+            window.__trasTiron = {
+              clon: !!aro,
+              heroOculta: getComputedStyle(document.getElementById('pandeireta')).visibility === 'hidden',
+              dibujado: 1 - parseFloat(getComputedStyle(aro).strokeDashoffset) / parseFloat(getComputedStyle(aro).strokeDasharray)
+            };
+          }, 60);
+        });
+      }, 5);
+    });
+  });
+  await pc.goto(base + '/', { waitUntil: 'load' });
+  await pc.waitForFunction(() => window.__trasTiron, { timeout: 5000 });
+  const c1 = await pc.evaluate(() => window.__trasTiron);
+  comprobar(c1.clon && c1.heroOculta, 'cortina: monta el clon de la pandereta y oculta la del hero mientras dura');
+  comprobar(c1.dibujado < 0.5, 'cortina: tras un tirón de 700 ms el aro no aparece ya dibujado (' + (c1.dibujado * 100).toFixed(0) + ' %)');
+  await pc.waitForFunction(() => /A/.test(document.getElementById('cortina-relleno').getAttribute('d') || ''), { timeout: 6000 });
+  const agujero = await pc.evaluate(() => ({ fondo: getComputedStyle(document.getElementById('cortina')).backgroundColor }));
+  comprobar(agujero.fondo === 'rgba(0, 0, 0, 0)', 'cortina: la onda abre un agujero real en el muro (capa transparente, no un fondo opaco encima)');
+  await pc.waitForFunction(() => document.getElementById('cortina').classList.contains('fuera'), { timeout: 8000 });
+  const c2 = await pc.evaluate(() => ({ clonFuera: !document.querySelector('.cortina__svg'), heroVisible: getComputedStyle(document.getElementById('pandeireta')).visibility === 'visible' }));
+  comprobar(c2.clonFuera && c2.heroVisible, 'cortina: al retirarse quita el clon y la pandereta del hero vuelve a verse');
+  await pc.close();
+
   /* ═════════ escritorio ═════════ */
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(base + '/', { waitUntil: 'load' });

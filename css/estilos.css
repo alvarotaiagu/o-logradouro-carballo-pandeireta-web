@@ -87,18 +87,23 @@ html:not(.con-movimiento) [data-revelar] .palabra-int,
 html:not(.con-movimiento) [data-revelar] .letra { transform: none; }
 
 /* ═══════════════════════ CORTINA ═══════════════════════ */
-.cortina {
-  position: fixed; inset: 0; z-index: 900; background: var(--noche);
-  display: grid; place-items: center; pointer-events: none;
-}
+/* El muro es un SVG con un agujero que crece (la onda del golpe). Hasta que
+   el JS lo dibuja, la propia capa pone el negro; luego queda transparente
+   para que el agujero descubra la página de verdad. */
+.cortina { position: fixed; inset: 0; z-index: 900; background: var(--noche); pointer-events: none; overflow: hidden; }
+.cortina.cortina--muro { background: transparent; }
 .cortina__muro { position: absolute; inset: 0; width: 100%; height: 100%; }
-.cortina__centro { position: relative; display: grid; place-items: center; gap: 18px; }
-.cortina__pandeireta { width: min(46vw, 320px); overflow: visible; }
-.cortina__aro { stroke-dasharray: 943; stroke-dashoffset: 943; }
-.cortina__parche { transform-origin: 200px 200px; }
+/* foco cálido de escenario detrás de la pandereta */
+.cortina__luz {
+  position: fixed; width: 110vmin; height: 110vmin; left: 50%; top: 44%; translate: -50% -50%; opacity: 0;
+  background: radial-gradient(circle, rgba(233,185,73,.16) 0%, rgba(168,123,79,.07) 32%, rgba(22,19,15,0) 62%);
+}
+/* la pandereta de la cortina es un clon exacto de la del hero: aterriza encima */
+.cortina__vuelo { position: fixed; left: 0; top: 0; transform-origin: 50% 50%; }
+.cortina__vuelo svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .cortina__pie {
-  font-family: var(--f-display); color: var(--piel); letter-spacing: .06em; font-size: 15px;
-  opacity: 0; text-transform: uppercase;
+  position: fixed; left: 0; right: 0; margin: 0; text-align: center; opacity: 0;
+  font: 600 12px/1 var(--f-texto); letter-spacing: .24em; text-transform: uppercase; color: var(--piel);
 }
 .cortina.fuera { pointer-events: none; }
 .cortina.fuera { display: none; }

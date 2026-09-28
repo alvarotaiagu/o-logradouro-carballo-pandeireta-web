@@ -32,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=743b7da7">
+<link rel="stylesheet" href="css/estilos.css?v=070fb66a">
 <script>
 /* Idioma: ?lang= › elección guardada › galego. Bloqueante: se resuelve antes
    de pintar, y main.js traduce antes de partir los titulares. */
@@ -43,6 +43,8 @@
   l = l === 'es' ? 'es' : 'gl';
   h.lang = l;
   h.setAttribute('data-idioma', l);
+  /* última red de la cortina: si main.js no llega a cargar, se aparta igual */
+  setTimeout(function () { var c = document.getElementById('cortina'); if (c) c.classList.add('fuera'); }, 9000);
 })();
 </script>
 <script>
@@ -71,18 +73,18 @@
      1. Negro total, se dibuja el aro. 2. Golpe seco: el parche se hunde,
      las ferreñas tiemblan. 3. Una onda concéntrica crece desde el centro
      y descubre la página. Encadenada, expo.inOut. -->
-<div class="cortina" id="cortina">
-  <svg class="cortina__muro" id="cortina-muro" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+<div class="cortina" id="cortina" aria-hidden="true">
+  <svg class="cortina__muro" id="cortina-muro" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
     <path id="cortina-relleno" fill="#16130F" fill-rule="evenodd"></path>
+    <g id="cortina-ondas" fill="none">
+      <circle stroke="#E9B949" stroke-width="2" r="0" opacity="0"/>
+      <circle stroke="#C4262E" stroke-width="1.5" r="0" opacity="0"/>
+      <circle stroke="#EFE7D6" stroke-width="1" r="0" opacity="0"/>
+    </g>
   </svg>
-  <div class="cortina__centro">
-    <svg class="cortina__pandeireta" viewBox="0 0 400 400" aria-hidden="true">
-      <g id="cortina-ferrenas"></g>
-      <circle id="cortina-aro" class="cortina__aro" cx="200" cy="200" r="150" fill="none" stroke="#A87B4F" stroke-width="16"/>
-      <circle id="cortina-parche" class="cortina__parche" cx="200" cy="200" r="132" fill="#EFE7D6" opacity="0"/>
-    </svg>
-    <p class="cortina__pie" id="cortina-pie">O Logradouro</p>
-  </div>
+  <div class="cortina__luz" id="cortina-luz"></div>
+  <div class="cortina__vuelo" id="cortina-vuelo"><!-- clon de la pandereta del hero (main.js) --></div>
+  <p class="cortina__pie" id="cortina-pie">Taberna · Rúa Lugo, 2 · Carballo</p>
 </div>
 
 <!-- ═══════════════════════ CABECERA ═══════════════════════ -->
@@ -370,6 +372,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-<script src="js/main.js?v=0fbdb961" defer></script>
+<script src="js/main.js?v=9a640277" defer></script>
 </body>
 </html>
