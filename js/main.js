@@ -44,11 +44,13 @@
   /* ───────────────────────── Lenis ───────────────────────── */
   var lenis = null;
   var velocidadLenis = 0;
+  var tUltimoScroll = 0;
   if (movimiento && window.Lenis) {
     lenis = new window.Lenis({ lerp: 0.11, wheelMultiplier: 1, smoothWheel: true });
     lenis.on('scroll', function (e) {
       window.ScrollTrigger.update();
       velocidadLenis = Math.abs(e.velocity || 0);
+      tUltimoScroll = performance.now();
     });
     gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
     gsap.ticker.lagSmoothing(0);
@@ -185,6 +187,20 @@
     fuente.stop(ctx.currentTime + dur + 0.02);
   }
 
+  function vibrar(ms) {
+    if (!esTactil || reduce || !navigator.vibrate) return;
+    try { navigator.vibrate(ms); } catch (e) {}
+  }
+
+  /* un «golpe» de compás: sonido (si está aceso), vibración y aviso al cursor.
+     Los toques directos vibran siempre; los golpes que dispara el scroll solo
+     con el son aceso, para no zumbar el móvil sin haberlo pedido. */
+  function emitirGolpe(intensidad, directo) {
+    golpeSonido(intensidad);
+    if (directo || sonidoActivo) vibrar(intensidad >= 0.5 ? 14 : 8);
+    document.dispatchEvent(new CustomEvent('golpe-compas', { detail: { intensidad: intensidad } }));
+  }
+
   (function botonSon() {
     var btn = document.getElementById('boton-son');
     var txt = document.getElementById('boton-son-texto');
@@ -295,7 +311,7 @@
         gsap.to(parche, { scale: 1, duration: 0.55, ease: 'elastic.out(1,0.4)', delay: 0.08 });
         gsap.to(ferrenasHero, { rotation: '+=16', duration: 0.08, ease: 'power1.inOut', yoyo: true, repeat: 3, stagger: 0.01 });
       }
-      golpeSonido(intensidad || 0.7);
+      emitirGolpe(intensidad || 0.7, true);
       setTimeout(function () { pandeireta.classList.remove('golpe'); }, 500);
     }
 
@@ -375,7 +391,7 @@
     if (boton) {
       boton.addEventListener('click', function () {
         boton.classList.add('golpe');
-        golpeSonido(0.55);
+        emitirGolpe(0.55, true);
         setTimeout(function () { boton.classList.remove('golpe'); }, 600);
         irA('#carta');
       });
@@ -402,7 +418,7 @@
         boton.classList.add('golpe');
         setTimeout(function () { boton.classList.remove('golpe'); }, 550);
       }
-      if (sonidoActivo) golpeSonido(0.3);
+      emitirGolpe(0.3, false);
     }
     /* qué sección está en pantalla es contenido, no decoración: se actualiza
        también con reduced-motion (ver feedback_reduced_motion_content_vs_motion) */
@@ -475,6 +491,12 @@
       var sobre = !!e.target.closest('a, button, #pandeireta, .map-consent');
       c.classList.toggle('cursor--activo', sobre);
       p.classList.toggle('cursor-punto--activo', sobre);
+    });
+
+    /* el aro del cursor late con cada golpe de compás */
+    document.addEventListener('golpe-compas', function (e) {
+      var fuerza = (e.detail && e.detail.intensidad) || 0.5;
+      gsap.fromTo(c, { scale: 1 }, { scale: 1 + fuerza * 0.7, duration: 0.14, ease: 'power2.out', yoyo: true, repeat: 1, overwrite: 'auto' });
     });
   })();
 
@@ -655,6 +677,18 @@
 
       /* ───── coplas ───── */
       if (contCoplas) {
+        var total = romano(datos.secciones.length);
+        var pildora = document.getElementById('copla-actual');
+        var pildoraNum = pildora ? pildora.querySelector('.copla-actual__num') : null;
+        var pildoraTit = pildora ? pildora.querySelector('.copla-actual__tit') : null;
+        if (pildora && gsapReady) {
+          window.ScrollTrigger.create({
+            trigger: contCoplas,
+            start: 'top 40%',
+            end: 'bottom 40%',
+            onToggle: function (self) { pildora.classList.toggle('visible', self.isActive); }
+          });
+        }
         datos.secciones.forEach(function (sec, i) {
           var copla = document.createElement('article');
           copla.className = 'copla';
@@ -664,7 +698,7 @@
           cab.className = 'copla__cab';
           var esEstribillo = sec.id === 'almorzos';
           cab.innerHTML =
-            '<p class="copla__num">Copla ' + romano(i + 1) + '</p>' +
+            '<p class="copla__num">Copla ' + romano(i + 1) + ' <span class="copla__de">de ' + total + '</span></p>' +
             '<h3 class="copla__titulo">' + sec.titulo + '</h3>' +
             (sec.gl && sec.gl !== sec.titulo ? '<p class="copla__gl">«' + sec.gl + '»</p>' : '') +
             (sec.nota ? '<p class="copla__nota">' + sec.nota + '</p>' : '') +
@@ -693,6 +727,20 @@
             if (!movimiento) return;
             gsap.to(versos, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', stagger: { each: 0.02, from: 'start' } });
           });
+
+          /* píldora de móvil: qué copla estás leyendo (contenido: también con reduced-motion) */
+          if (pildora && gsapReady) {
+            window.ScrollTrigger.create({
+              trigger: copla,
+              start: 'top 40%',
+              end: 'bottom 40%',
+              onToggle: function (self) {
+                if (!self.isActive) return;
+                pildoraNum.textContent = 'Copla ' + romano(i + 1) + ' de ' + total;
+                pildoraTit.textContent = sec.titulo;
+              }
+            });
+          }
 
           /* indicador de compás: avanza con el scroll de ESA lista (contenido, no solo movimiento) */
           if (gsapReady) {
@@ -756,11 +804,15 @@
         var copias = 3;
         for (var i = 0; i < copias; i++) { var c = grupo.cloneNode(true); c.setAttribute('aria-hidden', 'true'); pista.appendChild(c); }
         if (!movimiento) return;
-        var x = 0, base = pista === pista1 ? 0.55 : 0.9;
+        var x = 0, base = pista === pista1 ? 0.55 : 0.9, impulso = 0;
         (function paso() {
           if (!html.classList.contains('densidad-sobria') || pista === pista1) {
             var ancho = grupo.offsetWidth || 1;
-            x -= base;
+            /* acelera con la velocidad del scroll, como las ferreñas; sin
+               eventos de Lenis en 120 ms se da por parado */
+            var v = performance.now() - tUltimoScroll > 120 ? 0 : Math.min(velocidadLenis, 30);
+            impulso += (v - impulso) * 0.08;
+            x -= base * (1 + impulso * 0.12);
             if (x <= -ancho) x += ancho;
             pista.style.transform = 'translate3d(' + x.toFixed(2) + 'px,0,0)';
           }

@@ -113,6 +113,9 @@
   <a href="#horario" data-seccion="horario" aria-label="Ir a Horario e onde"><span></span></a>
 </nav>
 
+<!-- móvil: en qué copla de la carta estás (duplica la cabecera de cada copla, por eso aria-hidden) -->
+<p class="copla-actual" id="copla-actual" aria-hidden="true"><span class="copla-actual__num"></span><span class="copla-actual__tit"></span></p>
+
 <!-- botón fijo: la pandereta atraca aquí tras el hero y abre a carta -->
 <button class="pandeireta-boton" id="pandeireta-boton" type="button" hidden aria-label="Abrir o cancioneiro (a carta)">
   <svg viewBox="0 0 120 120" aria-hidden="true">
