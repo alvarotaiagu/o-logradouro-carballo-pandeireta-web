@@ -163,13 +163,36 @@ html.con-cursor, html.con-cursor * { cursor: none !important; }
 .menu-movil nav { display: flex; flex-direction: column; gap: 22px; }
 .menu-movil nav a { font-family: var(--f-display); font-size: 30px; text-decoration: none; }
 .menu-movil .boton { align-self: flex-start; }
+/* «el menú se abre con un golpe»: los enlaces caen con rebote, escalonados */
+.cabecera.menu-abierto ~ .menu-movil nav a { animation: menu-golpe .55s cubic-bezier(.2,1.5,.4,1) both; }
+.cabecera.menu-abierto ~ .menu-movil nav a:nth-child(2) { animation-delay: .05s; }
+.cabecera.menu-abierto ~ .menu-movil nav a:nth-child(3) { animation-delay: .1s; }
+.cabecera.menu-abierto ~ .menu-movil nav a:nth-child(4) { animation-delay: .15s; }
+.cabecera.menu-abierto ~ .menu-movil nav a:nth-child(5) { animation-delay: .2s; }
+@keyframes menu-golpe { from { opacity: 0; transform: translateY(-22px) scale(.96); } to { opacity: 1; transform: none; } }
+@media (min-width: 981px) {
+  .menu-movil nav a { font-size: clamp(2.4rem, 4vw, 3.6rem); }
+}
 
 /* ═══════════════════════ BOTÓN PANDEIRETA FIJO (menú) ═══════════════════════ */
+/* Atraca en un hueco propio a la derecha de la cabecera y por ENCIMA de ella
+   (z 310 > 300): así siempre va sobre fondo oscuro y el anillo se lee en
+   todas las secciones. Sin transform de entrada: la pandereta del hero
+   aterriza exactamente aquí y el relevo tiene que ser invisible. */
 .pandeireta-boton {
-  position: fixed; top: 14px; right: var(--gutter); z-index: 280; width: 58px; height: 58px;
-  opacity: 0; transform: scale(.4) rotate(-25deg); transition: opacity .5s ease, transform .5s cubic-bezier(.2,1.4,.4,1);
+  position: fixed; top: calc((var(--cab) - 58px) / 2); right: var(--gutter); z-index: 310; width: 58px; height: 58px;
+  opacity: 0; visibility: hidden; transition: opacity .15s ease, visibility 0s linear .15s;
 }
-.pandeireta-boton.visible { opacity: 1; transform: scale(1) rotate(0deg); }
+.pandeireta-boton.visible { opacity: 1; visibility: visible; transition: opacity .15s ease; }
+.cabecera { transition: padding-right .45s cubic-bezier(.2,.8,.2,1); }
+html.pandeireta-llegando .cabecera, html.pandeireta-atracada .cabecera { padding-right: calc(var(--gutter) + 58px + 18px); }
+/* solo mientras dura el pin: el hero sube sobre la cabecera para que la
+   pandereta no vuele por detrás del blur; su caja no captura clics */
+.hero.volando { z-index: 305; pointer-events: none; }
+.hero.volando .hero__marco, .hero.volando .pandeireta { pointer-events: auto; }
+.cabecera.menu-abierto ~ main .hero.volando { z-index: auto; }
+/* con el menú abierto, los puntos del nav no se montan encima */
+.cabecera.menu-abierto ~ .seccion-nav { visibility: hidden; }
 .pandeireta-boton svg { width: 100%; height: 100%; }
 .pandeireta-boton__golpe { transform-origin: 60px 60px; }
 .pandeireta-boton.golpe .pandeireta-boton__golpe { animation: golpe-onda .6s ease-out; }
@@ -177,14 +200,18 @@ html.con-cursor, html.con-cursor * { cursor: none !important; }
 .pandeireta-boton__progreso { opacity: .85; }
 
 /* ═══════════════════════ NAV DE PUNTOS (progreso por sección) ═══════════════════════ */
+/* El blend va en el nav, no en los puntos: un fixed con z-index crea su
+   propio contexto de apilamiento, y un hijo con mix-blend-mode solo se
+   mezclaría con el nav (transparente), no con la página. Sobre noche sale
+   claro; sobre piel, casi negro. */
 .seccion-nav {
   position: fixed; left: 22px; top: 50%; transform: translateY(-50%); z-index: 270;
-  display: flex; flex-direction: column; gap: 14px;
+  display: flex; flex-direction: column; gap: 14px; mix-blend-mode: difference;
 }
 .seccion-nav a { display: grid; place-items: center; width: 22px; height: 22px; }
 .seccion-nav a span {
   width: 8px; height: 8px; border-radius: 50%; display: block;
-  background: var(--piel); mix-blend-mode: difference; opacity: .7;
+  background: var(--piel); opacity: .7;
   transition: transform .25s, opacity .25s;
 }
 .seccion-nav a:hover span, .seccion-nav a:focus-visible span { opacity: 1; transform: scale(1.15); }
@@ -235,7 +262,7 @@ html.con-cursor, html.con-cursor * { cursor: none !important; }
 .pandeireta__parche { transform-origin: 260px 260px; }
 
 /* ═══════════════════════ A CASA ═══════════════════════ */
-.casa { background: var(--noche); }
+.casa { background: var(--noche); padding-top: clamp(2.5rem, 5vw, 4.5rem); }
 .casa__datos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1180px; margin: 0 auto; }
 .dato { border-top: 2px solid color-mix(in srgb, var(--aro) 55%, transparent); padding-top: 16px; }
 .dato__num { display: block; font-family: var(--f-display); font-size: clamp(1.7rem, 3vw, 2.5rem); }
@@ -244,6 +271,8 @@ html.con-cursor, html.con-cursor * { cursor: none !important; }
 
 .marquee { overflow: hidden; white-space: nowrap; margin-top: 2.6rem; border-top: 1px solid color-mix(in srgb, var(--piel) 12%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--piel) 12%, transparent); }
 .marquee__pista { display: inline-flex; gap: 2.4rem; padding: 14px 0; will-change: transform; }
+/* cada copia del grupo también reparte con gap: texto · 2,4rem · punto · 2,4rem · texto */
+.marquee__pista > div { display: inline-flex; gap: 2.4rem; }
 .marquee__pista span { font-family: var(--f-display); font-size: clamp(1.1rem, 2.4vw, 1.6rem); white-space: nowrap; }
 .marquee__pista span::after { content: "·"; margin-left: 2.4rem; color: var(--lazo-sobre-noche); }
 .marquee--reversa { border-top: none; }
@@ -407,6 +436,10 @@ html.densidad-sobria .resenas__estrelas { display: none; }
   .cabecera__nav { display: none; }
   .cabecera__tel { display: none; }
   .hamburguesa { display: block; }
+  /* en móvil la pandereta atracada ocupa el sitio de la hamburguesa */
+  html.pandeireta-llegando .cabecera, html.pandeireta-atracada .cabecera { padding-right: var(--gutter); }
+  .hamburguesa { transition: opacity .2s, visibility 0s linear 0s; }
+  html.pandeireta-llegando .hamburguesa, html.pandeireta-atracada .hamburguesa { opacity: 0; visibility: hidden; transition: opacity .2s, visibility 0s linear .2s; }
 }
 
 @media (max-width: 560px) {

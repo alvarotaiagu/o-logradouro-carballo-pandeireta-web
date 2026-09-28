@@ -30,6 +30,71 @@ async function esperarCortina(page) {
   await page.waitForTimeout(400);
 }
 
+/* rueda hasta pasar una y concreta */
+async function bajarHasta(page, hasta, paso = 120) {
+  let y = await page.evaluate(() => scrollY);
+  for (let i = 0; i < 400 && y < hasta - 5; i++) {
+    await page.mouse.wheel(0, Math.min(paso, hasta - y));
+    await page.waitForTimeout(50);
+    y = await page.evaluate(() => scrollY);
+  }
+  await page.waitForTimeout(1300);
+}
+
+function datosPin(page) {
+  return page.evaluate(() => { const s = window.ScrollTrigger.getAll().find((s) => s.trigger && s.trigger.id === 'inicio'); return { start: s.start, end: s.end }; });
+}
+
+/* con la sección fijada (y=0), lleva el vuelo a su final y compara la
+   pandereta con el botón atracado: mismo centro y mismo diámetro de aro */
+function medirAterrizaje(page) {
+  return page.evaluate(() => {
+    const s = window.ScrollTrigger.getAll().find((s) => s.trigger && s.trigger.id === 'inicio');
+    const antes = s.animation.progress();
+    s.animation.progress(1);
+    const pand = document.getElementById('pandeireta');
+    const a = pand.getBoundingClientRect();
+    const c = document.getElementById('pandeireta-boton').getBoundingClientRect();
+    const escala = window.gsap.getProperty(pand, 'scale');
+    const aroPand = parseFloat(getComputedStyle(pand).width) * escala * (471 / 520);
+    const aroBoton = c.width * (111 / 120);
+    s.animation.progress(antes);
+    return { dx: Math.abs((a.x + a.width / 2) - (c.x + c.width / 2)), dy: Math.abs((a.y + a.height / 2) - (c.y + c.height / 2)), dAro: Math.abs(aroPand - aroBoton) };
+  });
+}
+
+/* ¿qué elemento hay de verdad en el centro del botón atracado? */
+function botonSinTapar(page) {
+  return page.evaluate(() => {
+    const b = document.getElementById('pandeireta-boton');
+    const r = b.getBoundingClientRect();
+    const arriba = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    return !!arriba && b.contains(arriba) && b.classList.contains('visible');
+  });
+}
+
+/* contraste REAL de un punto del nav: se hace captura del recorte y se lee
+   el píxel central (punto) y una esquina (fondo) con un canvas en la página */
+async function contrastePunto(page) {
+  const r = await page.$eval('.seccion-nav a span', (el) => { const b = el.getBoundingClientRect(); return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; });
+  const png = await page.screenshot({ clip: { x: r.x - 10, y: r.y - 10, width: 20, height: 20 } });
+  return page.evaluate(async (b64) => {
+    const img = new Image();
+    img.src = 'data:image/png;base64,' + b64;
+    await img.decode();
+    const cv = document.createElement('canvas');
+    cv.width = img.width; cv.height = img.height;
+    const ctx = cv.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const px = (x, y) => Array.from(ctx.getImageData(x, y, 1, 1).data.slice(0, 3));
+    const lum = ([r, g, b]) => { const f = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
+    const punto = px(Math.floor(img.width / 2), Math.floor(img.height / 2));
+    const fondo = px(1, 1);
+    const [l1, l2] = [lum(punto), lum(fondo)].sort((a, b) => b - a);
+    return { punto, fondo, ratio: (l1 + 0.05) / (l2 + 0.05) };
+  }, png.toString('base64'));
+}
+
 /* rueda hasta que el scroll deja de moverse (Lenis no responde a scrollTo) */
 async function bajarAlFondo(page, paso = 1500) {
   let previo = -1, actual = 0;
@@ -68,6 +133,56 @@ try {
   await page.waitForTimeout(500);
   const escalaReposo = await page.evaluate(() => window.gsap.getProperty(document.querySelector('.cursor'), 'scale'));
   comprobar(Math.abs(escalaReposo - 1) < 0.02, 'y vuelve a su tamaño (scale=' + Number(escalaReposo).toFixed(2) + ')');
+
+  // vuelo del hero: aterriza sobre el botón, el texto no desaparece, el botón no queda tapado
+  const pin = await datosPin(page);
+  comprobar(pin.end - pin.start < 900 * 0.75, 'el pin del hero dura menos de 3/4 de pantalla (' + (pin.end - pin.start) + ' px)');
+  await bajarHasta(page, pin.start + (pin.end - pin.start) * 0.5);
+  const at = await medirAterrizaje(page);
+  comprobar(at.dx < 2 && at.dy < 2 && at.dAro < 2, 'la pandereta aterriza exactamente sobre el botón (Δx ' + at.dx.toFixed(1) + ', Δy ' + at.dy.toFixed(1) + ', Δaro ' + at.dAro.toFixed(1) + ' px)');
+  const opTexto = await page.$eval('.hero__marco', (el) => getComputedStyle(el).opacity);
+  comprobar(opTexto === '1', 'el texto del hero sigue visible durante el vuelo (opacity ' + opTexto + ')');
+  await bajarHasta(page, pin.end + 200);
+  comprobar(await botonSinTapar(page), 'la pandereta atracada se ve: en su centro no hay otra cosa encima');
+  const solape = await page.evaluate(() => {
+    const a = document.getElementById('pandeireta-boton').getBoundingClientRect();
+    const t = document.querySelector('.cabecera__tel').getBoundingClientRect();
+    return t.right > a.left - 4;
+  });
+  comprobar(!solape, 'el teléfono de la cabecera se aparta y no toca la pandereta');
+  await page.click('#pandeireta-boton');
+  await page.waitForTimeout(700);
+  const menuAbierto = await page.evaluate(() => ({ clase: document.getElementById('cabecera').classList.contains('menu-abierto'), aria: document.getElementById('pandeireta-boton').getAttribute('aria-expanded'), navOculto: getComputedStyle(document.querySelector('.seccion-nav')).visibility === 'hidden' }));
+  comprobar(menuAbierto.clase && menuAbierto.aria === 'true', 'pulsar la pandereta abre el menú (aria-expanded=' + menuAbierto.aria + ')');
+  comprobar(menuAbierto.navOculto, 'con el menú abierto los puntos del nav se ocultan');
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(600);
+  const menuCerrado = await page.evaluate(() => !document.getElementById('cabecera').classList.contains('menu-abierto') && document.getElementById('pandeireta-boton').getAttribute('aria-expanded') === 'false');
+  comprobar(menuCerrado, 'Escape lo cierra y la pandereta vuelve a aria-expanded=false');
+
+  // marquee: mismo espacio texto→siguiente texto dentro de una copia y entre copias
+  const huecos = await page.evaluate(() => {
+    const pista = document.getElementById('marquee-1');
+    const spans = Array.from(pista.querySelectorAll('span')).slice(0, 40);
+    const out = [];
+    for (let i = 0; i < spans.length - 1; i++) {
+      const rg = document.createRange();
+      rg.selectNodeContents(spans[i].firstChild);
+      const finTexto = rg.getBoundingClientRect().right;
+      out.push(Math.round(spans[i + 1].getBoundingClientRect().left - finTexto));
+    }
+    return out;
+  });
+  comprobar(Math.max(...huecos) - Math.min(...huecos) <= 1, 'marquee: el punto queda a la misma distancia entre todas las palabras (huecos ' + Math.min(...huecos) + '–' + Math.max(...huecos) + ' px)');
+
+  // nav de puntos: contraste real sobre sección oscura y sobre la carta (piel)
+  const cOscura = await contrastePunto(page);
+  comprobar(cOscura.ratio >= 3, 'punto del nav sobre fondo oscuro: ' + cOscura.ratio.toFixed(2) + ':1 (mín. 3:1 de componente de interfaz)');
+  const yCarta = await page.evaluate(() => document.getElementById('carta').getBoundingClientRect().top + scrollY + 500);
+  await bajarHasta(page, yCarta, 400);
+  const cClara = await contrastePunto(page);
+  comprobar(cClara.ratio >= 3, 'punto del nav sobre la carta (piel): ' + cClara.ratio.toFixed(2) + ':1 — punto ' + cClara.punto + ' / fondo ' + cClara.fondo);
+  comprobar(await botonSinTapar(page), 'sobre la carta la pandereta atracada sigue viéndose');
 
   // marquee: velocidad media por frame, quieto vs con scroll
   await page.evaluate(() => {
@@ -148,6 +263,14 @@ try {
   comprobar(!visibleMovil, 'en móvil (390px) el nav de puntos está oculto');
   const pildoraAntes = await page3.$eval('#copla-actual', (el) => el.classList.contains('visible'));
   comprobar(!pildoraAntes, 'la píldora de copla no se ve en el hero');
+
+  const pinM = await datosPin(page3);
+  await bajarHasta(page3, pinM.start + (pinM.end - pinM.start) * 0.5);
+  const atM = await medirAterrizaje(page3);
+  comprobar(atM.dx < 2 && atM.dy < 2 && atM.dAro < 2, 'móvil: la pandereta aterriza exactamente sobre el botón (Δx ' + atM.dx.toFixed(1) + ', Δy ' + atM.dy.toFixed(1) + ', Δaro ' + atM.dAro.toFixed(1) + ' px)');
+  await bajarHasta(page3, pinM.end + 200);
+  const hamb = await page3.$eval('#hamburguesa', (el) => getComputedStyle(el).visibility);
+  comprobar(hamb === 'hidden' && await botonSinTapar(page3), 'móvil: la pandereta atracada sustituye a la hamburguesa y se ve (hamburguesa ' + hamb + ')');
 
   let pildora = null;
   for (let i = 0; i < 80; i++) {

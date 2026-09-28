@@ -119,11 +119,16 @@ const navegador = await chromium.launch({ headless: true });
   await rueda(page, 140);
   await page.screenshot({ path: path.join(CAP, '09-final-1440.png') });
 
+  /* no basta con la clase: el botón estuvo «visible» pero tapado por la
+     cabecera. Se pregunta qué elemento hay de verdad en su centro. */
   const botonVisible = await page.evaluate(() => {
     const b = document.getElementById('pandeireta-boton');
-    return b && !b.hidden && b.classList.contains('visible');
+    if (!b || b.hidden || !b.classList.contains('visible')) return false;
+    const r = b.getBoundingClientRect();
+    const arriba = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    return !!arriba && b.contains(arriba);
   });
-  comprobar(botonVisible, 'la pandereta queda atracada como botón fijo tras el hero');
+  comprobar(botonVisible, 'la pandereta queda atracada como botón fijo tras el hero, y nada la tapa');
 
   /* volver arriba y comprobar secciones intermedias con capturas */
   await page.evaluate(() => window.scrollTo(0, 0));

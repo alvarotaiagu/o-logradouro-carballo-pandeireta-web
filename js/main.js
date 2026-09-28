@@ -320,10 +320,15 @@
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); golpe(0.75); }
     });
 
-    /* el cursor cerca inclina la pandereta (magnetic) */
+    /* el cursor cerca inclina la pandereta (magnetic). Se inclina el
+       contenedor, no la SVG: la SVG ya la gira el scroll y dos tweens sobre
+       la misma rotación se pisan. */
+    var heroST = null;
+    var inclinaX = null;
     if (movimiento && !esTactil && escena) {
-      var inclinaX = gsap.quickTo(pandeireta, 'rotation', { duration: 0.6, ease: 'power3.out' });
+      inclinaX = gsap.quickTo(escena, 'rotation', { duration: 0.6, ease: 'power3.out' });
       escena.addEventListener('pointermove', function (e) {
+        if (heroST && heroST.progress > 0.001) return;
         var c = escena.getBoundingClientRect();
         var relX = (e.clientX - (c.left + c.width / 2)) / (c.width / 2);
         inclinaX(Math.max(-7, Math.min(7, relX * 7)));
@@ -356,46 +361,94 @@
     /* con scroll: gira despacio, se encoge y viaja a la esquina (pin del
        héroe, igual que en las webs hermanas: única forma robusta de que
        "viaje" a un punto fijo del viewport sin pelearse con el flujo). */
+    /* la pandereta atracada es el botón del menú: al pulsarla, golpe y menú */
     var boton = document.getElementById('pandeireta-boton');
+    if (boton) {
+      boton.hidden = false; /* lo oculta la clase, no el atributo: así se puede medir */
+      boton.addEventListener('click', function () {
+        boton.classList.add('golpe');
+        emitirGolpe(0.55, true);
+        setTimeout(function () { boton.classList.remove('golpe'); }, 600);
+        alternarMenu();
+      });
+    }
+    var atracada = false;
+    function atracar(si) {
+      if (si === atracada) return;
+      atracada = si;
+      html.classList.toggle('pandeireta-atracada', si);
+      if (boton) boton.classList.toggle('visible', si);
+    }
+
     if (!movimiento) {
       if (boton) {
-        cuandoVisible([document.getElementById('casa') || seccion], 0.01, function () { boton.hidden = false; boton.classList.add('visible'); });
+        window.addEventListener('scroll', function () { atracar(window.scrollY > seccion.offsetHeight * 0.6); }, { passive: true });
       }
       return;
     }
 
-    var contenido = seccion.querySelector('.hero__marco');
+    if (!boton || !escena) return;
     gsap.set(pandeireta, { transformOrigin: '50% 50%' });
 
-    var tl2 = gsap.timeline({ defaults: { ease: 'none' } });
-    tl2.to(pandeireta, { scale: 0.16, rotation: 300, x: function () { return (window.innerWidth / 2 - 64) - pandeireta.getBoundingClientRect().width * 0.08; }, y: function () { return -(window.innerHeight / 2) + 60; }, duration: 1 }, 0)
-      .to(contenido, { opacity: 0, y: -30, duration: 0.6 }, 0);
+    /* el vuelo acaba exactamente sobre el botón atracado: mismo centro y el
+       aro al mismo diámetro. Mientras dura el pin la sección está en y=0,
+       así que sus coordenadas locales son las del viewport. */
+    var ARO_PANDEIRETA = 471 / 520; /* diámetro exterior del aro / viewBox */
+    var ARO_BOTON = 111 / 120;
+    function vuelo() {
+      var s = seccion.getBoundingClientRect();
+      var e = escena.getBoundingClientRect();
+      var b = boton.getBoundingClientRect();
+      var ancho = parseFloat(getComputedStyle(pandeireta).width);
+      return {
+        x: (b.left + b.width / 2) - (e.left - s.left + e.width / 2),
+        y: (b.top + b.height / 2) - (e.top - s.top + e.height / 2),
+        escala: (b.width * ARO_BOTON) / (ancho * ARO_PANDEIRETA)
+      };
+    }
 
-    window.ScrollTrigger.create({
+    /* en móvil la pandereta va encima del texto: al irse, el texto sube a
+       ocupar su sitio para no dejar media pantalla vacía */
+    var contenido = seccion.querySelector('.hero__marco');
+    var unaColumna = window.matchMedia('(max-width: 980px)');
+
+    var tl2 = gsap.timeline({ defaults: { ease: 'none' } });
+    tl2.to(pandeireta, {
+      x: function () { return vuelo().x; },
+      y: function () { return vuelo().y; },
+      scale: function () { return vuelo().escala; },
+      rotation: 360,
+      ease: 'power2.inOut',
+      duration: 1
+    }, 0)
+      .to(contenido, {
+        /* a medias: lo que sube durante el vuelo deja hueco debajo al soltar
+           el pin, así que se reparte en dos huecos pequeños en vez de uno grande */
+        y: function () { return unaColumna.matches ? -escena.offsetHeight * 0.5 : 0; },
+        ease: 'power2.inOut',
+        duration: 1
+      }, 0);
+
+    heroST = window.ScrollTrigger.create({
       trigger: seccion,
       start: 'top top',
-      end: '+=115%',
+      end: '+=70%',
       pin: true,
       scrub: 0.6,
       anticipatePin: 1,
       invalidateOnRefresh: true,
       animation: tl2,
-      onLeave: function () {
-        if (boton) { boton.hidden = false; requestAnimationFrame(function () { boton.classList.add('visible'); }); }
+      /* mientras vuela, el hero va por encima de la cabecera: si no, el
+         último tramo del vuelo pasa borroso por detrás del blur */
+      onToggle: function (self) { seccion.classList.toggle('volando', self.isActive); },
+      onUpdate: function (self) {
+        if (inclinaX && self.progress > 0.001) inclinaX(0);
+        /* abre el hueco (y retira la hamburguesa) antes de que llegue */
+        html.classList.toggle('pandeireta-llegando', self.progress > 0.7);
       },
-      onEnterBack: function () {
-        if (boton) boton.classList.remove('visible');
-      }
+      onLeave: function () { gsap.set(pandeireta, { autoAlpha: 0 }); atracar(true); },
+      onEnterBack: function () { gsap.set(pandeireta, { autoAlpha: 1 }); atracar(false); }
     });
-
-    if (boton) {
-      boton.addEventListener('click', function () {
-        boton.classList.add('golpe');
-        emitirGolpe(0.55, true);
-        setTimeout(function () { boton.classList.remove('golpe'); }, 600);
-        irA('#carta');
-      });
-    }
   })();
 
   /* ───────────────── golpe suave en cada cambio de sección + punto activo ───────────────── */
@@ -502,7 +555,7 @@
 
   /* ───────────────── cabecera + menú móvil ───────────────── */
   var cabecera = document.getElementById('cabecera');
-  var boton = document.getElementById('hamburguesa');
+  var hamburguesa = document.getElementById('hamburguesa');
 
   (function cabeceraFija() {
     if (!cabecera) return;
@@ -511,21 +564,25 @@
     }, { passive: true });
   })();
 
+  /* dos botones abren el mismo menú: la hamburguesa (móvil, antes de atracar)
+     y la pandereta atracada (siempre después del hero) */
+  function alternarMenu(abrir) {
+    if (!cabecera) return;
+    if (abrir === undefined) abrir = !cabecera.classList.contains('menu-abierto');
+    cabecera.classList.toggle('menu-abierto', abrir);
+    var etiqueta = abrir ? 'Cerrar menú' : 'Abrir menú';
+    if (hamburguesa) {
+      hamburguesa.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+      hamburguesa.querySelector('.visualmente-oculto').textContent = etiqueta;
+    }
+    var pb = document.getElementById('pandeireta-boton');
+    if (pb) { pb.setAttribute('aria-expanded', abrir ? 'true' : 'false'); pb.setAttribute('aria-label', etiqueta); }
+    if (lenis) { if (abrir) lenis.stop(); else lenis.start(); }
+  }
   function cerrarMenu() {
-    if (!cabecera || !boton || !cabecera.classList.contains('menu-abierto')) return;
-    cabecera.classList.remove('menu-abierto');
-    boton.setAttribute('aria-expanded', 'false');
-    boton.querySelector('.visualmente-oculto').textContent = 'Abrir menú';
-    if (lenis) lenis.start();
+    if (cabecera && cabecera.classList.contains('menu-abierto')) alternarMenu(false);
   }
-  if (boton) {
-    boton.addEventListener('click', function () {
-      var abierto = cabecera.classList.toggle('menu-abierto');
-      boton.setAttribute('aria-expanded', abierto ? 'true' : 'false');
-      boton.querySelector('.visualmente-oculto').textContent = abierto ? 'Cerrar menú' : 'Abrir menú';
-      if (lenis) { if (abierto) lenis.stop(); else lenis.start(); }
-    });
-  }
+  if (hamburguesa) hamburguesa.addEventListener('click', function () { alternarMenu(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarMenu(); });
 
   /* ───────────────── mapa solo bajo clic ───────────────── */
@@ -805,9 +862,11 @@
         for (var i = 0; i < copias; i++) { var c = grupo.cloneNode(true); c.setAttribute('aria-hidden', 'true'); pista.appendChild(c); }
         if (!movimiento) return;
         var x = 0, base = pista === pista1 ? 0.55 : 0.9, impulso = 0;
+        var hueco = parseFloat(getComputedStyle(pista).columnGap) || 0;
         (function paso() {
           if (!html.classList.contains('densidad-sobria') || pista === pista1) {
-            var ancho = grupo.offsetWidth || 1;
+            /* un ciclo = grupo + el hueco hasta la copia siguiente, o salta al dar la vuelta */
+            var ancho = (grupo.offsetWidth + hueco) || 1;
             /* acelera con la velocidad del scroll, como las ferreñas; sin
                eventos de Lenis en 120 ms se da por parado */
             var v = performance.now() - tUltimoScroll > 120 ? 0 : Math.min(velocidadLenis, 30);
