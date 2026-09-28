@@ -36,6 +36,8 @@
   var TXT = {
     'salto': { gl: 'Saltar ao contido', es: 'Saltar al contenido', en: 'Skip to content' },
     'nav.aria': { gl: 'Seccións', es: 'Secciones', en: 'Sections' },
+    'nav.aria.movil': { gl: 'Menú', es: 'Menú', en: 'Menu' },
+    'nav.aria.menu': { gl: 'Seccións do menú', es: 'Secciones del menú', en: 'Menu sections' },
     'nav.casa': { gl: 'A casa', es: 'La casa', en: 'The house' },
     'nav.cancioneiro': { gl: 'A carta', es: 'La carta', en: 'Menu' },
     'nav.destacados': { gl: 'Para empezar', es: 'Para empezar', en: 'Where to start' },
@@ -71,10 +73,12 @@
     'carta.media': { gl: 'media', es: 'media', en: 'half' },
     'dest.h2': { gl: 'Se vés por primeira vez.', es: 'Si vienes por primera vez.', en: 'If it is your first time.' },
     'resenas.etq': { gl: 'opinións en Google', es: 'reseñas en Google', en: 'reviews on Google' },
+    'resenas.invita': { gl: 'Se xa estiveches, cóntao en Google.', es: 'Si ya has estado, cuéntalo en Google.', en: 'Been here? Tell others on Google.' },
     'resenas.ver': { gl: 'Ver en Google →', es: 'Ver en Google →', en: 'See on Google →' },
     'horario.h2': { gl: 'Onde e cando.', es: 'Dónde y cuándo.', en: 'Where and when.' },
     'horario.tabla': { gl: 'Horario semanal', es: 'Horario semanal', en: 'Weekly hours' },
     'horario.aviso': { gl: 'Almorzos ata as 13:00, con café con leite dobre e zume de laranxa natural.', es: 'Desayunos hasta las 13:00, con café con leche doble y zumo de naranja natural.', en: 'Breakfast until 13:00, with a double white coffee and fresh orange juice.' },
+    'mapa.chegar': { gl: 'Como chegar →', es: 'Cómo llegar →', en: 'Get directions →' },
     'mapa.ver': { gl: 'Ver mapa', es: 'Ver mapa', en: 'Show map' },
     'mapa.titulo': { gl: 'Mapa: O Logradouro na Rúa Lugo, Carballo', es: 'Mapa: O Logradouro en la Rúa Lugo, Carballo', en: 'Map: O Logradouro on Rúa Lugo, Carballo' },
     'mapa.nota': { gl: 'Carga un iframe de Google Maps só ao premer aquí.', es: 'Carga un iframe de Google Maps solo al pulsar aquí.', en: 'Loads a Google Maps iframe only when you click here.' },
@@ -171,9 +175,18 @@
 
   /* ───────────────────── titulares partidos (char-reveal) ───────────────────── */
   function partir(el) {
-    var palabras = el.textContent.trim().split(/\s+/);
-    el.setAttribute('aria-label', el.textContent.trim());
+    var texto = el.textContent.trim();
+    var palabras = texto.split(/\s+/);
+    /* aria-label solo vale en encabezados; en un <p> va como texto oculto */
+    var esTitulo = /^H[1-6]$/.test(el.tagName);
+    if (esTitulo) el.setAttribute('aria-label', texto); else el.removeAttribute('aria-label');
     el.textContent = '';
+    if (!esTitulo) {
+      var oculto = document.createElement('span');
+      oculto.className = 'visualmente-oculto';
+      oculto.textContent = texto;
+      el.appendChild(oculto);
+    }
     var piezas = [];
     palabras.forEach(function (palabra, i) {
       var caja = document.createElement('span');
@@ -299,16 +312,87 @@
     fuente.stop(ctx.currentTime + dur + 0.02);
   }
 
+  /* golpe entero de pandereta para cuando la tocas: el parche (un grave que
+     cae de tono + la palmada de la piel) y un racimo de ferreñas metálicas
+     escalonadas. No depende del botón «son»: tocarla ya es pedir que suene;
+     ese botón gobierna solo el sonido ambiente (scroll y cambios de sección). */
+  var ruido = null;
+  function bufferRuido(ctx) {
+    if (ruido) return ruido;
+    ruido = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+    var d = ruido.getChannelData(0);
+    for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return ruido;
+  }
+  function golpePandereta(intensidad) {
+    var ctx = contexto();
+    if (!ctx) return;
+    intensidad = Math.max(0.3, Math.min(1, intensidad || 0.75));
+    var t0 = ctx.currentTime + 0.005;
+    var salida = ctx.createDynamicsCompressor();
+    salida.connect(ctx.destination);
+
+    /* parche: grave que cae de 190 a 70 Hz */
+    var osc = ctx.createOscillator();
+    var gOsc = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(190, t0);
+    osc.frequency.exponentialRampToValueAtTime(70, t0 + 0.14);
+    gOsc.gain.setValueAtTime(0.0001, t0);
+    gOsc.gain.exponentialRampToValueAtTime(0.6 * intensidad, t0 + 0.006);
+    gOsc.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.22);
+    osc.connect(gOsc).connect(salida);
+    osc.start(t0);
+    osc.stop(t0 + 0.25);
+
+    /* palmada de la piel: ruido corto y sordo */
+    var palmada = ctx.createBufferSource();
+    palmada.buffer = bufferRuido(ctx);
+    var pb = ctx.createBiquadFilter();
+    pb.type = 'lowpass';
+    pb.frequency.value = 1100;
+    var gP = ctx.createGain();
+    gP.gain.setValueAtTime(0.35 * intensidad, t0);
+    gP.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.06);
+    palmada.connect(pb).connect(gP).connect(salida);
+    palmada.start(t0, Math.random() * 0.8, 0.08);
+
+    /* ferreñas: seis pares que chocan casi a la vez, con resonancia metálica */
+    for (var k = 0; k < 6; k++) {
+      var tk = t0 + 0.004 + Math.random() * 0.07;
+      var f = ctx.createBufferSource();
+      f.buffer = bufferRuido(ctx);
+      var bp = ctx.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 5200 + Math.random() * 3600;
+      bp.Q.value = 7;
+      var hp = ctx.createBiquadFilter();
+      hp.type = 'highpass';
+      hp.frequency.value = 3500;
+      var gF = ctx.createGain();
+      gF.gain.setValueAtTime(0.0001, tk);
+      gF.gain.exponentialRampToValueAtTime(0.5 * intensidad, tk + 0.003);
+      gF.gain.exponentialRampToValueAtTime(0.0001, tk + 0.12 + Math.random() * 0.1);
+      f.connect(hp).connect(bp).connect(gF).connect(salida);
+      f.start(tk, Math.random() * 0.8, 0.25);
+    }
+  }
+
   function vibrar(ms) {
     if (!esTactil || reduce || !navigator.vibrate) return;
     try { navigator.vibrate(ms); } catch (e) {}
   }
 
-  /* un «golpe» de compás: sonido (si está aceso), vibración y aviso al cursor.
-     Los toques directos vibran siempre; los golpes que dispara el scroll solo
-     con el son aceso, para no zumbar el móvil sin haberlo pedido. */
+  /* un «golpe» de compás: sonido, vibración y aviso al cursor. Los toques
+     directos suenan y vibran siempre; los golpes que dispara el scroll solo
+     con el son aceso, para no hacer ruido ni zumbar sin haberlo pedido. */
   function emitirGolpe(intensidad, directo) {
-    golpeSonido(intensidad);
+    var t0 = performance.now();
+    if (directo) golpePandereta(intensidad); else golpeSonido(intensidad);
+    /* el primer AudioContext bloquea el hilo (de decenas a cientos de ms) y
+       GSAP no avanza su reloj mientras tanto: las animaciones que se creen
+       ahora saltarían ese tiempo y acabarían sin verse. Se adelanta el reloj. */
+    if (gsapReady && performance.now() - t0 > 30) gsap.ticker.tick();
     if (directo || sonidoActivo) vibrar(intensidad >= 0.5 ? 14 : 8);
     document.dispatchEvent(new CustomEvent('golpe-compas', { detail: { intensidad: intensidad } }));
   }
@@ -574,6 +658,9 @@
 
     function golpe(intensidad) {
       pandeireta.classList.add('golpe');
+      /* primero el sonido: si el audio tarda en arrancar, emitirGolpe pone al
+         día el reloj de GSAP antes de crear las animaciones de abajo */
+      emitirGolpe(intensidad || 0.7, true);
       if (gsapReady) {
         gsap.killTweensOf(ondas.concat(parche, ferrenasHero));
         gsap.set(ondas, { opacity: 0, scale: 0.3 });
@@ -582,7 +669,6 @@
         gsap.to(parche, { scale: 1, duration: 0.55, ease: 'elastic.out(1,0.4)', delay: 0.08 });
         gsap.to(ferrenasHero, { rotation: '+=16', duration: 0.08, ease: 'power1.inOut', yoyo: true, repeat: 3, stagger: 0.01 });
       }
-      emitirGolpe(intensidad || 0.7, true);
       setTimeout(function () { pandeireta.classList.remove('golpe'); }, 500);
     }
 
@@ -968,6 +1054,13 @@
         txt.textContent = F.abrimos + aLas(r.proximaHora);
       } else {
         txt.textContent = F.volvemos + DIAS[idioma].nombres[r.proximoDia] + ' ' + aLas(r.proximaHora);
+      }
+      /* la misma frase, en la píldora del hero */
+      var enHero = document.getElementById('hero-estado');
+      if (enHero) {
+        enHero.hidden = false;
+        enHero.classList.toggle('abierto', r.abierto);
+        enHero.querySelector('span').textContent = txt.textContent;
       }
       pintarTabla(t.dia);
     }

@@ -21,18 +21,27 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>O Logradouro · Taberna en Carballo — Rúa Lugo, 2</title>
-<meta name="description" content="O Logradouro, taberna en Rúa Lugo 2, Carballo. Raxo, tortilla á feira, almuerzos con nombre propio. De mércores a domingo, das 10:00 á 1:00. 4,6★ en Google.">
+<meta name="description" content="O Logradouro, taberna na Rúa Lugo, 2 (Carballo). Almorzos, tapas, raxo, tortilla á feira e hamburguesas. De mércores a domingo, das 10:00 á 1:00.">
+<!-- vista previa al compartir (WhatsApp, redes): las URL tienen que ser absolutas -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="O Logradouro · Carballo">
-<meta property="og:description" content="Taberna de sempre, carta de agora. Almorzos, tapas, raxo, tortilla á feira e hamburguesas. Rúa Lugo, 2, Carballo.">
-<meta property="og:image" content="assets/og-logradouro.jpg">
-<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="O Logradouro">
+<meta property="og:url" content="https://alvarotaiagu.github.io/o-logradouro-carballo-pandeireta-web/">
+<meta property="og:title" content="O Logradouro · Taberna en Carballo">
+<meta property="og:description" content="Taberna de sempre, carta de agora. Almorzos, tapas, raxo, tortilla á feira e hamburguesas na Rúa Lugo, 2.">
+<meta property="og:image" content="https://alvarotaiagu.github.io/o-logradouro-carballo-pandeireta-web/assets/og-logradouro.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A pandeireta de O Logradouro co debuxo da fachada e o rótulo da casa">
+<meta property="og:locale" content="gl_ES">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#16130F">
 <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=afa166e1">
+<link rel="stylesheet" href="css/estilos.css?v=d4ccbab5">
 <script>
 /* Idioma: ?lang= › elección guardada › galego. Bloqueante: se resuelve antes
    de pintar, y main.js traduce antes de partir los titulares. */
@@ -92,7 +101,7 @@
   <a class="cabecera__marca" href="#inicio" aria-label="O Logradouro, inicio">
     <img src="assets/logo/rotulo.svg" alt="O Logradouro" width="150" height="44">
   </a>
-  <nav class="cabecera__nav" aria-label="Secciones" data-i18n-attr="aria-label:nav.aria">
+  <nav class="cabecera__nav" aria-label="Seccións" data-i18n-attr="aria-label:nav.aria">
     <a href="#casa" data-i18n="nav.casa">A casa</a>
     <a href="#carta" data-i18n="nav.cancioneiro">A carta</a>
     <a href="#destacados" data-i18n="nav.destacados">Para empezar</a>
@@ -113,15 +122,18 @@
   </button>
 </header>
 
-<div class="menu-movil" id="menu-movil">
-  <nav aria-label="Secciones, móvil" data-i18n-attr="aria-label:nav.aria">
+<div class="menu-movil" id="menu-movil" role="region" aria-label="Menú" data-i18n-attr="aria-label:nav.aria.movil">
+  <nav aria-label="Seccións do menú" data-i18n-attr="aria-label:nav.aria.menu">
     <a href="#casa" data-i18n="nav.casa">A casa</a>
     <a href="#carta" data-i18n="nav.cancioneiro">A carta</a>
     <a href="#destacados" data-i18n="menu.destacados">Para empezar</a>
     <a href="#resenas" data-i18n="nav.resenas">Opinións</a>
     <a href="#horario" data-i18n="menu.horario">Horario e onde</a>
   </nav>
-  <a class="boton boton--lazo" href="tel:+34637085037" data-i18n="menu.chamar">Chamar · 637 08 50 37</a>
+  <div class="menu-movil__acciones">
+    <a class="boton boton--lazo" href="tel:+34637085037" data-i18n="menu.chamar">Chamar · 637 08 50 37</a>
+    <a class="boton boton--fantasma" href="https://www.google.com/maps/dir/?api=1&amp;destination=O+Logradouro%2C+R%C3%BAa+Lugo+2%2C+15100+Carballo" target="_blank" rel="noopener" data-i18n="mapa.chegar">Como chegar →</a>
+  </div>
 </div>
 
 <!-- navegación de puntos: un punto por sección, mismo lenguaje que el compás de la carta -->
@@ -156,6 +168,7 @@
   <!-- ═══════════════════════ HERO ═══════════════════════ -->
   <section class="hero" id="inicio">
     <div class="hero__marco">
+      <a class="estado estado--hero" id="hero-estado" href="#horario" hidden><i></i><span></span></a>
       <p class="hero__ubi" data-i18n="hero.ubi">Taberna · Rúa Lugo, 2 · Carballo</p>
       <h1 class="hero__titular" data-revelar="palabras" data-i18n="hero.titular">Taberna de sempre, carta de agora.</h1>
       <p class="hero__sub" data-i18n="hero.sub">Almorzos, tapas, raxo, tortilla á feira e hamburguesas no centro de Carballo. De mércores a domingo, das 10:00 á 1:00.</p>
@@ -270,13 +283,12 @@
         <span class="resenas__estrelas" aria-hidden="true">★★★★★</span>
         <p class="resenas__num"><span data-contador="4.6" data-decimales="1">0,0</span></p>
         <p class="resenas__etq"><span data-contador="246">0</span> <span data-i18n="resenas.etq">opinións en Google</span></p>
+        <p class="resenas__invita" data-i18n="resenas.invita">Se xa estiveches, cóntao en Google.</p>
         <a class="boton boton--fantasma iman" href="https://www.google.com/maps/place/O+Logradouro/@43.2135971,-8.6912385,17z/data=!3m1!4b1!4m6!3m5!1s0xd2e931c29699a0b:0xb48bc248204f7cd7!8m2!3d43.2135971!4d-8.6912385" target="_blank" rel="noopener" data-i18n="resenas.ver">Ver en Google →</a>
       </div>
-      <ul class="resenas__citas">
-        <li><p>«Destaco o chuletón, tenro, saboroso e no seu punto. E as tapas de tortilla, riquísimas.»</p><span>Beatriz G., Local Guide</span></li>
-        <li><p>«Estaba todo delicioso. Probamos langostinos rebozados, rape, tosta de xamón… e tarta de Santiago.»</p><span>Ana T., Local Guide</span></li>
-        <li><p>«Comemos un pincho de patacas que, sen esaxerar, foi dos mellores que probei.»</p><span>Paula V.</span></li>
-      </ul>
+      <!-- Sin citas: no se pudo recuperar el texto original de las reseñas (2026-09-28)
+           y las que había estaban en galego, quizá traducidas. Si el cliente autoriza
+           citas reales, van aquí con nombre de pila + inicial y en su idioma original. -->
     </div>
   </section>
 
@@ -292,6 +304,7 @@
       </div>
       <div class="horario__mapa">
         <address class="horario__direccion">Rúa Lugo, 2 · 15100 Carballo, A Coruña</address>
+        <a class="boton boton--lazo iman horario__chegar" href="https://www.google.com/maps/dir/?api=1&amp;destination=O+Logradouro%2C+R%C3%BAa+Lugo+2%2C+15100+Carballo" target="_blank" rel="noopener" data-i18n="mapa.chegar">Como chegar →</a>
         <div class="mapa" id="mapa-consentimiento">
           <button class="map-consent" type="button" data-map-title="Mapa: O Logradouro en Rúa Lugo, Carballo" data-i18n-attr="data-map-title:mapa.titulo" data-map-src="https://www.google.com/maps?q=O+Logradouro,+R%C3%BAa+Lugo+2,+15100+Carballo,+A+Coru%C3%B1a&output=embed">
             <svg viewBox="0 0 24 24" aria-hidden="true" width="26" height="26"><path fill="currentColor" d="M12 2C7.6 2 4 5.6 4 10c0 5.5 7 12 8 12s8-6.5 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
@@ -309,7 +322,7 @@
 <footer class="pie" id="pie">
   <div class="pie__marco">
     <div class="pie__lockup">
-      <img src="assets/logo/lockup.svg" alt="O Logradouro" width="150" height="181">
+      <img src="assets/logo/lockup.svg" alt="O Logradouro" width="150" height="181" loading="lazy" decoding="async">
     </div>
     <nav class="pie__enlaces" aria-label="Redes e legal" data-i18n-attr="aria-label:pie.aria">
       <a href="https://www.instagram.com/ologradouro/" target="_blank" rel="noopener">Instagram</a>
@@ -352,8 +365,20 @@
   "@context": "https://schema.org",
   "@type": "BarOrPub",
   "name": "O Logradouro",
+  "url": "https://alvarotaiagu.github.io/o-logradouro-carballo-pandeireta-web/",
+  "image": "https://alvarotaiagu.github.io/o-logradouro-carballo-pandeireta-web/assets/og-logradouro.jpg",
+  "logo": "https://alvarotaiagu.github.io/o-logradouro-carballo-pandeireta-web/assets/logo/lockup.png",
   "telephone": "+34637085037",
   "servesCuisine": ["Galega", "Taberna"],
+  "priceRange": "10–20 €",
+  "hasMenu": "https://alvarotaiagu.github.io/o-logradouro-carballo-pandeireta-web/#carta",
+  "geo": { "@type": "GeoCoordinates", "latitude": 43.2135971, "longitude": -8.6912385 },
+  "openingHoursSpecification": [{
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "opens": "10:00",
+    "closes": "01:00"
+  }],
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Rúa Lugo, 2",
@@ -373,6 +398,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-<script src="js/main.js?v=7350feb7" defer></script>
+<script src="js/main.js?v=363c8734" defer></script>
 </body>
 </html>

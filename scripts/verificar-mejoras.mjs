@@ -172,8 +172,15 @@ try {
   await page.mouse.move(caja.x - 30, caja.y - 30);
   await page.mouse.move(caja.x, caja.y, { steps: 5 });
   await page.waitForTimeout(250);
+  await page.evaluate(() => {
+    window.__osciladores = 0;
+    const orig = AudioContext.prototype.createOscillator;
+    AudioContext.prototype.createOscillator = function () { window.__osciladores++; return orig.apply(this, arguments); };
+  });
   await page.mouse.click(caja.x, caja.y);
   await page.waitForTimeout(90);
+  const sonido = await page.evaluate(() => ({ osc: window.__osciladores, botonSon: document.getElementById('boton-son').getAttribute('aria-pressed') }));
+  comprobar(sonido.osc > 0 && sonido.botonSon === 'false', 'tocar la pandereta suena aunque el botón «son» esté apagado (' + sonido.osc + ' oscilador)');
   const escalaCursor = await page.evaluate(() => window.gsap.getProperty(document.querySelector('.cursor'), 'scale'));
   comprobar(escalaCursor > 1.1, 'el aro del cursor late con el golpe (scale=' + Number(escalaCursor).toFixed(2) + ')');
   await page.waitForTimeout(500);
@@ -244,6 +251,16 @@ try {
   const cClara = await contrastePunto(page);
   comprobar(cClara.ratio >= 3, 'punto del nav sobre la carta (piel): ' + cClara.ratio.toFixed(2) + ':1 — punto ' + cClara.punto + ' / fondo ' + cClara.fondo);
   comprobar(await botonSinTapar(page), 'sobre la carta la pandereta atracada sigue viéndose');
+
+  /* el botón «Ver en Google» de reseñas fue piel sobre piel (invisible) desde
+     la primera versión y ni axe lo cazó: se mide el color de verdad */
+  const botonResenas = await page.evaluate(() => {
+    const lum = (s) => { const m = s.match(/[\d.]+/g).map(Number); const c = m.slice(0, 3).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+    const a = document.querySelector('.resenas .boton');
+    const l1 = lum(getComputedStyle(a).color), l2 = lum(getComputedStyle(document.querySelector('.resenas')).backgroundColor);
+    return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+  });
+  comprobar(botonResenas >= 4.5, 'el botón «Ver en Google» de reseñas se lee sobre el fondo claro (' + botonResenas.toFixed(2) + ':1)');
 
   // marquee: velocidad media por frame, quieto vs con scroll
   await page.evaluate(() => {

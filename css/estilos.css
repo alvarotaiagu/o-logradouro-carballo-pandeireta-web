@@ -177,6 +177,7 @@ html.sin-js .idioma { display: none; }
 .menu-movil nav { display: flex; flex-direction: column; gap: 22px; }
 .menu-movil nav a { font-family: var(--f-display); font-size: 30px; text-decoration: none; }
 .menu-movil .boton { align-self: flex-start; }
+.menu-movil__acciones { display: flex; flex-wrap: wrap; gap: 12px; }
 /* «el menú se abre con un golpe»: los enlaces caen con rebote, escalonados */
 .cabecera.menu-abierto ~ .menu-movil nav a { animation: menu-golpe .55s cubic-bezier(.2,1.5,.4,1) both; }
 .cabecera.menu-abierto ~ .menu-movil nav a:nth-child(2) { animation-delay: .05s; }
@@ -334,7 +335,7 @@ html:not(.con-movimiento) .verso { opacity: 1; transform: none; }
 .verso__nombre { font-weight: 600; }
 .verso__desc { display: block; font-size: 13.5px; color: var(--piel-apagado); font-weight: 400; margin-top: 2px; }
 .verso__precio { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
-.verso__precio .media { font-weight: 400; opacity: .6; font-size: .85em; margin-left: 6px; }
+.verso__precio .media { font-weight: 400; opacity: .68; font-size: .85em; margin-left: 6px; } /* .6 daba 4,49:1 */
 .verso__precio .sin-precio { opacity: .45; font-weight: 400; }
 
 /* «estribillos»: almuerzos con nombre propio, con más presencia tipográfica */
@@ -361,16 +362,15 @@ html:not(.con-movimiento) .verso { opacity: 1; transform: none; }
 
 /* ═══════════════════════ RESEÑAS ═══════════════════════ */
 .resenas { background: var(--piel); color: var(--noche); }
-.resenas__marco { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 320px 1fr; gap: 48px; align-items: center; }
-.resenas__cifra { text-align: left; }
+.resenas__marco { max-width: 640px; margin: 0 auto; }
+.resenas__cifra { text-align: center; }
+.resenas__invita { margin-top: 26px; font-family: var(--f-display); font-size: clamp(1.25rem, 2.4vw, 1.6rem); }
 .resenas__estrelas { color: var(--mostaza-sobre-noche); filter: none; -webkit-text-stroke: .5px var(--noche); font-size: 22px; letter-spacing: 2px; }
-.resenas__num { font-family: var(--f-display); font-size: clamp(3rem, 7vw, 5rem); line-height: 1; margin-top: 6px; }
+.resenas__num { font-family: var(--f-display); font-size: clamp(4rem, 11vw, 7.5rem); line-height: 1; margin-top: 6px; }
 .resenas__etq { margin-top: 4px; color: var(--piel-apagado); }
 .resenas__cifra .boton { margin-top: 20px; }
-.resenas__citas { display: grid; gap: 22px; }
-.resenas__citas li { border-left: 3px solid var(--lazo-sobre-piel); padding-left: 20px; }
-.resenas__citas p { font-family: var(--f-display); font-size: 18px; line-height: 1.4; }
-.resenas__citas span { display: block; margin-top: 8px; font-size: 13px; color: var(--piel-apagado); }
+/* el fantasma es piel sobre noche; en la sección clara iba piel sobre piel: invisible */
+.resenas .boton--fantasma { color: var(--noche); border-color: color-mix(in srgb, var(--noche) 45%, transparent); }
 
 /* ═══════════════════════ HORARIO ═══════════════════════ */
 .horario { background: var(--noche); }
@@ -379,6 +379,10 @@ html:not(.con-movimiento) .verso { opacity: 1; transform: none; }
 .horario__estado h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(2rem, 4vw, 3rem); margin-top: 8px; }
 
 .estado { display: inline-flex; align-items: center; gap: 10px; margin-top: 24px; font-weight: 700; font-size: 15px; background: var(--noche-2); padding: 11px 18px; border-radius: 999px; }
+.estado[hidden] { display: none; } /* inline-flex pisaría a [hidden] */
+/* la misma frase en el hero: más discreta, y lleva al horario */
+.estado--hero { margin: 0 0 18px; padding: 7px 14px; font-size: 13px; gap: 9px; text-decoration: none; border: 1px solid color-mix(in srgb, var(--piel) 14%, transparent); transition: border-color .2s; }
+.estado--hero:hover { border-color: color-mix(in srgb, var(--mostaza) 60%, transparent); }
 .estado i { position: relative; width: 9px; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--piel) 35%, transparent); }
 .estado.abierto i { background: var(--mostaza); }
 /* latido en el 1 y el 4 del compás de 6/8, fuerte y débil, como el indicador de la carta */
@@ -396,6 +400,7 @@ html:not(.con-movimiento) .verso { opacity: 1; transform: none; }
 .horario__aviso { margin-top: 20px; font-size: 13.5px; color: var(--noche-apagado); max-width: 34ch; }
 
 .horario__direccion { font-style: normal; font-family: var(--f-display); font-size: 20px; margin-bottom: 18px; }
+.horario__chegar { margin-bottom: 18px; }
 .map-consent {
   width: 100%; aspect-ratio: 16/9; border-radius: 14px; border: 1.5px dashed color-mix(in srgb, var(--piel) 30%, transparent);
   display: grid; place-items: center; gap: 8px; text-align: center; background: var(--noche-2); padding: 20px;
