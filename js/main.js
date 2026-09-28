@@ -27,10 +27,10 @@
 
   /* ───────────────────────── idioma (galego / castellano / inglés) ─────────────────────────
      El HTML trae el galego (lo que se ve sin JS). El script del <head> ya
-     decidió el idioma; aquí se traduce ANTES de partir los titulares. Los
-     platos no se traducen: salen de carta.json tal como los escribe la casa
-     (en inglés se avisa de ello). Las citas de las reseñas tampoco: son
-     palabras de quien las firma. */
+     decidió el idioma; aquí se traduce ANTES de partir los titulares. La
+     carta trae sus tres idiomas en carta.json (castellano en los campos
+     base, {gl:{…}, en:{…}} al lado) y se repinta al cambiar. Las citas de
+     reseñas, si vuelven, no se traducen: son palabras de quien las firma. */
   var IDIOMAS = ['gl', 'es', 'en'];
   var idioma = IDIOMAS.indexOf(html.getAttribute('data-idioma')) > -1 ? html.getAttribute('data-idioma') : 'gl';
   var TXT = {
@@ -38,7 +38,7 @@
     'nav.aria': { gl: 'Seccións', es: 'Secciones', en: 'Sections' },
     'nav.aria.movil': { gl: 'Menú', es: 'Menú', en: 'Menu' },
     'nav.aria.menu': { gl: 'Seccións do menú', es: 'Secciones del menú', en: 'Menu sections' },
-    'nav.casa': { gl: 'A casa', es: 'La casa', en: 'The house' },
+    'nav.casa': { gl: 'A casa', es: 'La casa', en: 'About' },
     'nav.cancioneiro': { gl: 'A carta', es: 'La carta', en: 'Menu' },
     'nav.destacados': { gl: 'Para empezar', es: 'Para empezar', en: 'Where to start' },
     'nav.resenas': { gl: 'Opinións', es: 'Reseñas', en: 'Reviews' },
@@ -49,14 +49,14 @@
     'menu.abrir': { gl: 'Abrir menú', es: 'Abrir menú', en: 'Open menu' },
     'menu.cerrar': { gl: 'Pechar menú', es: 'Cerrar menú', en: 'Close menu' },
     'ir.aria': { gl: 'Ir a unha sección', es: 'Ir a una sección', en: 'Go to a section' },
-    'ir.inicio': { gl: 'Ir ao inicio', es: 'Ir al inicio', en: 'Go to the top' },
-    'ir.casa': { gl: 'Ir a A casa', es: 'Ir a La casa', en: 'Go to The house' },
-    'ir.cancioneiro': { gl: 'Ir á carta', es: 'Ir a la carta', en: 'Go to the menu' },
-    'ir.destacados': { gl: 'Ir a Para empezar', es: 'Ir a Para empezar', en: 'Go to Where to start' },
-    'ir.resenas': { gl: 'Ir a Opinións', es: 'Ir a Reseñas', en: 'Go to Reviews' },
-    'ir.horario': { gl: 'Ir a Horario e onde', es: 'Ir a Horario y dónde', en: 'Go to Hours & location' },
+    'ir.inicio': { gl: 'Inicio', es: 'Inicio', en: 'Top' },
+    'ir.casa': { gl: 'A casa', es: 'La casa', en: 'About' },
+    'ir.cancioneiro': { gl: 'A carta', es: 'La carta', en: 'Menu' },
+    'ir.destacados': { gl: 'Para empezar', es: 'Para empezar', en: 'Where to start' },
+    'ir.resenas': { gl: 'Opinións', es: 'Reseñas', en: 'Reviews' },
+    'ir.horario': { gl: 'Horario e onde', es: 'Horario y dónde', en: 'Hours & location' },
     'hero.ubi': { gl: 'Taberna · Rúa Lugo, 2 · Carballo', es: 'Taberna · Rúa Lugo, 2 · Carballo', en: 'Tavern · Rúa Lugo, 2 · Carballo' },
-    'hero.titular': { gl: 'Taberna de sempre, carta de agora.', es: 'Taberna de siempre, carta de ahora.', en: 'An old-school tavern with a menu of today.' },
+    'hero.titular': { gl: 'Taberna de sempre, carta de agora.', es: 'Taberna de siempre, carta de ahora.', en: 'A classic tavern with a menu for today.' },
     'hero.sub': { gl: 'Almorzos, tapas, raxo, tortilla á feira e hamburguesas no centro de Carballo. De mércores a domingo, das 10:00 á 1:00.', es: 'Desayunos, tapas, raxo, tortilla á feira y hamburguesas en el centro de Carballo. De miércoles a domingo, de 10:00 a 1:00.', en: 'Breakfast, tapas, raxo, tortilla á feira and burgers in the centre of Carballo. Wednesday to Sunday, 10:00 to 1:00.' },
     'hero.cta': { gl: 'Ver a carta', es: 'Ver la carta', en: 'See the menu' },
     'hero.nota': { gl: '4,6★ · 246 opinións en Google', es: '4,6★ · 246 reseñas en Google', en: '4.6★ · 246 reviews on Google' },
@@ -66,26 +66,29 @@
     'casa.dias': { gl: 'Mér–Dom', es: 'Mié–Dom', en: 'Wed–Sun' },
     'casa.pechado': { gl: 'luns e martes, pechado', es: 'lunes y martes, cerrado', en: 'closed Monday and Tuesday' },
     'casa.almorzos': { gl: 'almorzos ata as 13:00', es: 'desayunos hasta las 13:00', en: 'breakfast until 13:00' },
-    'casa.texto': { gl: 'Raxo e zorza como sempre, e hamburguesas veganas tamén. Pola mañá, almorzos con nome de persona: o do avó, o da Meli, o de Antón.', es: 'Raxo y zorza como siempre, y también hamburguesas veganas. Por la mañana, almuerzos con nombre de persona: el do avó, el de Meli, el de Antón.', en: 'Raxo and zorza the way they have always been made, and vegan burgers too. In the morning, breakfasts named after people: do avó, Meli, Antón.' },
+    'casa.texto': { gl: 'Raxo e zorza como sempre, e tamén hamburguesas veganas. Pola mañá, almorzos con nome de persoa: o do avó, o da Meli, o de Antón.', es: 'Raxo y zorza como siempre, y también hamburguesas veganas. Por la mañana, desayunos con nombre de persona: el do avó, el de Meli, el de Antón.', en: 'Raxo and zorza as they have always been, and vegan burgers too. In the morning, breakfasts named after people: Grandad’s, Meli’s, Antón’s.' },
     'carta.h2': { gl: 'Todo o que hai na carta.', es: 'Todo lo que hay en la carta.', en: 'Everything on the menu.' },
-    'carta.sub': { gl: '68 pratos. Se ves <code>—</code> no prezo, pregúntao na barra.', es: '68 platos. Si ves <code>—</code> en el precio, pregúntalo en la barra.', en: '68 dishes, named as the house writes them (in Spanish and Galician). Where the price shows <code>—</code>, ask at the bar.' },
+    'carta.sub': { gl: '68 pratos. Se ves <code>—</code> no prezo, pregúntao na barra.', es: '68 platos. Si ves <code>—</code> en el precio, pregúntalo en la barra.', en: '68 dishes. Where the price shows <code>—</code>, ask at the bar.' },
     'carta.error': { gl: 'Non se puido cargar a carta.', es: 'No se pudo cargar la carta.', en: 'The menu could not be loaded.' },
     'carta.media': { gl: 'media', es: 'media', en: 'half' },
-    'dest.h2': { gl: 'Se vés por primeira vez.', es: 'Si vienes por primera vez.', en: 'If it is your first time.' },
+    'dest.h2': { gl: 'Se vés por primeira vez.', es: 'Si vienes por primera vez.', en: 'First time here?' },
     'resenas.etq': { gl: 'opinións en Google', es: 'reseñas en Google', en: 'reviews on Google' },
     'resenas.invita': { gl: 'Se xa estiveches, cóntao en Google.', es: 'Si ya has estado, cuéntalo en Google.', en: 'Been here? Tell others on Google.' },
     'resenas.ver': { gl: 'Ver en Google →', es: 'Ver en Google →', en: 'See on Google →' },
     'horario.h2': { gl: 'Onde e cando.', es: 'Dónde y cuándo.', en: 'Where and when.' },
     'horario.tabla': { gl: 'Horario semanal', es: 'Horario semanal', en: 'Weekly hours' },
-    'horario.aviso': { gl: 'Almorzos ata as 13:00, con café con leite dobre e zume de laranxa natural.', es: 'Desayunos hasta las 13:00, con café con leche doble y zumo de naranja natural.', en: 'Breakfast until 13:00, with a double white coffee and fresh orange juice.' },
+    'horario.aviso': { gl: 'Almorzos ata as 13:00. Do n.º 1 ao 5 levan café con leite dobre e zume de laranxa natural.', es: 'Desayunos hasta las 13:00. Del n.º 1 al 5 llevan café con leche doble y zumo de naranja natural.', en: 'Breakfast until 13:00. Nos. 1 to 5 come with a double café con leche and freshly squeezed orange juice.' },
     'mapa.chegar': { gl: 'Como chegar →', es: 'Cómo llegar →', en: 'Get directions →' },
     'mapa.ver': { gl: 'Ver mapa', es: 'Ver mapa', en: 'Show map' },
     'mapa.titulo': { gl: 'Mapa: O Logradouro na Rúa Lugo, Carballo', es: 'Mapa: O Logradouro en la Rúa Lugo, Carballo', en: 'Map: O Logradouro on Rúa Lugo, Carballo' },
-    'mapa.nota': { gl: 'Carga un iframe de Google Maps só ao premer aquí.', es: 'Carga un iframe de Google Maps solo al pulsar aquí.', en: 'Loads a Google Maps iframe only when you click here.' },
+    'mapa.nota': { gl: 'Google Maps só se carga ao premer aquí.', es: 'Google Maps solo se carga al pulsar aquí.', en: 'Google Maps only loads when you press here.' },
     'pie.aria': { gl: 'Redes e legal', es: 'Redes y legal', en: 'Social and legal' },
     'pie.aviso': { gl: 'Aviso legal', es: 'Aviso legal', en: 'Legal notice' },
     'pie.privacidade': { gl: 'Privacidade', es: 'Privacidad', en: 'Privacy' },
-    'cookies.texto': { gl: 'Este sitio non usa cookies de seguimento. Só garda no teu navegador o idioma e que xa viches este aviso; se o pides, carga o mapa de Google, que si pon as súas. <a href="privacidad.html">Máis detalle</a>.', es: 'Este sitio no usa cookies de seguimiento. Solo guarda en tu navegador el idioma y que ya has visto este aviso; si lo pides, carga el mapa de Google, que sí pone las suyas. <a href="privacidad.html">Más detalle</a>.', en: 'This site uses no tracking cookies. It only stores your language and the fact that you have seen this notice in your browser; if you ask for it, it loads the Google map, which does set its own. <a href="privacidad.html">More details</a>.' },
+    'cookies.texto': { gl: 'Este sitio non usa cookies de seguimento. Só garda no teu navegador o idioma e que xa viches este aviso; se o pides, carga o mapa de Google, que si pon as súas. <a href="privacidad.html">Máis detalles</a>.', es: 'Este sitio no usa cookies de seguimiento. Solo guarda en tu navegador el idioma y que ya has visto este aviso; si lo pides, carga el mapa de Google, que sí pone las suyas. <a href="privacidad.html">Más detalles</a>.', en: 'This site uses no tracking cookies. It only stores your language and the fact that you have seen this notice in your browser; if you ask for it, it loads the Google map, which does set its own. <a href="privacidad.html">More details</a>.' },
+    'idioma.aria': { gl: 'Idioma', es: 'Idioma', en: 'Language' },
+    'meta.titulo': { gl: 'O Logradouro · Taberna en Carballo — Rúa Lugo, 2', es: 'O Logradouro · Taberna en Carballo — Rúa Lugo, 2', en: 'O Logradouro · Tavern in Carballo — Rúa Lugo, 2' },
+    'meta.desc': { gl: 'O Logradouro, taberna na Rúa Lugo, 2 (Carballo). Almorzos, tapas, raxo, tortilla á feira e hamburguesas. De mércores a domingo, das 10:00 á 1:00.', es: 'O Logradouro, taberna en la Rúa Lugo, 2 (Carballo). Desayunos, tapas, raxo, tortilla á feira y hamburguesas. De miércoles a domingo, de 10:00 a 1:00.', en: 'O Logradouro, a tavern on Rúa Lugo, 2 (Carballo). Breakfast, tapas, raxo, tortilla á feira and burgers. Wednesday to Sunday, 10:00 to 1:00.' },
     'cookies.ok': { gl: 'De acordo', es: 'De acuerdo', en: 'OK' }
   };
   function t(k) { var e = TXT[k]; return e ? (e[idioma] || e.gl) : k; }
@@ -94,6 +97,9 @@
      texto; al cambiar de idioma en vivo, cambiarIdioma() los vuelve a partir */
   function traducir() {
     html.lang = idioma;
+    document.title = t('meta.titulo');
+    var metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', t('meta.desc'));
     Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (el) {
       if (!el.hasAttribute('data-revelar') || !el.querySelector('.palabra')) el.textContent = t(el.getAttribute('data-i18n'));
     });
@@ -1103,8 +1109,15 @@
 
     function euros(n) {
       if (n === null || n === undefined) return '<span class="sin-precio">—</span>';
-      return n.toFixed(2).replace('.', ',') + ' €';
+      return idioma === 'en' ? '€' + n.toFixed(2) : n.toFixed(2).replace('.', ',') + ' €';
     }
+    /* textos de carta.json en el idioma activo: castellano en los campos
+       base, galego e inglés en {gl:{…}, en:{…}}; si falta, cae al castellano */
+    function campo(obj, k) {
+      var tr = idioma !== 'es' && obj[idioma];
+      return (tr && tr[k] !== undefined) ? tr[k] : obj[k];
+    }
+    function nombrePlato(p) { return campo(p, 'nombre'); }
     function buscarPlato(nombre, datos) {
       for (var s = 0; s < datos.secciones.length; s++) {
         var p = datos.secciones[s].platos.find(function (x) { return x.nombre === nombre; });
@@ -1121,12 +1134,11 @@
         var etiquetaCopla = function (n) {
           return num2(n) + ' <span class="copla__de">/ ' + num2(total) + '</span>';
         };
-        /* al cambiar de idioma: «media» ↔ «half» (el «03 / 11» no cambia) */
+        /* al cambiar de idioma el «03 / 11» no cambia; los textos de cada copla, más abajo */
         document.addEventListener('idioma-cambiado', function () {
           Array.prototype.forEach.call(contCoplas.querySelectorAll('.copla__num[data-n]'), function (el) {
             el.innerHTML = etiquetaCopla(+el.getAttribute('data-n'));
           });
-          Array.prototype.forEach.call(document.querySelectorAll('.media__etq'), function (el) { el.textContent = t('carta.media'); });
           var pn = document.querySelector('.copla-actual__num[data-n]');
           if (pn) pn.textContent = num2(+pn.getAttribute('data-n')) + ' / ' + num2(total);
         });
@@ -1151,24 +1163,51 @@
           var esEstribillo = sec.id === 'almorzos';
           cab.innerHTML =
             '<p class="copla__num" data-n="' + (i + 1) + '">' + etiquetaCopla(i + 1) + '</p>' +
-            '<h3 class="copla__titulo">' + sec.titulo + '</h3>' +
-            (sec.gl && sec.gl !== sec.titulo ? '<p class="copla__gl">«' + sec.gl + '»</p>' : '') +
-            (sec.nota ? '<p class="copla__nota">' + sec.nota + '</p>' : '') +
+            '<h3 class="copla__titulo"></h3>' +
+            '<p class="copla__gl"></p>' +
+            '<p class="copla__nota"></p>' +
             '<div class="compas" aria-hidden="true"><i class="forte"></i><i></i><i></i><i class="forte"></i><i></i><i></i></div>';
           copla.appendChild(cab);
+          /* los textos se repintan al cambiar de idioma; el número y el compás
+             no (el compás lleva un ScrollTrigger enganchado a sus puntos) */
+          var elTitulo = cab.querySelector('.copla__titulo');
+          var elRotulo = cab.querySelector('.copla__gl');
+          var elNota = cab.querySelector('.copla__nota');
+          var pintarCab = function () {
+            var titulo = campo(sec, 'titulo');
+            elTitulo.textContent = titulo;
+            /* el rótulo impreso de la casa, entre comillas, si no es ya el título */
+            var rotulo = sec.rotulo && titulo.toLowerCase().indexOf(sec.rotulo.toLowerCase()) < 0 ? sec.rotulo : '';
+            elRotulo.textContent = rotulo ? '«' + rotulo + '»' : '';
+            elRotulo.hidden = !rotulo;
+            var nota = campo(sec, 'nota') || '';
+            elNota.textContent = nota;
+            elNota.hidden = !nota;
+          };
+          pintarCab();
 
           var lista = document.createElement('ol');
           lista.className = 'copla__lista' + (sec.platos.length > 6 ? ' copla__lista--dosCol' : '');
+          var pintarVerso = function (li, plato, j) {
+            var precioHtml = euros(plato.precio);
+            if (plato.media) precioHtml += '<span class="media"><span class="media__etq">' + t('carta.media') + '</span> ' + euros(plato.media) + '</span>';
+            var desc = campo(plato, 'desc');
+            li.innerHTML =
+              '<span class="verso__n">' + (j + 1) + '</span>' +
+              '<span class="verso__nombre">' + nombrePlato(plato) + (desc ? '<span class="verso__desc">' + desc + '</span>' : '') + '</span>' +
+              '<span class="verso__precio">' + precioHtml + '</span>';
+          };
           sec.platos.forEach(function (plato, j) {
             var li = document.createElement('li');
             li.className = 'verso' + (esEstribillo ? ' verso--estribillo' : '');
-            var precioHtml = euros(plato.precio);
-            if (plato.media) precioHtml += '<span class="media"><span class="media__etq">' + t('carta.media') + '</span> ' + euros(plato.media) + '</span>';
-            li.innerHTML =
-              '<span class="verso__n">' + (j + 1) + '</span>' +
-              '<span class="verso__nombre">' + plato.nombre + (plato.desc ? '<span class="verso__desc">' + plato.desc + '</span>' : '') + '</span>' +
-              '<span class="verso__precio">' + precioHtml + '</span>';
+            pintarVerso(li, plato, j);
             lista.appendChild(li);
+          });
+          /* cambio de idioma en vivo: títulos, platos, descripciones y formato del precio */
+          document.addEventListener('idioma-cambiado', function () {
+            pintarCab();
+            Array.prototype.forEach.call(lista.children, function (li, j) { pintarVerso(li, sec.platos[j], j); });
+            if (pildoraNum && +pildoraNum.getAttribute('data-n') === i + 1) pildoraTit.textContent = campo(sec, 'titulo');
           });
           copla.appendChild(lista);
           contCoplas.appendChild(copla);
@@ -1190,7 +1229,7 @@
                 if (!self.isActive) return;
                 pildoraNum.textContent = num2(i + 1) + ' / ' + num2(total);
                 pildoraNum.setAttribute('data-n', i + 1);
-                pildoraTit.textContent = sec.titulo;
+                pildoraTit.textContent = campo(sec, 'titulo');
               }
             });
           }
@@ -1218,17 +1257,23 @@
 
       /* ───── destacados ───── */
       if (contDestacados && datos.destacados) {
-        datos.destacados.forEach(function (nombre, i) {
-          var plato = buscarPlato(nombre, datos);
-          var el = document.createElement('article');
-          el.className = 'destacado';
-          el.innerHTML =
-            '<span class="destacado__num">' + String(i + 1).padStart(2, '0') + '</span>' +
-            '<span><span class="destacado__nombre">' + nombre + '</span>' +
-            (plato && plato.desc ? '<span class="destacado__desc">' + plato.desc + '</span>' : '') + '</span>' +
-            '<span class="destacado__precio">' + (plato ? euros(plato.precio) : '') + '</span>';
-          contDestacados.appendChild(el);
-        });
+        var pintarDestacados = function () {
+          contDestacados.innerHTML = '';
+          datos.destacados.forEach(function (nombre, i) {
+            var plato = buscarPlato(nombre, datos);
+            var desc = plato ? campo(plato, 'desc') : '';
+            var el = document.createElement('article');
+            el.className = 'destacado';
+            el.innerHTML =
+              '<span class="destacado__num">' + String(i + 1).padStart(2, '0') + '</span>' +
+              '<span><span class="destacado__nombre">' + (plato ? nombrePlato(plato) : nombre) + '</span>' +
+              (desc ? '<span class="destacado__desc">' + desc + '</span>' : '') + '</span>' +
+              '<span class="destacado__precio">' + (plato ? euros(plato.precio) : '') + '</span>';
+            contDestacados.appendChild(el);
+          });
+        };
+        pintarDestacados();
+        document.addEventListener('idioma-cambiado', pintarDestacados);
       }
 
       /* ───── marquee: nombres reales de la carta, dos velocidades ───── */
@@ -1242,30 +1287,35 @@
       var pista1 = document.getElementById('marquee-1');
       var pista2 = document.getElementById('marquee-2');
       if (!pista1 || !pista2) return;
+      /* sin repetidos: raxo, zorza… salen como tapa y como ración */
       function nombresDe(ids) {
+        var vistos = {};
         return datos.secciones.filter(function (s) { return ids.indexOf(s.id) > -1; })
-          .reduce(function (acc, s) { return acc.concat(s.platos.map(function (p) { return p.nombre; })); }, []);
+          .reduce(function (acc, s) { return acc.concat(s.platos.map(nombrePlato)); }, [])
+          .filter(function (n) { if (vistos[n]) return false; vistos[n] = true; return true; });
       }
-      var lista1 = nombresDe(['raciones', 'tapas', 'tortillas']);
-      var lista2 = nombresDe(['cocina', 'bocatas', 'almorzos']).map(function (n, i) {
-        var s = datos.secciones.find(function (sec) { return sec.platos.some(function (p) { return p.nombre === n; }); });
-        var p = s.platos.find(function (p) { return p.nombre === n; });
-        return (p && p.gl) ? p.gl : n;
-      });
-      [[pista1, lista1], [pista2, lista2]].forEach(function (par) {
-        var pista = par[0], nombres = par[1];
+      function llenar(pista, ids) {
+        pista.innerHTML = '';
         var grupo = document.createElement('div');
-        nombres.forEach(function (n) { var s = document.createElement('span'); s.textContent = n; grupo.appendChild(s); });
+        nombresDe(ids).forEach(function (n) { var s = document.createElement('span'); s.textContent = n; grupo.appendChild(s); });
         pista.appendChild(grupo);
-        var copias = 3;
-        for (var i = 0; i < copias; i++) { var c = grupo.cloneNode(true); c.setAttribute('aria-hidden', 'true'); pista.appendChild(c); }
+        for (var i = 0; i < 3; i++) { var c = grupo.cloneNode(true); c.setAttribute('aria-hidden', 'true'); pista.appendChild(c); }
+        pista.__grupo = grupo;
+      }
+      var pistas = [[pista1, ['raciones', 'tapas', 'tortillas']], [pista2, ['cocina', 'bocatas', 'almorzos']]];
+      document.addEventListener('idioma-cambiado', function () {
+        pistas.forEach(function (par) { llenar(par[0], par[1]); });
+      });
+      pistas.forEach(function (par) {
+        var pista = par[0];
+        llenar(pista, par[1]);
         if (!movimiento) return;
         var x = 0, base = pista === pista1 ? 0.55 : 0.9, impulso = 0;
         var hueco = parseFloat(getComputedStyle(pista).columnGap) || 0;
         (function paso() {
           if (!html.classList.contains('densidad-sobria') || pista === pista1) {
             /* un ciclo = grupo + el hueco hasta la copia siguiente, o salta al dar la vuelta */
-            var ancho = (grupo.offsetWidth + hueco) || 1;
+            var ancho = (pista.__grupo.offsetWidth + hueco) || 1;
             /* acelera con la velocidad del scroll, como las ferreñas; sin
                eventos de Lenis en 120 ms se da por parado */
             var v = performance.now() - tUltimoScroll > 120 ? 0 : Math.min(velocidadLenis, 30);

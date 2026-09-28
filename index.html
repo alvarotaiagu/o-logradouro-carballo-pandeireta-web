@@ -41,7 +41,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=d4ccbab5">
+<link rel="stylesheet" href="css/estilos.css?v=3d1fe649">
 <script>
 /* Idioma: ?lang= › elección guardada › galego. Bloqueante: se resuelve antes
    de pintar, y main.js traduce antes de partir los titulares. */
@@ -109,7 +109,7 @@
     <a href="#horario" data-i18n="nav.horario">Horario</a>
   </nav>
   <div class="cabecera__acciones">
-    <div class="idioma" role="group" aria-label="Idioma">
+    <div class="idioma" role="group" aria-label="Idioma" data-i18n-attr="aria-label:idioma.aria">
       <button type="button" data-idioma="gl" lang="gl" aria-label="Galego" aria-pressed="true">GL</button>
       <button type="button" data-idioma="es" lang="es" aria-label="Español" aria-pressed="false">ES</button>
       <button type="button" data-idioma="en" lang="en" aria-label="English" aria-pressed="false">EN</button>
@@ -138,12 +138,12 @@
 
 <!-- navegación de puntos: un punto por sección, mismo lenguaje que el compás de la carta -->
 <nav class="seccion-nav" id="seccion-nav" aria-label="Ir a unha sección" data-i18n-attr="aria-label:ir.aria">
-  <a href="#inicio" data-seccion="inicio" aria-label="Ir ao inicio" data-i18n-attr="aria-label:ir.inicio"><span></span></a>
-  <a href="#casa" data-seccion="casa" aria-label="Ir a A casa" data-i18n-attr="aria-label:ir.casa"><span></span></a>
-  <a href="#carta" data-seccion="carta" aria-label="Ir á carta" data-i18n-attr="aria-label:ir.cancioneiro"><span></span></a>
-  <a href="#destacados" data-seccion="destacados" aria-label="Ir a Para empezar" data-i18n-attr="aria-label:ir.destacados"><span></span></a>
-  <a href="#resenas" data-seccion="resenas" aria-label="Ir a Opinións" data-i18n-attr="aria-label:ir.resenas"><span></span></a>
-  <a href="#horario" data-seccion="horario" aria-label="Ir a Horario e onde" data-i18n-attr="aria-label:ir.horario"><span></span></a>
+  <a href="#inicio" data-seccion="inicio" aria-label="Inicio" data-i18n-attr="aria-label:ir.inicio"><span></span></a>
+  <a href="#casa" data-seccion="casa" aria-label="A casa" data-i18n-attr="aria-label:ir.casa"><span></span></a>
+  <a href="#carta" data-seccion="carta" aria-label="A carta" data-i18n-attr="aria-label:ir.cancioneiro"><span></span></a>
+  <a href="#destacados" data-seccion="destacados" aria-label="Para empezar" data-i18n-attr="aria-label:ir.destacados"><span></span></a>
+  <a href="#resenas" data-seccion="resenas" aria-label="Opinións" data-i18n-attr="aria-label:ir.resenas"><span></span></a>
+  <a href="#horario" data-seccion="horario" aria-label="Horario e onde" data-i18n-attr="aria-label:ir.horario"><span></span></a>
 </nav>
 
 <!-- móvil: en qué copla de la carta estás (duplica la cabecera de cada copla, por eso aria-hidden) -->
@@ -247,7 +247,7 @@
         <span class="dato__etq" data-i18n="casa.almorzos">almorzos ata as 13:00</span>
       </div>
     </div>
-    <p class="casa__texto" data-revelar="palabras" data-i18n="casa.texto">Raxo e zorza como sempre, e hamburguesas veganas tamén. Pola mañá, almorzos con nome de persona: o do avó, o da Meli, o de Antón.</p>
+    <p class="casa__texto" data-revelar="palabras" data-i18n="casa.texto">Raxo e zorza como sempre, e tamén hamburguesas veganas. Pola mañá, almorzos con nome de persoa: o do avó, o da Meli, o de Antón.</p>
 
     <div class="marquee" aria-hidden="true">
       <div class="marquee__pista marquee__pista--1" id="marquee-1"></div>
@@ -300,16 +300,16 @@
         <h2 data-revelar="palabras" data-i18n="horario.h2">Onde e cando.</h2>
         <p class="estado" id="estado"><i></i><span>Calculando…</span></p>
         <ul class="horario__tabla" id="horario-tabla" aria-label="Horario semanal" data-i18n-attr="aria-label:horario.tabla"></ul>
-        <p class="horario__aviso" data-i18n="horario.aviso">Almorzos ata as 13:00, con café con leite dobre e zume de laranxa natural.</p>
+        <p class="horario__aviso" data-i18n="horario.aviso">Almorzos ata as 13:00. Do n.º 1 ao 5 levan café con leite dobre e zume de laranxa natural.</p>
       </div>
       <div class="horario__mapa">
         <address class="horario__direccion">Rúa Lugo, 2 · 15100 Carballo, A Coruña</address>
         <a class="boton boton--lazo iman horario__chegar" href="https://www.google.com/maps/dir/?api=1&amp;destination=O+Logradouro%2C+R%C3%BAa+Lugo+2%2C+15100+Carballo" target="_blank" rel="noopener" data-i18n="mapa.chegar">Como chegar →</a>
         <div class="mapa" id="mapa-consentimiento">
-          <button class="map-consent" type="button" data-map-title="Mapa: O Logradouro en Rúa Lugo, Carballo" data-i18n-attr="data-map-title:mapa.titulo" data-map-src="https://www.google.com/maps?q=O+Logradouro,+R%C3%BAa+Lugo+2,+15100+Carballo,+A+Coru%C3%B1a&output=embed">
+          <button class="map-consent" type="button" data-map-title="Mapa: O Logradouro na Rúa Lugo, Carballo" data-i18n-attr="data-map-title:mapa.titulo" data-map-src="https://www.google.com/maps?q=O+Logradouro,+R%C3%BAa+Lugo+2,+15100+Carballo,+A+Coru%C3%B1a&output=embed">
             <svg viewBox="0 0 24 24" aria-hidden="true" width="26" height="26"><path fill="currentColor" d="M12 2C7.6 2 4 5.6 4 10c0 5.5 7 12 8 12s8-6.5 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
             <span data-i18n="mapa.ver">Ver mapa</span>
-            <small data-i18n="mapa.nota">Carga un iframe de Google Maps só ao premer aquí.</small>
+            <small data-i18n="mapa.nota">Google Maps só se carga ao premer aquí.</small>
           </button>
         </div>
       </div>
@@ -339,7 +339,7 @@
 <div class="cookies" id="cookies" hidden>
   <p class="cookies__texto" data-i18n-html="cookies.texto">
     Este sitio non usa cookies de seguimento. Só garda no teu navegador o idioma e que xa viches este
-    aviso; se o pides, carga o mapa de Google, que si pon as súas. <a href="privacidad.html">Máis detalle</a>.
+    aviso; se o pides, carga o mapa de Google, que si pon as súas. <a href="privacidad.html">Máis detalles</a>.
   </p>
   <div class="cookies__acciones">
     <button class="boton boton--mini" id="cookies-aceptar" type="button" data-i18n="cookies.ok">De acordo</button>
@@ -398,6 +398,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-<script src="js/main.js?v=363c8734" defer></script>
+<script src="js/main.js?v=ba4bc654" defer></script>
 </body>
 </html>

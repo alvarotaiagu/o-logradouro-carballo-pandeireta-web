@@ -1,9 +1,11 @@
 {
   "_fuente": "Cinco fotos que mandó el dueño el 2026-09-12. Están en o-logradouro-carballo-web/assets/img/: unnamed.webp y unnamed (1).webp son las dos cartas ilustradas (diseño digital en castellano, no pizarras de tiza); unnamed (2).webp «¿Veuche a fame?», unnamed (3).webp «Almorzos» y unnamed (4).webp «¿Uns petiscos?» son hojas impresas en gallego. El dueño avisó de que hay platos repetidos. No se sabe cuál es la más reciente.",
   "_campos": {
+    "nombre / desc": "castellano, texto literal de la carta. No añadir adjetivos. «nombre» es además la clave (destacados).",
+    "gl / en": "{nombre, desc} en galego e inglés; en secciones {titulo, nota}. Traducción de la web (2026-09-28), no de la casa: en inglés se añade una glosa breve solo a los platos gallegos que un visitante no conoce (raxo, zorza, porco celta).",
+    "rotulo": "encabezado tal como va impreso en la hoja de la casa; se pinta entre comillas si no coincide con el título del idioma activo",
     "precio": "euros (número) o null si no se conoce. NUNCA inventar.",
     "media": "precio de media ración/media tortilla cuando la carta lo da",
-    "desc": "texto literal de la carta (traducido al castellano solo si la sección se pinta en castellano). No añadir adjetivos.",
     "fuente": "ilustrada-1 | ilustrada-2 | impresa-veuche | impresa-almorzos | impresa-petiscos",
     "verificar": "motivo por el que hay que confirmarlo con el cliente; todo lo que lo lleve va al informe final"
   },
@@ -14,158 +16,178 @@
     {
       "id": "desayunos",
       "titulo": "Desayunos",
-      "gl": "Almorzos",
-      "nota": "Hasta las 13:00. Todos incluyen café con leche doble y zumo de naranja natural. «Algunos días puede haber sorpresas.»",
+      "nota": "Hasta las 13:00. Todos llevan café con leche doble y zumo de naranja natural. «Algunos días puede haber sorpresas.»",
+      "gl": { "titulo": "Almorzos", "nota": "Ata as 13:00. Todos levan café con leite dobre e zume de laranxa natural. «Algúns días pode haber sorpresas.»" },
+      "en": { "titulo": "Breakfast", "nota": "Until 13:00. All come with a double café con leche and freshly squeezed orange juice. “Some days there may be surprises.”" },
       "precio_comun": 6.5,
       "fuente": "ilustrada-2",
       "platos": [
-        {"nombre": "N.º 1", "desc": "Tostada con mantequilla y mermelada", "precio": 6.5},
-        {"nombre": "N.º 2", "desc": "Tostada con aceite y tomate", "precio": 6.5},
-        {"nombre": "N.º 3", "desc": "Tostada con aceite, tomate y jamón", "precio": 6.5},
-        {"nombre": "N.º 4", "desc": "Tostada con Nocilla", "precio": 6.5},
-        {"nombre": "N.º 5", "desc": "Una pieza de bollería o bizcocho", "precio": 6.5}
+        {"nombre": "N.º 1", "desc": "Tostada con mantequilla y mermelada", "gl": {"nombre": "N.º 1", "desc": "Torrada con manteiga e marmelada"}, "en": {"nombre": "No. 1", "desc": "Toast with butter and jam"}, "precio": 6.5},
+        {"nombre": "N.º 2", "desc": "Tostada con aceite y tomate", "gl": {"nombre": "N.º 2", "desc": "Torrada con aceite e tomate"}, "en": {"nombre": "No. 2", "desc": "Toast with olive oil and tomato"}, "precio": 6.5},
+        {"nombre": "N.º 3", "desc": "Tostada con aceite, tomate y jamón", "gl": {"nombre": "N.º 3", "desc": "Torrada con aceite, tomate e xamón"}, "en": {"nombre": "No. 3", "desc": "Toast with olive oil, tomato and cured ham"}, "precio": 6.5},
+        {"nombre": "N.º 4", "desc": "Tostada con Nocilla", "gl": {"nombre": "N.º 4", "desc": "Torrada con Nocilla"}, "en": {"nombre": "No. 4", "desc": "Toast with Nocilla (chocolate spread)"}, "precio": 6.5},
+        {"nombre": "N.º 5", "desc": "Una pieza de bollería o bizcocho", "gl": {"nombre": "N.º 5", "desc": "Unha peza de bollería ou biscoito"}, "en": {"nombre": "No. 5", "desc": "A pastry or a slice of sponge cake"}, "precio": 6.5}
       ]
     },
     {
       "id": "almorzos",
-      "titulo": "Almuerzos con nombre propio",
-      "gl": "Almorzos",
-      "nota": "Cada almuerzo lleva un nombre de persona.",
+      "titulo": "Desayunos con nombre propio",
+      "rotulo": "Almorzos",
+      "nota": "Cada desayuno lleva el nombre de una persona.",
+      "gl": { "titulo": "Almorzos con nome propio", "nota": "Cada almorzo leva o nome dunha persoa." },
+      "en": { "titulo": "Breakfasts with a name", "nota": "Each one is named after a person." },
       "nota_interna": "Hoja impresa en gallego: cada almuerzo lleva nombre de persona. Conviven con los desayunos n.º 1–5 de la carta ilustrada a precios distintos.",
       "fuente": "impresa-almorzos",
       "verificar": "¿Siguen vigentes o los sustituyeron los desayunos n.º 1–5 de la carta ilustrada?",
       "platos": [
-        {"nombre": "Do avó", "desc": "Tazón de sopas de pan con leche, café o Cola Cao", "precio": 2.2},
-        {"nombre": "Meli", "desc": "Bol de cereales muesli (integral ecológico) con leche, café o Cola Cao", "precio": 3.5},
-        {"nombre": "Silvia", "desc": "Trozo de bizcocho o tarta, café, Cola Cao o infusión", "precio": 2.8},
-        {"nombre": "Antón", "desc": "Dos tostadas con Nocilla, café, Cola Cao o infusión", "precio": 2.3},
-        {"nombre": "Susoserrano", "desc": "Trozo de bizcocho o tarta, tostada de tomate y jamón, café, Cola Cao o infusión", "precio": 3.5},
-        {"nombre": "Tania", "desc": "Dos tostadas con tomate y aguacate, café, Cola Cao o infusión", "precio": 2.8},
-        {"nombre": "Garban", "desc": "Trozo de tortilla, café, Cola Cao o infusión", "precio": 3.8},
-        {"nombre": "Tova", "desc": "Dos tostadas con tomate y jamón, café, Cola Cao o infusión", "precio": 3.5},
-        {"nombre": "Little Green", "desc": "Dos tostadas con tomate, jamón y queso del país", "precio": 4.5}
+        {"nombre": "Do avó", "desc": "Tazón de sopas de pan con leche, café o Cola Cao", "gl": {"nombre": "Do avó", "desc": "Cunca de sopas de pan con leite, café ou Cola Cao"}, "en": {"nombre": "Do avó (Grandad’s)", "desc": "Bowl of bread soaked in milk, coffee or Cola Cao"}, "precio": 2.2},
+        {"nombre": "Meli", "desc": "Bol de muesli (integral ecológico) con leche, café o Cola Cao", "gl": {"nombre": "Meli", "desc": "Bol de muesli (integral ecolóxico) con leite, café ou Cola Cao"}, "en": {"nombre": "Meli", "desc": "Bowl of organic wholegrain muesli with milk, coffee or Cola Cao"}, "precio": 3.5},
+        {"nombre": "Silvia", "desc": "Trozo de bizcocho o tarta, café, Cola Cao o infusión", "gl": {"nombre": "Silvia", "desc": "Anaco de biscoito ou torta, café, Cola Cao ou infusión"}, "en": {"nombre": "Silvia", "desc": "Slice of sponge or cake, with coffee, Cola Cao or herbal tea"}, "precio": 2.8},
+        {"nombre": "Antón", "desc": "Dos tostadas con Nocilla, café, Cola Cao o infusión", "gl": {"nombre": "Antón", "desc": "Dúas torradas con Nocilla, café, Cola Cao ou infusión"}, "en": {"nombre": "Antón", "desc": "Two slices of toast with Nocilla, with coffee, Cola Cao or herbal tea"}, "precio": 2.3},
+        {"nombre": "Susoserrano", "desc": "Trozo de bizcocho o tarta, tostada de tomate y jamón, café, Cola Cao o infusión", "gl": {"nombre": "Susoserrano", "desc": "Anaco de biscoito ou torta, torrada de tomate e xamón, café, Cola Cao ou infusión"}, "en": {"nombre": "Susoserrano", "desc": "Slice of sponge or cake, toast with tomato and cured ham, with coffee, Cola Cao or herbal tea"}, "precio": 3.5},
+        {"nombre": "Tania", "desc": "Dos tostadas con tomate y aguacate, café, Cola Cao o infusión", "gl": {"nombre": "Tania", "desc": "Dúas torradas con tomate e aguacate, café, Cola Cao ou infusión"}, "en": {"nombre": "Tania", "desc": "Two slices of toast with tomato and avocado, with coffee, Cola Cao or herbal tea"}, "precio": 2.8},
+        {"nombre": "Garban", "desc": "Trozo de tortilla, café, Cola Cao o infusión", "gl": {"nombre": "Garban", "desc": "Anaco de tortilla, café, Cola Cao ou infusión"}, "en": {"nombre": "Garban", "desc": "Slice of tortilla, with coffee, Cola Cao or herbal tea"}, "precio": 3.8},
+        {"nombre": "Tova", "desc": "Dos tostadas con tomate y jamón, café, Cola Cao o infusión", "gl": {"nombre": "Tova", "desc": "Dúas torradas con tomate e xamón, café, Cola Cao ou infusión"}, "en": {"nombre": "Tova", "desc": "Two slices of toast with tomato and cured ham, with coffee, Cola Cao or herbal tea"}, "precio": 3.5},
+        {"nombre": "Little Green", "desc": "Dos tostadas con tomate, jamón y queso del país", "gl": {"nombre": "Little Green", "desc": "Dúas torradas con tomate, xamón e queixo do país"}, "en": {"nombre": "Little Green", "desc": "Two slices of toast with tomato, cured ham and local cheese"}, "precio": 4.5}
       ]
     },
     {
       "id": "tapas",
       "titulo": "Tapas",
+      "gl": { "titulo": "Tapas" },
+      "en": { "titulo": "Tapas" },
       "fuente": "ilustrada-1",
       "platos": [
-        {"nombre": "Ensaladilla", "precio": 4.0, "verificar": "La hoja «¿Uns petiscos?» la pone a 2,00 €"},
-        {"nombre": "Tortilla", "precio": 3.5},
-        {"nombre": "Tortilla á feira", "precio": 4.5},
-        {"nombre": "Croquetas ibéricas o de setas", "desc": "4 unidades", "precio": 4.0, "verificar": "La hoja «¿Uns petiscos?» pone croquetas a 2,50 € sin decir unidades"},
-        {"nombre": "Zorza", "precio": 4.5},
-        {"nombre": "Raxo", "precio": 4.5},
-        {"nombre": "Albóndigas", "precio": 4.5},
-        {"nombre": "Mini burger", "precio": 2.5, "fuente": "impresa-petiscos", "verificar": "Solo en la hoja impresa: ¿sigue en carta?"}
+        {"nombre": "Ensaladilla", "gl": {"nombre": "Ensaladilla"}, "en": {"nombre": "Ensaladilla", "desc": "Potato salad with mayonnaise"}, "precio": 4.0, "verificar": "La hoja «¿Uns petiscos?» la pone a 2,00 €"},
+        {"nombre": "Tortilla", "gl": {"nombre": "Tortilla"}, "en": {"nombre": "Tortilla", "desc": "Potato omelette"}, "precio": 3.5},
+        {"nombre": "Tortilla á feira", "gl": {"nombre": "Tortilla á feira"}, "en": {"nombre": "Tortilla á feira"}, "precio": 4.5},
+        {"nombre": "Croquetas ibéricas o de setas", "desc": "4 unidades", "gl": {"nombre": "Croquetas ibéricas ou de cogomelos", "desc": "4 unidades"}, "en": {"nombre": "Ibérico ham or mushroom croquettes", "desc": "4 pieces"}, "precio": 4.0, "verificar": "La hoja «¿Uns petiscos?» pone croquetas a 2,50 € sin decir unidades"},
+        {"nombre": "Zorza", "gl": {"nombre": "Zorza"}, "en": {"nombre": "Zorza", "desc": "Marinated minced pork, pan-fried"}, "precio": 4.5},
+        {"nombre": "Raxo", "gl": {"nombre": "Raxo"}, "en": {"nombre": "Raxo", "desc": "Marinated pork loin, pan-fried"}, "precio": 4.5},
+        {"nombre": "Albóndigas", "gl": {"nombre": "Albóndegas"}, "en": {"nombre": "Meatballs"}, "precio": 4.5},
+        {"nombre": "Mini burger", "gl": {"nombre": "Mini burger"}, "en": {"nombre": "Mini burger"}, "precio": 2.5, "fuente": "impresa-petiscos", "verificar": "Solo en la hoja impresa: ¿sigue en carta?"}
       ]
     },
     {
       "id": "raciones",
       "titulo": "Raciones",
+      "gl": { "titulo": "Racións" },
+      "en": { "titulo": "Sharing plates" },
       "fuente": "ilustrada-1",
       "platos": [
-        {"nombre": "Raxo", "precio": 12.0, "verificar": "Las hojas impresas ponen «Raxo de porco» a 10 € (la de petiscos, con o sin salsa de setas)"},
-        {"nombre": "Raxo completo", "desc": "Con champiñones y pimientos", "precio": 13.5},
-        {"nombre": "Zorza", "precio": 12.0},
-        {"nombre": "Chipirones", "desc": "Fritos o a la plancha", "precio": 13.0},
-        {"nombre": "Huevos con chorizo o bacon", "precio": 10.0, "verificar": "Las hojas impresas tienen «Plato de ovos fritidos, patacas e xamón ou chourizo» a 8 €: ¿es el mismo plato?"},
-        {"nombre": "Albóndigas", "precio": 10.0},
-        {"nombre": "Ensaladilla", "precio": 9.0},
-        {"nombre": "Croquetas ibéricas o de setas", "desc": "8 unidades", "precio": 8.0},
-        {"nombre": "Ración de patatas fritas", "precio": 3.0},
-        {"nombre": "Ración de pan", "precio": 1.0}
+        {"nombre": "Raxo", "gl": {"nombre": "Raxo"}, "en": {"nombre": "Raxo", "desc": "Marinated pork loin, pan-fried"}, "precio": 12.0, "verificar": "Las hojas impresas ponen «Raxo de porco» a 10 € (la de petiscos, con o sin salsa de setas)"},
+        {"nombre": "Raxo completo", "desc": "Con champiñones y pimientos", "gl": {"nombre": "Raxo completo", "desc": "Con champiñóns e pementos"}, "en": {"nombre": "Raxo with everything", "desc": "Marinated pork loin with mushrooms and peppers"}, "precio": 13.5},
+        {"nombre": "Zorza", "gl": {"nombre": "Zorza"}, "en": {"nombre": "Zorza", "desc": "Marinated minced pork, pan-fried"}, "precio": 12.0},
+        {"nombre": "Chipirones", "desc": "Fritos o a la plancha", "gl": {"nombre": "Chipiróns", "desc": "Fritidos ou á prancha"}, "en": {"nombre": "Baby squid", "desc": "Fried or grilled"}, "precio": 13.0},
+        {"nombre": "Huevos con chorizo o bacon", "gl": {"nombre": "Ovos con chourizo ou beicon"}, "en": {"nombre": "Eggs with chorizo or bacon"}, "precio": 10.0, "verificar": "Las hojas impresas tienen «Plato de ovos fritidos, patacas e xamón ou chourizo» a 8 €: ¿es el mismo plato?"},
+        {"nombre": "Albóndigas", "gl": {"nombre": "Albóndegas"}, "en": {"nombre": "Meatballs"}, "precio": 10.0},
+        {"nombre": "Ensaladilla", "gl": {"nombre": "Ensaladilla"}, "en": {"nombre": "Ensaladilla", "desc": "Potato salad with mayonnaise"}, "precio": 9.0},
+        {"nombre": "Croquetas ibéricas o de setas", "desc": "8 unidades", "gl": {"nombre": "Croquetas ibéricas ou de cogomelos", "desc": "8 unidades"}, "en": {"nombre": "Ibérico ham or mushroom croquettes", "desc": "8 pieces"}, "precio": 8.0},
+        {"nombre": "Ración de patatas fritas", "gl": {"nombre": "Ración de patacas fritidas"}, "en": {"nombre": "Fries"}, "precio": 3.0},
+        {"nombre": "Ración de pan", "gl": {"nombre": "Ración de pan"}, "en": {"nombre": "Bread"}, "precio": 1.0}
       ]
     },
     {
       "id": "tortillas",
       "titulo": "Tortillas",
+      "gl": { "titulo": "Tortillas" },
+      "en": { "titulo": "Tortillas" },
       "fuente": "ilustrada-1",
       "platos": [
-        {"nombre": "Tortilla entera", "precio": 15.0, "media": 9.0, "verificar": "Las hojas impresas: «Tortilla» 12 € (petiscos: media 7 €)"},
-        {"nombre": "Tortilla con…", "desc": "Á feira, zorza, chorizo, cebolla, etc.", "precio": 22.0, "media": 12.0, "verificar": "La hoja de petiscos: «Tortilla con chourizo, ou grelos, ou setas» 16 €, media 9 €"}
+        {"nombre": "Tortilla entera", "gl": {"nombre": "Tortilla enteira"}, "en": {"nombre": "Whole tortilla", "desc": "Potato omelette"}, "precio": 15.0, "media": 9.0, "verificar": "Las hojas impresas: «Tortilla» 12 € (petiscos: media 7 €)"},
+        {"nombre": "Tortilla con…", "desc": "Á feira, zorza, chorizo, cebolla, etc.", "gl": {"nombre": "Tortilla con…", "desc": "Á feira, zorza, chourizo, cebola, etc."}, "en": {"nombre": "Tortilla with…", "desc": "Á feira, zorza, chorizo, onion, etc."}, "precio": 22.0, "media": 12.0, "verificar": "La hoja de petiscos: «Tortilla con chourizo, ou grelos, ou setas» 16 €, media 9 €"}
       ]
     },
     {
       "id": "bocatas",
       "titulo": "Bocadillos y hamburguesas",
+      "gl": { "titulo": "Bocadillos e hamburguesas" },
+      "en": { "titulo": "Sandwiches and burgers" },
       "fuente": "ilustrada-2",
       "platos": [
-        {"nombre": "Bocata «Serranito»", "desc": "Jamón con tomate en rodajas o pimientos rojos", "precio": 6.0},
-        {"nombre": "Hamburguesa simple", "precio": 4.5},
-        {"nombre": "Hamburguesa completa", "precio": 5.5},
-        {"nombre": "Hamburguesa «Logradouro»", "desc": "Carne, queso, lechuga, tomate, cebolla, huevo o bacon", "precio": 6.5},
-        {"nombre": "Menú perrito caliente gigante (30 cm)", "desc": "Con cebolla crujiente", "precio": 9.5},
-        {"nombre": "Hamburguesa de porco celta", "desc": "150 g, lechuga, lombarda encurtida, cebolla caramelizada, patatas fritas y salsa tártara (petiscos: también tomate)", "precio": 9.0, "fuente": "impresa-veuche", "verificar": "Solo en las hojas impresas: ¿sigue en carta?"},
-        {"nombre": "Bocata de huevos fritos", "desc": "Con jamón o chorizo y patatas", "precio": 4.0, "fuente": "impresa-veuche", "verificar": "Solo en hojas impresas; la de petiscos lo pone a 4,50 €"}
+        {"nombre": "Bocata «Serranito»", "desc": "Jamón con tomate en rodajas o pimientos rojos", "gl": {"nombre": "Bocata «Serranito»", "desc": "Xamón con tomate en rodelas ou pementos vermellos"}, "en": {"nombre": "«Serranito» sandwich", "desc": "Cured ham with sliced tomato or red peppers"}, "precio": 6.0},
+        {"nombre": "Hamburguesa simple", "gl": {"nombre": "Hamburguesa simple"}, "en": {"nombre": "Plain burger"}, "precio": 4.5},
+        {"nombre": "Hamburguesa completa", "gl": {"nombre": "Hamburguesa completa"}, "en": {"nombre": "Burger with the works"}, "precio": 5.5},
+        {"nombre": "Hamburguesa «Logradouro»", "desc": "Carne, queso, lechuga, tomate, cebolla, huevo o bacon", "gl": {"nombre": "Hamburguesa «Logradouro»", "desc": "Carne, queixo, leituga, tomate, cebola, ovo ou beicon"}, "en": {"nombre": "«Logradouro» burger", "desc": "Meat patty, cheese, lettuce, tomato, onion, egg or bacon"}, "precio": 6.5},
+        {"nombre": "Menú perrito caliente gigante (30 cm)", "desc": "Con cebolla crujiente", "gl": {"nombre": "Menú hot dog xigante (30 cm)", "desc": "Con cebola crocante"}, "en": {"nombre": "Giant hot dog meal (30 cm)", "desc": "With crispy onion"}, "precio": 9.5},
+        {"nombre": "Hamburguesa de porco celta", "desc": "150 g, lechuga, lombarda encurtida, cebolla caramelizada, patatas fritas y salsa tártara", "gl": {"nombre": "Hamburguesa de porco celta", "desc": "150 g, leituga, lombarda encurtida, cebola caramelizada, patacas fritidas e salsa tártara"}, "en": {"nombre": "Porco celta burger", "desc": "150 g of Galician heritage-breed pork, lettuce, pickled red cabbage, caramelised onion, fries and tartare sauce"}, "precio": 9.0, "fuente": "impresa-veuche", "verificar": "Solo en las hojas impresas: ¿sigue en carta? La hoja de petiscos añade tomate."},
+        {"nombre": "Bocata de huevos fritos", "desc": "Con jamón o chorizo y patatas", "gl": {"nombre": "Bocata de ovos fritidos", "desc": "Con xamón ou chourizo e patacas"}, "en": {"nombre": "Fried egg sandwich", "desc": "With cured ham or chorizo, and fries"}, "precio": 4.0, "fuente": "impresa-veuche", "verificar": "Solo en hojas impresas; la de petiscos lo pone a 4,50 €"}
       ]
     },
     {
       "id": "cocina",
       "titulo": "De la cocina",
-      "gl": "¿Veuche a fame?",
+      "rotulo": "¿Veuche a fame?",
+      "gl": { "titulo": "Da cociña" },
+      "en": { "titulo": "From the kitchen" },
       "nota_interna": "Platos que solo salen en las hojas impresas en gallego.",
       "fuente": "impresa-veuche",
       "verificar": "Toda la sección: ¿siguen en carta? Ninguno sale en las cartas ilustradas.",
       "platos": [
-        {"nombre": "Plato de huevos fritos", "desc": "Con patatas y jamón o chorizo", "precio": 8.0},
-        {"nombre": "Tabla de ibéricos o de cerdo celta", "gl": "Taboa ibéricos ou celta", "precio": 16.0},
-        {"nombre": "Tabla surtida", "gl": "Taboa surtida", "precio": 14.0},
-        {"nombre": "Tabla de quesos gallegos", "gl": "Taboa queixos galegos", "precio": 12.0},
-        {"nombre": "Escalivada", "desc": "Pimiento, berenjena y puerro", "precio": 9.0},
-        {"nombre": "Escalivada con bacalao", "precio": 12.0},
-        {"nombre": "Ensalada verde", "desc": "Con salmón, pollo o portobello", "precio": 9.0},
-        {"nombre": "Ensalada de pollo crujiente", "desc": "Lechuga, tomate, calabacín, pollo crujiente y parmesano", "precio": 9.0, "fuente": "impresa-petiscos"},
-        {"nombre": "Wok vegano o de cerdo", "precio": 8.0},
-        {"nombre": "Wok de langostinos", "precio": 10.0},
-        {"nombre": "Salteado de arroz y grelos con pollo a la marroquí", "precio": 9.0, "fuente": "impresa-petiscos", "verificar": "La columna de precios de esa hoja está desalineada; 9 € es la lectura coherente con la otra hoja"},
-        {"nombre": "Secreto de cerdo", "gl": "Segredo de porco", "precio": 11.0},
-        {"nombre": "Tiras de pollo al curry", "precio": 9.0},
-        {"nombre": "Albóndigas veganas", "precio": 7.0},
-        {"nombre": "Sushi bowl Logradouro", "desc": "Arroz de sushi, verduritas de temporada, mayonesa de soja, berenjena encurtida y salmón", "precio": 9.0, "fuente": "impresa-petiscos", "verificar": "Columna desalineada, como el salteado"},
-        {"nombre": "Ramen", "desc": "Cazuela de caldo con pasta, verduras de temporada, panceta tostada y huevo cocido", "precio": 9.0},
-        {"nombre": "Ramen vegano", "desc": "Caldo, verduras de temporada, boliños do pote y champiñones confitados", "precio": 9.0}
+        {"nombre": "Plato de huevos fritos", "desc": "Con patatas y jamón o chorizo", "gl": {"nombre": "Prato de ovos fritidos", "desc": "Con patacas e xamón ou chourizo"}, "en": {"nombre": "Fried eggs", "desc": "With fries and cured ham or chorizo"}, "precio": 8.0},
+        {"nombre": "Tabla de ibéricos o de cerdo celta", "gl": {"nombre": "Táboa de ibéricos ou de porco celta"}, "en": {"nombre": "Ibérico or porco celta cold-cut board"}, "precio": 16.0},
+        {"nombre": "Tabla surtida", "gl": {"nombre": "Táboa surtida"}, "en": {"nombre": "Mixed board"}, "precio": 14.0},
+        {"nombre": "Tabla de quesos gallegos", "gl": {"nombre": "Táboa de queixos galegos"}, "en": {"nombre": "Galician cheese board"}, "precio": 12.0},
+        {"nombre": "Escalivada", "desc": "Pimiento, berenjena y puerro", "gl": {"nombre": "Escalivada", "desc": "Pemento, berenxena e porro"}, "en": {"nombre": "Escalivada", "desc": "Roasted pepper, aubergine and leek"}, "precio": 9.0},
+        {"nombre": "Escalivada con bacalao", "gl": {"nombre": "Escalivada con bacallau"}, "en": {"nombre": "Escalivada with cod"}, "precio": 12.0},
+        {"nombre": "Ensalada verde", "desc": "Con salmón, pollo o portobello", "gl": {"nombre": "Ensalada verde", "desc": "Con salmón, polo ou portobello"}, "en": {"nombre": "Green salad", "desc": "With salmon, chicken or portobello mushroom"}, "precio": 9.0},
+        {"nombre": "Ensalada de pollo crujiente", "desc": "Lechuga, tomate, calabacín, pollo crujiente y parmesano", "gl": {"nombre": "Ensalada de polo crocante", "desc": "Leituga, tomate, cabaciña, polo crocante e parmesano"}, "en": {"nombre": "Crispy chicken salad", "desc": "Lettuce, tomato, courgette, crispy chicken and parmesan"}, "precio": 9.0, "fuente": "impresa-petiscos"},
+        {"nombre": "Wok vegano o de cerdo", "gl": {"nombre": "Wok vegano ou de porco"}, "en": {"nombre": "Vegan or pork wok"}, "precio": 8.0},
+        {"nombre": "Wok de langostinos", "gl": {"nombre": "Wok de lagostinos"}, "en": {"nombre": "Prawn wok"}, "precio": 10.0},
+        {"nombre": "Salteado de arroz y grelos con pollo a la marroquí", "gl": {"nombre": "Salteado de arroz e grelos con polo á marroquí"}, "en": {"nombre": "Stir-fried rice and turnip greens with Moroccan-style chicken"}, "precio": 9.0, "fuente": "impresa-petiscos", "verificar": "La columna de precios de esa hoja está desalineada; 9 € es la lectura coherente con la otra hoja"},
+        {"nombre": "Secreto de cerdo", "gl": {"nombre": "Segredo de porco"}, "en": {"nombre": "Pork secreto", "desc": "A cut from the shoulder"}, "precio": 11.0},
+        {"nombre": "Tiras de pollo al curry", "gl": {"nombre": "Tiras de polo ao curry"}, "en": {"nombre": "Curried chicken strips"}, "precio": 9.0},
+        {"nombre": "Albóndigas veganas", "gl": {"nombre": "Albóndegas veganas"}, "en": {"nombre": "Vegan meatballs"}, "precio": 7.0},
+        {"nombre": "Sushi bowl Logradouro", "desc": "Arroz de sushi, verduritas de temporada, mayonesa de soja, berenjena encurtida y salmón", "gl": {"nombre": "Sushi bowl Logradouro", "desc": "Arroz de sushi, verduriñas de tempada, maionesa de soia, berenxena encurtida e salmón"}, "en": {"nombre": "Logradouro sushi bowl", "desc": "Sushi rice, seasonal vegetables, soy mayonnaise, pickled aubergine and salmon"}, "precio": 9.0, "fuente": "impresa-petiscos", "verificar": "Columna desalineada, como el salteado"},
+        {"nombre": "Ramen", "desc": "Cazuela de caldo con pasta, verduras de temporada, panceta tostada y huevo cocido", "gl": {"nombre": "Ramen", "desc": "Cazola de caldo con pasta, verduras de tempada, panceta tostada e ovo cocido"}, "en": {"nombre": "Ramen", "desc": "Bowl of broth with noodles, seasonal vegetables, toasted pork belly and boiled egg"}, "precio": 9.0},
+        {"nombre": "Ramen vegano", "desc": "Caldo, verduras de temporada, boliños do pote y champiñones confitados", "gl": {"nombre": "Ramen vegano", "desc": "Caldo, verduras de tempada, boliños do pote e champiñóns confitados"}, "en": {"nombre": "Vegan ramen", "desc": "Broth, seasonal vegetables, boliños do pote and confit mushrooms"}, "precio": 9.0}
       ]
     },
     {
       "id": "ensaladas",
       "titulo": "Ensaladas",
+      "gl": { "titulo": "Ensaladas" },
+      "en": { "titulo": "Salads" },
       "fuente": "ilustrada-2",
       "platos": [
-        {"nombre": "Ensalada simple", "precio": 5.5},
-        {"nombre": "Ensalada completa", "desc": "Lechuga, tomate, cebolla, maíz, atún, surimi, nuez y huevo cocido", "precio": 8.5}
+        {"nombre": "Ensalada simple", "gl": {"nombre": "Ensalada simple"}, "en": {"nombre": "Plain salad"}, "precio": 5.5},
+        {"nombre": "Ensalada completa", "desc": "Lechuga, tomate, cebolla, maíz, atún, surimi, nuez y huevo cocido", "gl": {"nombre": "Ensalada completa", "desc": "Leituga, tomate, cebola, millo, atún, surimi, noz e ovo cocido"}, "en": {"nombre": "Mixed salad", "desc": "Lettuce, tomato, onion, sweetcorn, tuna, surimi, walnut and boiled egg"}, "precio": 8.5}
       ]
     },
     {
       "id": "veganas",
       "titulo": "Opciones veganas",
+      "gl": { "titulo": "Opcións veganas" },
+      "en": { "titulo": "Vegan options" },
       "fuente": "ilustrada-1",
       "platos": [
-        {"nombre": "Hamburguesa de zanahoria", "desc": "Con pan de remolacha y sticks de verduras", "precio": 10.0, "verificar": "Las hojas impresas tienen otra hamburguesa vegana a 7 € (lechuga, lombarda encurtida, cebolla caramelizada, patatas y salsa tártara)"},
-        {"nombre": "Canelones veganos de hummus", "desc": "Envueltos en berenjena, con sticks de verduras", "precio": 11.0},
-        {"nombre": "Croquetas de setas", "desc": "8 unidades", "precio": 8.0}
+        {"nombre": "Hamburguesa de zanahoria", "desc": "Con pan de remolacha y sticks de verduras", "gl": {"nombre": "Hamburguesa de cenoria", "desc": "Con pan de remolacha e sticks de verduras"}, "en": {"nombre": "Carrot burger", "desc": "With a beetroot bun and vegetable sticks"}, "precio": 10.0, "verificar": "Las hojas impresas tienen otra hamburguesa vegana a 7 € (lechuga, lombarda encurtida, cebolla caramelizada, patatas y salsa tártara)"},
+        {"nombre": "Canelones veganos de hummus", "desc": "Envueltos en berenjena, con sticks de verduras", "gl": {"nombre": "Canelóns veganos de hummus", "desc": "Envoltos en berenxena, con sticks de verduras"}, "en": {"nombre": "Vegan hummus cannelloni", "desc": "Wrapped in aubergine, with vegetable sticks"}, "precio": 11.0},
+        {"nombre": "Croquetas de setas", "desc": "8 unidades", "gl": {"nombre": "Croquetas de cogomelos", "desc": "8 unidades"}, "en": {"nombre": "Mushroom croquettes", "desc": "8 pieces"}, "precio": 8.0}
       ]
     },
     {
       "id": "postres",
       "titulo": "Postres",
+      "gl": { "titulo": "Sobremesas" },
+      "en": { "titulo": "Desserts" },
       "fuente": "ilustrada-2",
       "platos": [
-        {"nombre": "Tarta tiramisú", "desc": "Sin gluten", "precio": 5.5},
-        {"nombre": "Tarta de chocolate", "precio": 5.5},
-        {"nombre": "Tarta Red Velvet", "precio": 5.5}
+        {"nombre": "Tarta tiramisú", "desc": "Sin gluten", "gl": {"nombre": "Torta de tiramisú", "desc": "Sen glute"}, "en": {"nombre": "Tiramisu cake", "desc": "Gluten-free"}, "precio": 5.5},
+        {"nombre": "Tarta de chocolate", "gl": {"nombre": "Torta de chocolate"}, "en": {"nombre": "Chocolate cake"}, "precio": 5.5},
+        {"nombre": "Tarta Red Velvet", "gl": {"nombre": "Torta Red Velvet"}, "en": {"nombre": "Red velvet cake"}, "precio": 5.5}
       ]
     },
     {
       "id": "bebidas",
       "titulo": "Bebidas",
+      "gl": { "titulo": "Bebidas" },
+      "en": { "titulo": "Drinks" },
       "fuente": "impresa-petiscos",
-      "nota": "Café, infusiones, leches y bebidas vegetales, y zumos de fruta natural.",
       "nota_interna": "Solo se ve un trozo de la hoja: «café, infusións, leites e bebidas vexetais varias» y «auténticos zumos de froita». No hay más precios de bebida.",
       "platos": [
-        {"nombre": "Zumos de fruta", "precio": 2.5, "verificar": "Hoja cortada en la foto"},
-        {"nombre": "Café, infusiones, leches y bebidas vegetales", "precio": null}
+        {"nombre": "Zumos de fruta", "gl": {"nombre": "Zumes de froita"}, "en": {"nombre": "Fruit juices"}, "precio": 2.5, "verificar": "Hoja cortada en la foto"},
+        {"nombre": "Café, infusiones, leches y bebidas vegetales", "gl": {"nombre": "Café, infusións, leites e bebidas vexetais"}, "en": {"nombre": "Coffee, herbal teas, milks and plant-based drinks"}, "precio": null}
       ]
     }
   ]

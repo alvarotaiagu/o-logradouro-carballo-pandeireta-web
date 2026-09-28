@@ -357,7 +357,7 @@ html:not(.con-movimiento) .verso { opacity: 1; transform: none; }
 .destacado { background: var(--noche); padding: clamp(2rem, 5vw, 3.4rem) clamp(1.4rem, 4vw, 3rem); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 28px; }
 .destacado__num { font-family: var(--f-display); font-size: clamp(2.6rem, 6vw, 4.2rem); color: color-mix(in srgb, var(--aro) 70%, transparent); }
 .destacado__nombre { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.5rem, 3.4vw, 2.4rem); }
-.destacado__desc { font-size: 14px; color: var(--noche-apagado); margin-top: 6px; }
+.destacado__desc { display: block; font-size: 14px; color: var(--noche-apagado); margin-top: 6px; }
 .destacado__precio { font-family: var(--f-display); font-size: clamp(1.3rem, 2.6vw, 1.9rem); color: var(--mostaza-sobre-noche); white-space: nowrap; }
 
 /* ═══════════════════════ RESEÑAS ═══════════════════════ */

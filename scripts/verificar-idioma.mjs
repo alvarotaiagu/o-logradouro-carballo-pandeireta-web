@@ -40,6 +40,10 @@ try {
   await esperarCortina(p);
   const gl = await p.evaluate(() => ({ lang: document.documentElement.lang, h1: document.querySelector('.hero__titular').getAttribute('aria-label'), pulsado: document.querySelector('.idioma [aria-pressed="true"]').dataset.idioma }));
   comprobar(gl.lang === 'gl' && gl.h1 === 'Taberna de sempre, carta de agora.' && gl.pulsado === 'gl', 'por defecto: galego (lang=' + gl.lang + ', «' + gl.h1 + '»)');
+  await p.waitForSelector('.verso');
+  const cartaGl = await p.evaluate(() => Array.from(document.querySelectorAll('.copla__titulo, .verso__nombre, .verso__desc, .copla__nota, .destacado__nombre, .destacado__desc, .marquee__pista span')).map((e) => e.textContent).join(' | '));
+  const castEnGl = ['Tostada', 'Albóndigas', 'Raciones', 'lechuga', 'cebolla', 'Postres', 'Tabla', 'Hasta las', 'huevo', 'Desayunos', 'De la cocina', 'Zumos', 'setas', ' y '].filter((w) => cartaGl.includes(w));
+  comprobar(castEnGl.length === 0 && cartaGl.includes('Racións') && cartaGl.includes('Albóndegas'), 'galego: a carta en galego' + (castEnGl.length ? ' (quedan: ' + castEnGl.join(', ') + ')' : ''));
 
   /* ── cambio en vivo a castellano ── */
   await p.click('.idioma [data-idioma="es"]');
@@ -64,6 +68,9 @@ try {
   comprobar(es.nav === 'La casa' && es.son === 'Sonido: apagado', 'nav y botón de sonido en castellano (' + es.nav + ' / ' + es.son + ')');
   comprobar(/^(Abierto · cierra|Abrimos|Volvemos el)/.test(es.estado) && /Cerrado/.test(es.tabla), 'horario en vivo en castellano: «' + es.estado + '» · ' + es.tabla);
   comprobar(es.guardado === 'es', 'la elección se guarda (localStorage)');
+  const cartaEs = await p.evaluate(() => Array.from(document.querySelectorAll('.copla__titulo, .verso__nombre, .verso__desc, .destacado__nombre')).map((e) => e.textContent).join(' | '));
+  const galEnEs = ['Racións', 'Albóndegas', 'Torrada', 'leituga', 'cebola', 'Sobremesas', 'Táboa', 'ovos', 'Da cociña'].filter((w) => cartaEs.includes(w));
+  comprobar(galEnEs.length === 0 && cartaEs.includes('Raciones') && cartaEs.includes('Albóndigas'), 'castellano: la carta en castellano' + (galEnEs.length ? ' (quedan: ' + galEnEs.join(', ') + ')' : ''));
   const restos = (await textoVisibleSinCartaNiCitas(p));
   const pillados = GALEGO.filter((w) => restos.includes(w));
   comprobar(pillados.length === 0, 'sin restos de galego fuera de la carta y las citas' + (pillados.length ? ': ' + pillados.join(', ') : ''));
@@ -108,10 +115,22 @@ try {
     media: (document.querySelector('.media__etq') || {}).textContent || '(sin medias)',
     mapa: document.querySelector('.map-consent').getAttribute('data-map-title')
   }));
-  comprobar(en.lang === 'en' && en.h1 === 'An old-school tavern with a menu of today.', 'inglés: <html lang="en"> y titular «' + en.h1 + '»');
-  comprobar(en.nav === 'The house|Menu|Where to start|Reviews|Hours' && en.son === 'Sound: off', 'inglés: nav y sonido (' + en.nav + ' / ' + en.son + ')');
+  comprobar(en.lang === 'en' && en.h1 === 'A classic tavern with a menu for today.', 'inglés: <html lang="en"> y titular «' + en.h1 + '»');
+  comprobar(en.nav === 'About|Menu|Where to start|Reviews|Hours' && en.son === 'Sound: off', 'inglés: nav y sonido (' + en.nav + ' / ' + en.son + ')');
   comprobar(/^(Open · closes at|We open at|Back on \w+day at)/.test(en.estado) && /Closed/.test(en.tabla), 'inglés: horario en vivo «' + en.estado + '» · ' + en.tabla);
   comprobar(en.copla === '01 / 11' && en.media === 'half' && en.mapa.startsWith('Map:'), 'inglés: carta «' + en.copla + '», «' + en.media + '», título del mapa');
+  /* la carta también cambia: títulos, platos, descripciones, destacados, marquee y formato del precio */
+  const cartaEn = await p.evaluate(() => ({
+    titulos: Array.from(document.querySelectorAll('.copla__titulo')).map((h) => h.textContent),
+    platos: Array.from(document.querySelectorAll('.verso__nombre, .verso__desc, .copla__nota, .destacado__nombre, .destacado__desc, .marquee__pista span')).map((e) => e.textContent).join(' | '),
+    precio: document.querySelector('.verso__precio').textContent.trim(),
+    titulo: document.title
+  }));
+  comprobar(cartaEn.titulos.join('|') === 'Breakfast|Breakfasts with a name|Tapas|Sharing plates|Tortillas|Sandwiches and burgers|From the kitchen|Salads|Vegan options|Desserts|Drinks', 'inglés: títulos de la carta (' + cartaEn.titulos.join(', ') + ')');
+  const CASTELLANO_CARTA = ['Tostada', 'Albóndigas', 'Raciones', 'Hamburguesa', 'lechuga', 'cebolla', 'unidades', 'Postres', 'Bebidas', 'Ensalada', 'Tabla', 'Hasta las', 'Cada desayuno', 'Zumos', 'huevo'];
+  const castEn = CASTELLANO_CARTA.filter((w) => cartaEn.platos.includes(w));
+  comprobar(castEn.length === 0, 'inglés: carta, destacados y marquee sin castellano' + (castEn.length ? ': ' + castEn.join(', ') : ''));
+  comprobar(/^€\d+\.\d\d$/.test(cartaEn.precio) && cartaEn.titulo.includes('Tavern'), 'inglés: precio «' + cartaEn.precio + '» y <title> «' + cartaEn.titulo + '»');
   const MARCAS = ['Horario', 'Destacados', 'Ver mapa', 'Aviso legal', 'Sonido', 'Son:', 'reseñas', 'opinións', 'Llamar', 'Chamar', 'Ver el', 'Ver o', 'Pechado', 'Cerrado', 'De acuerdo', 'De acordo', 'Saltar', 'Taberna ·', 'Privacidad'];
   const restosEn = await textoVisibleSinCartaNiCitas(p);
   const pilladosEn = MARCAS.filter((w) => restosEn.includes(w));
