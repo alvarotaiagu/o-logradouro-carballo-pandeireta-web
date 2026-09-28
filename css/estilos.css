@@ -232,7 +232,7 @@ html.pandeireta-llegando .cabecera, html.pandeireta-atracada .cabecera { padding
 .seccion-nav a.activo span { opacity: 1; transform: scale(1.5); }
 @media (max-width: 980px) { .seccion-nav { display: none; } }
 
-/* ═══════════════════════ PÍLDORA «COPLA N DE XI» (solo móvil) ═══════════════════════ */
+/* ═══════════════════════ PÍLDORA «03 / 11» (solo móvil) ═══════════════════════ */
 .copla-actual { display: none; }
 @media (max-width: 980px) {
   .copla-actual {
@@ -315,12 +315,14 @@ html.pandeireta-llegando .cabecera, html.pandeireta-atracada .cabecera { padding
 .copla__gl { font-style: italic; color: var(--piel-apagado); margin-top: 6px; font-size: 15px; }
 .copla__nota { margin-top: 10px; font-size: 13.5px; color: var(--piel-apagado); max-width: 34ch; }
 
-.compas { display: flex; gap: 7px; margin-top: 20px; }
-.compas i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--noche) 55%, transparent); transition: background .2s, transform .2s, border-color .2s; }
-.compas i.forte { border-color: var(--noche); }
-.compas i.forte::after { content: ""; }
-.compas i.forte { background: color-mix(in srgb, var(--noche) 22%, transparent); }
-.compas i.activo { background: var(--lazo); border-color: var(--lazo); transform: scale(1.25); }
+/* compás de muiñeira (6/8) que hace de barra de progreso: los puntos se
+   rellenan de rojo según avanzas por la copla; los tiempos fuertes (1 y 4)
+   solo son más grandes, sin otro color */
+.compas { display: flex; align-items: center; gap: 7px; margin-top: 20px; }
+.compas i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--noche) 50%, transparent); transition: background .25s, transform .25s, border-color .25s; }
+.compas i.forte { width: 12px; height: 12px; }
+.compas i.lleno { background: var(--lazo); border-color: var(--lazo); }
+.compas i.activo { transform: scale(1.2); }
 
 .copla__lista { display: flex; flex-direction: column; }
 .verso { display: grid; grid-template-columns: 2.4rem 1fr auto; gap: 14px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--noche) 9%, transparent); opacity: 0; transform: translateY(14px); }
@@ -433,7 +435,7 @@ html.densidad-sobria .marquee__pista { animation-duration: 3s; }
 html.densidad-sobria .pandeireta__onda,
 html.densidad-sobria .ferrenas { opacity: .35; }
 html.densidad-sobria .casa__texto::after {
-  content: "68 pratos repartidos en 11 coplas."; display: block; margin-top: 14px; font-family: var(--f-display);
+  content: "68 pratos na carta."; display: block; margin-top: 14px; font-family: var(--f-display);
   font-size: 1.3rem; color: var(--mostaza-sobre-noche);
 }
 html.densidad-sobria .destacado__num { opacity: .3; }

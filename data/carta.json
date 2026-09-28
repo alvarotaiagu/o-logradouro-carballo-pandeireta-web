@@ -30,7 +30,8 @@
       "id": "almorzos",
       "titulo": "Almuerzos con nombre propio",
       "gl": "Almorzos",
-      "nota": "Hoja impresa en gallego: cada almuerzo lleva nombre de persona. Conviven con los desayunos n.º 1–5 de la carta ilustrada a precios distintos.",
+      "nota": "Cada almuerzo lleva un nombre de persona.",
+      "nota_interna": "Hoja impresa en gallego: cada almuerzo lleva nombre de persona. Conviven con los desayunos n.º 1–5 de la carta ilustrada a precios distintos.",
       "fuente": "impresa-almorzos",
       "verificar": "¿Siguen vigentes o los sustituyeron los desayunos n.º 1–5 de la carta ilustrada?",
       "platos": [
@@ -104,7 +105,7 @@
       "id": "cocina",
       "titulo": "De la cocina",
       "gl": "¿Veuche a fame?",
-      "nota": "Platos que solo salen en las hojas impresas en gallego.",
+      "nota_interna": "Platos que solo salen en las hojas impresas en gallego.",
       "fuente": "impresa-veuche",
       "verificar": "Toda la sección: ¿siguen en carta? Ninguno sale en las cartas ilustradas.",
       "platos": [
@@ -160,7 +161,8 @@
       "id": "bebidas",
       "titulo": "Bebidas",
       "fuente": "impresa-petiscos",
-      "nota": "Solo se ve un trozo de la hoja: «café, infusións, leites e bebidas vexetais varias» y «auténticos zumos de froita». No hay más precios de bebida.",
+      "nota": "Café, infusiones, leches y bebidas vegetales, y zumos de fruta natural.",
+      "nota_interna": "Solo se ve un trozo de la hoja: «café, infusións, leites e bebidas vexetais varias» y «auténticos zumos de froita». No hay más precios de bebida.",
       "platos": [
         {"nombre": "Zumos de fruta", "precio": 2.5, "verificar": "Hoja cortada en la foto"},
         {"nombre": "Café, infusiones, leches y bebidas vegetales", "precio": null}

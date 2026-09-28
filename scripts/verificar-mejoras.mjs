@@ -230,6 +230,17 @@ try {
   comprobar(cOscura.ratio >= 3, 'punto del nav sobre fondo oscuro: ' + cOscura.ratio.toFixed(2) + ':1 (mín. 3:1 de componente de interfaz)');
   const yCarta = await page.evaluate(() => document.getElementById('carta').getBoundingClientRect().top + scrollY + 500);
   await bajarHasta(page, yCarta, 400);
+  /* compás: se rellena de rojo desde el 1 según avanzas; los fuertes (1 y 4) solo más grandes */
+  const compas = await page.evaluate(() => {
+    const listas = Array.from(document.querySelectorAll('.compas'));
+    const conAvance = listas.map((c) => Array.from(c.children).map((i) => i.classList.contains('lleno')));
+    const prefijo = conAvance.every((v) => { const n = v.lastIndexOf(true); return v.every((x, k) => x === (k <= n)); });
+    const alguno = conAvance.some((v) => v.includes(true));
+    const i0 = document.querySelector('.compas i'), f = document.querySelector('.compas i.forte'), d = document.querySelectorAll('.compas i')[1];
+    return { prefijo, alguno, forteMayor: f.getBoundingClientRect().width > d.getBoundingClientRect().width, forteSinGris: !f.classList.contains('lleno') ? getComputedStyle(f).backgroundColor === 'rgba(0, 0, 0, 0)' : true };
+  });
+  comprobar(compas.alguno && compas.prefijo, 'compás: se rellena como barra de progreso, sin huecos (del 1 al punto actual)');
+  comprobar(compas.forteMayor && compas.forteSinGris, 'compás: los tiempos fuertes solo son más grandes, sin un tercer color');
   const cClara = await contrastePunto(page);
   comprobar(cClara.ratio >= 3, 'punto del nav sobre la carta (piel): ' + cClara.ratio.toFixed(2) + ':1 — punto ' + cClara.punto + ' / fondo ' + cClara.fondo);
   comprobar(await botonSinTapar(page), 'sobre la carta la pandereta atracada sigue viéndose');
@@ -262,7 +273,7 @@ try {
   // contador de coplas en la cabecera sticky
   const coplas = await page.$$eval('.copla', (els) => els.length);
   const numPrimera = await page.$eval('.copla__num', (el) => el.textContent.trim());
-  comprobar(numPrimera === 'Copla I de ' + romano(coplas), 'la cabecera de la copla lleva el total: «' + numPrimera + '» (' + coplas + ' coplas)');
+  comprobar(numPrimera === '01 / ' + String(coplas).padStart(2, '0'), 'la cabecera de la copla lleva el total: «' + numPrimera + '» (' + coplas + ' coplas)');
 
   // estado «aberto»: mostaza + latido; pechado: sin latido
   const estado = await page.evaluate(() => {
@@ -331,7 +342,7 @@ try {
     pildora = await page3.$eval('#copla-actual', (el) => ({ visible: el.classList.contains('visible'), num: el.querySelector('.copla-actual__num').textContent, tit: el.querySelector('.copla-actual__tit').textContent, opacidad: getComputedStyle(el).opacity }));
     if (pildora.visible && pildora.num) break;
   }
-  comprobar(pildora.visible && /^Copla [IVX]+ de XI$/.test(pildora.num) && pildora.tit.length > 0, 'en la carta aparece la píldora: «' + pildora.num + ' · ' + pildora.tit + '»');
+  comprobar(pildora.visible && /^\d\d \/ 11$/.test(pildora.num) && pildora.tit.length > 0, 'en la carta aparece la píldora: «' + pildora.num + ' · ' + pildora.tit + '»');
   await page3.waitForTimeout(1200); // que se asiente la inercia de Lenis y el fundido
   await page3.screenshot({ path: path.join(raiz, 'screenshots', '40-pildora-copla-390.png') });
 

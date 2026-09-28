@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="gl" data-titulo-es="Aviso legal · O Logradouro">
+<html lang="gl" data-titulo-es="Aviso legal · O Logradouro" data-titulo-en="Legal notice · O Logradouro">
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
@@ -8,13 +8,14 @@
 <script>
 /* Idioma: ?lang= › elección guardada en la portada › galego. */
 (function () {
-  var h = document.documentElement, l = (/[?&]lang=(gl|es)\b/.exec(location.search) || [])[1];
+  var h = document.documentElement, l = (/[?&]lang=(gl|es|en)\b/.exec(location.search) || [])[1];
   if (l) { try { localStorage.setItem('logradouro-idioma', l); } catch (e) {} }
   else { try { l = localStorage.getItem('logradouro-idioma'); } catch (e) {} }
-  l = l === 'es' ? 'es' : 'gl';
+  l = (l === 'es' || l === 'en') ? l : 'gl';
   h.lang = l;
   h.setAttribute('data-idioma', l);
-  if (l === 'es' && h.getAttribute('data-titulo-es')) document.title = h.getAttribute('data-titulo-es');
+  var titulo = h.getAttribute('data-titulo-' + l);
+  if (titulo) document.title = titulo;
 })();
 </script>
 <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
@@ -27,16 +28,17 @@
   .pendiente { font-family: ui-monospace, Consolas, monospace; font-size: .82em; color: #7A1418; background: rgba(196,38,46,.14); padding: .1em .35em; border-radius: 4px; }
   .aviso { background: #E4D9C0; border-radius: 12px; padding: 1rem 1.2rem; }
   a { color: #7A1418; }
-  /* sin JS no hay data-idioma: se ve el galego */
-  html:not([data-idioma="es"]) [data-idioma-bloque="es"], html[data-idioma="es"] [data-idioma-bloque="gl"] { display: none; }
+  /* un bloque por idioma; sin JS no hay data-idioma y se ve el galego */
+  [data-idioma-bloque="es"], [data-idioma-bloque="en"] { display: none; }
+  html[data-idioma="es"] [data-idioma-bloque="es"], html[data-idioma="en"] [data-idioma-bloque="en"] { display: block; }
+  html[data-idioma="es"] [data-idioma-bloque="gl"], html[data-idioma="en"] [data-idioma-bloque="gl"] { display: none; }
 </style>
 </head>
 <body>
 <main>
-  <p><a href="./">← Volver a O Logradouro</a></p>
-  <h1>Aviso legal</h1>
-
   <div data-idioma-bloque="gl" lang="gl">
+    <p><a href="./">← Volver a O Logradouro</a></p>
+    <h1>Aviso legal</h1>
     <p class="aviso">Borrador de traballo para a maqueta. Débese completar cos datos fiscais reais antes de publicar.</p>
 
     <h2>Titular</h2>
@@ -51,6 +53,8 @@
   </div>
 
   <div data-idioma-bloque="es" lang="es">
+    <p><a href="./">← Volver a O Logradouro</a></p>
+    <h1>Aviso legal</h1>
     <p class="aviso">Borrador de trabajo para la maqueta. Hay que completarlo con los datos fiscales reales antes de publicar.</p>
 
     <h2>Titular</h2>
@@ -62,6 +66,22 @@
 
     <h2>Contenido</h2>
     <p>La carta y los precios que se muestran proceden del material facilitado por el propio negocio; donde hay dudas entre fuentes, se marca para revisarlo con el titular antes de publicar de forma definitiva.</p>
+  </div>
+
+  <div data-idioma-bloque="en" lang="en">
+    <p><a href="./">← Back to O Logradouro</a></p>
+    <h1>Legal notice</h1>
+    <p class="aviso">Working draft for the mock-up. It must be completed with the real tax details before publishing.</p>
+
+    <h2>Owner</h2>
+    <p>O Logradouro · Rúa Lugo, 2 · 15100 Carballo, A Coruña · <span class="pendiente">[PENDIENTE: company name and tax ID (NIF/CIF)]</span></p>
+    <p>Phone: <a href="tel:+34637085037">637 08 50 37</a></p>
+
+    <h2>Purpose</h2>
+    <p>This site is an information showcase (menu, opening hours, location) for a real tavern in Carballo. It does not sell products online or take payments.</p>
+
+    <h2>Content</h2>
+    <p>The menu and prices shown come from material provided by the business itself; where sources disagree, the item is flagged for review with the owner before final publication.</p>
   </div>
 </main>
 </body>

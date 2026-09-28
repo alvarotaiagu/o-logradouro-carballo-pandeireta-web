@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="gl" data-titulo-es="Esta copla no existe · O Logradouro">
+<html lang="gl" data-titulo-es="Página no encontrada · O Logradouro" data-titulo-en="Page not found · O Logradouro">
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Esta copla non existe · O Logradouro</title>
+<title>Páxina non atopada · O Logradouro</title>
 <script>
 /* Idioma: ?lang= › elección guardada en la portada › galego. */
 (function () {
-  var h = document.documentElement, l = (/[?&]lang=(gl|es)\b/.exec(location.search) || [])[1];
+  var h = document.documentElement, l = (/[?&]lang=(gl|es|en)\b/.exec(location.search) || [])[1];
   if (!l) { try { l = localStorage.getItem('logradouro-idioma'); } catch (e) {} }
-  l = l === 'es' ? 'es' : 'gl';
+  l = (l === 'es' || l === 'en') ? l : 'gl';
   h.lang = l;
   h.setAttribute('data-idioma', l);
-  if (l === 'es' && h.getAttribute('data-titulo-es')) document.title = h.getAttribute('data-titulo-es');
+  var titulo = h.getAttribute('data-titulo-' + l);
+  if (titulo) document.title = titulo;
 })();
 </script>
 <link rel="icon" href="assets/logo/favicon.svg" type="image/svg+xml">
@@ -33,22 +34,30 @@
   p { color: color-mix(in srgb, var(--piel) 66%, transparent); line-height: 1.6; margin: 0 0 2rem; }
   a { display: inline-block; padding: 1rem 1.7rem; border-radius: 999px; background: var(--lazo); color: #fff; font-weight: 700; text-decoration: none; }
   a:focus-visible { outline: 3px solid var(--mostaza); outline-offset: 3px; }
-  /* sin JS no hay data-idioma: se ve el galego */
-  html:not([data-idioma="es"]) [data-idioma-bloque="es"], html[data-idioma="es"] [data-idioma-bloque="gl"] { display: none; }
+  /* un bloque por idioma; sin JS no hay data-idioma y se ve el galego */
+  [data-idioma-bloque="es"], [data-idioma-bloque="en"] { display: none; }
+  html[data-idioma="es"] [data-idioma-bloque="es"], html[data-idioma="en"] [data-idioma-bloque="en"] { display: block; }
+  html[data-idioma="es"] [data-idioma-bloque="gl"], html[data-idioma="en"] [data-idioma-bloque="gl"] { display: none; }
 </style>
 </head>
 <body>
   <main>
     <p class="numero">404</p>
     <div data-idioma-bloque="gl" lang="gl">
-      <h1>Esta copla non existe.</h1>
-      <p>A páxina que buscas non está no cancioneiro. A taberna, si, na Rúa Lugo, 2.</p>
+      <h1>Esta páxina non existe.</h1>
+      <p>A páxina non está, pero a taberna si: Rúa Lugo, 2, Carballo.</p>
+      <a href="./">Volver a O Logradouro</a>
     </div>
     <div data-idioma-bloque="es" lang="es">
-      <h1>Esta copla no existe.</h1>
-      <p>La página que buscas no está en el cancionero. La taberna, sí, en la Rúa Lugo, 2.</p>
+      <h1>Esta página no existe.</h1>
+      <p>La página no está, pero la taberna sí: Rúa Lugo, 2, Carballo.</p>
+      <a href="./">Volver a O Logradouro</a>
     </div>
-    <a href="./">Volver a O Logradouro</a>
+    <div data-idioma-bloque="en" lang="en">
+      <h1>This page does not exist.</h1>
+      <p>The page is not here, but the tavern is: Rúa Lugo, 2, Carballo.</p>
+      <a href="./">Back to O Logradouro</a>
+    </div>
   </main>
 </body>
 </html>

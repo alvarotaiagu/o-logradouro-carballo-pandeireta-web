@@ -12,7 +12,7 @@ function comprobar(cond, msg) { console.log((cond ? 'OK    ' : 'FALLA ') + '· '
 
 /* palabras que delatan galego olvidado en la versión castellana (fuera de la
    carta y de las citas, que se quedan como las escribe la casa / quien firma) */
-const GALEGO = ['pechado', 'mércores', 'opinións', 'enteiro', 'Saltar ao', 'Chamar', 'Onde e cando', 'Almorzos ata', 'aínda', 'Privacidade', 'De acordo', 'só ao premer', 'repertorio da casa', 'Son: ', 'luns', 'Volvemos o ', 'Aberto'];
+const GALEGO = ['pechado', 'mércores', 'opinións', 'Pola mañá', 'Saltar ao', 'Chamar', 'Onde e cando', 'Almorzos ata', 'pregúntao', 'Privacidade', 'De acordo', 'só ao premer', 'primeira vez', 'Son: ', 'luns', 'Volvemos o ', 'Aberto'];
 
 async function esperarCortina(page) {
   await page.waitForFunction(() => document.getElementById('cortina').classList.contains('fuera'), { timeout: 8000 });
@@ -39,7 +39,7 @@ try {
   await p.goto(base + '/', { waitUntil: 'load' });
   await esperarCortina(p);
   const gl = await p.evaluate(() => ({ lang: document.documentElement.lang, h1: document.querySelector('.hero__titular').getAttribute('aria-label'), pulsado: document.querySelector('.idioma [aria-pressed="true"]').dataset.idioma }));
-  comprobar(gl.lang === 'gl' && gl.h1 === 'Bar de sempre, a ritmo novo.' && gl.pulsado === 'gl', 'por defecto: galego (lang=' + gl.lang + ', «' + gl.h1 + '»)');
+  comprobar(gl.lang === 'gl' && gl.h1 === 'Taberna de sempre, carta de agora.' && gl.pulsado === 'gl', 'por defecto: galego (lang=' + gl.lang + ', «' + gl.h1 + '»)');
 
   /* ── cambio en vivo a castellano ── */
   await p.click('.idioma [data-idioma="es"]');
@@ -60,7 +60,7 @@ try {
     };
   });
   comprobar(es.lang === 'es' && es.pulsado === 'es', 'al pulsar ES: <html lang="es"> y botón ES pulsado');
-  comprobar(es.h1 === 'Bar de siempre, a ritmo nuevo.' && es.h1Visible, 'el titular partido se rehace en castellano y queda visible («' + es.h1 + '»)');
+  comprobar(es.h1 === 'Taberna de siempre, carta de ahora.' && es.h1Visible, 'el titular partido se rehace en castellano y queda visible («' + es.h1 + '»)');
   comprobar(es.nav === 'La casa' && es.son === 'Sonido: apagado', 'nav y botón de sonido en castellano (' + es.nav + ' / ' + es.son + ')');
   comprobar(/^(Abierto · cierra|Abrimos|Volvemos el)/.test(es.estado) && /Cerrado/.test(es.tabla), 'horario en vivo en castellano: «' + es.estado + '» · ' + es.tabla);
   comprobar(es.guardado === 'es', 'la elección se guarda (localStorage)');
@@ -72,15 +72,15 @@ try {
   await p.reload({ waitUntil: 'load' });
   await esperarCortina(p);
   const tras = await p.evaluate(() => ({ lang: document.documentElement.lang, h1: document.querySelector('.hero__titular').getAttribute('aria-label') }));
-  comprobar(tras.lang === 'es' && tras.h1 === 'Bar de siempre, a ritmo nuevo.', 'al recargar sigue en castellano');
+  comprobar(tras.lang === 'es' && tras.h1 === 'Taberna de siempre, carta de ahora.', 'al recargar sigue en castellano');
   const cadaClave = await p.evaluate(() => Array.from(document.querySelectorAll('[data-i18n]')).filter((el) => !el.hasAttribute('data-revelar')).map((el) => el.textContent.trim()));
   comprobar(cadaClave.every((s) => s.length > 0), 'ningún texto traducible se queda vacío (' + cadaClave.length + ' elementos)');
 
   /* ── páginas legales y 404 siguen el idioma ── */
-  for (const [ruta, esperado] of [['/privacidad.html', 'Privacidad y cookies'], ['/aviso-legal.html', 'Objeto'], ['/no-existe', 'Esta copla no existe.']]) {
+  for (const [ruta, esperado] of [['/privacidad.html', 'Privacidad y cookies'], ['/aviso-legal.html', 'Objeto'], ['/no-existe', 'Esta página no existe.']]) {
     await p.goto(base + ruta, { waitUntil: 'load' });
     const vis = await p.evaluate(() => document.body.innerText);
-    const esGl = /Privacidade e cookies|Obxecto|copla non existe/.test(vis);
+    const esGl = /Privacidade e cookies|Obxecto|páxina non existe/.test(vis);
     comprobar(vis.includes(esperado) && !esGl, ruta + ' en castellano, sin el bloque galego a la vista');
   }
   const tabla = await p.goto(base + '/privacidad.html').then(() => p.evaluate(() => document.body.innerText.includes('logradouro-idioma')));
@@ -92,7 +92,40 @@ try {
   await p.click('.idioma [data-idioma="gl"]');
   await p.waitForTimeout(800);
   const deVuelta = await p.evaluate(() => ({ lang: document.documentElement.lang, estado: document.querySelector('#estado span').textContent, h1: document.querySelector('.hero__titular').getAttribute('aria-label') }));
-  comprobar(deVuelta.lang === 'gl' && deVuelta.h1 === 'Bar de sempre, a ritmo novo.' && /^(Aberto|Abrimos|Volvemos o)/.test(deVuelta.estado), 'de vuelta a galego: «' + deVuelta.estado + '»');
+  comprobar(deVuelta.lang === 'gl' && deVuelta.h1 === 'Taberna de sempre, carta de agora.' && /^(Aberto|Abrimos|Volvemos o)/.test(deVuelta.estado), 'de vuelta a galego: «' + deVuelta.estado + '»');
+
+  /* ── inglés ── */
+  await p.click('.idioma [data-idioma="en"]');
+  await p.waitForTimeout(1400);
+  const en = await p.evaluate(() => ({
+    lang: document.documentElement.lang,
+    h1: document.querySelector('.hero__titular').getAttribute('aria-label'),
+    nav: Array.from(document.querySelectorAll('.cabecera__nav a')).map((a) => a.textContent).join('|'),
+    son: document.getElementById('boton-son-texto').textContent,
+    estado: document.querySelector('#estado span').textContent,
+    tabla: document.querySelector('#horario-tabla li').textContent,
+    copla: document.querySelector('.copla__num').textContent.replace(/\s+/g, ' ').trim(),
+    media: (document.querySelector('.media__etq') || {}).textContent || '(sin medias)',
+    mapa: document.querySelector('.map-consent').getAttribute('data-map-title')
+  }));
+  comprobar(en.lang === 'en' && en.h1 === 'An old-school tavern with a menu of today.', 'inglés: <html lang="en"> y titular «' + en.h1 + '»');
+  comprobar(en.nav === 'The house|Menu|Where to start|Reviews|Hours' && en.son === 'Sound: off', 'inglés: nav y sonido (' + en.nav + ' / ' + en.son + ')');
+  comprobar(/^(Open · closes at|We open at|Back on \w+day at)/.test(en.estado) && /Closed/.test(en.tabla), 'inglés: horario en vivo «' + en.estado + '» · ' + en.tabla);
+  comprobar(en.copla === '01 / 11' && en.media === 'half' && en.mapa.startsWith('Map:'), 'inglés: carta «' + en.copla + '», «' + en.media + '», título del mapa');
+  const MARCAS = ['Horario', 'Destacados', 'Ver mapa', 'Aviso legal', 'Sonido', 'Son:', 'reseñas', 'opinións', 'Llamar', 'Chamar', 'Ver el', 'Ver o', 'Pechado', 'Cerrado', 'De acuerdo', 'De acordo', 'Saltar', 'Taberna ·', 'Privacidad'];
+  const restosEn = await textoVisibleSinCartaNiCitas(p);
+  const pilladosEn = MARCAS.filter((w) => restosEn.includes(w));
+  comprobar(pilladosEn.length === 0, 'inglés: sin restos de galego ni castellano fuera de la carta y las citas' + (pilladosEn.length ? ': ' + pilladosEn.join(', ') : ''));
+  for (const [ruta, esperado, prohibido] of [['/privacidad.html', 'Privacy and cookies', /Privacidade e cookies|Privacidad y cookies/], ['/aviso-legal.html', 'Legal notice', /Obxecto|Objeto/], ['/no-existe', 'This verse does not exist.', /copla n(on|o) existe/]]) {
+    await p.goto(base + ruta, { waitUntil: 'load' });
+    const vis = await p.evaluate(() => document.body.innerText);
+    comprobar(vis.includes(esperado) && !prohibido.test(vis), 'inglés: ' + ruta + ' solo con el bloque en inglés');
+  }
+  await p.goto(base + '/', { waitUntil: 'load' });
+  await esperarCortina(p);
+  await p.click('.idioma [data-idioma="gl"]');
+  await p.waitForTimeout(600);
+
   comprobar(errores.length === 0, 'sin errores de JS' + (errores.length ? ': ' + errores.join(' | ') : ''));
   await ctx.close();
 
@@ -102,7 +135,7 @@ try {
   await p2.goto(base + '/?lang=es', { waitUntil: 'load' });
   await esperarCortina(p2);
   const r2 = await p2.evaluate(() => ({ lang: document.documentElement.lang, h1: document.querySelector('.hero__titular').textContent.replace(/\s+/g, ' ').trim(), menu: document.querySelector('#menu-movil nav a').textContent }));
-  comprobar(r2.lang === 'es' && r2.h1 === 'Bar de siempre, a ritmo nuevo.' && r2.menu === 'La casa', 'enlace con ?lang=es en móvil y reduced-motion: «' + r2.h1 + '»');
+  comprobar(r2.lang === 'es' && r2.h1 === 'Taberna de siempre, carta de ahora.' && r2.menu === 'La casa', 'enlace con ?lang=es en móvil y reduced-motion: «' + r2.h1 + '»');
   await p2.screenshot({ path: path.join(raiz, 'screenshots', '50-es-hero-390.png') });
   await ctx2.close();
 } finally {
