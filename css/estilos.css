@@ -272,7 +272,10 @@ html.pandeireta-llegando .cabecera, html.pandeireta-atracada .cabecera { padding
 
 .hero__escena { position: relative; display: grid; place-items: center; }
 .pandeireta { width: min(92%, 520px); overflow: visible; touch-action: manipulation; }
-.pandeireta:focus-visible { outline: none; }
+/* sin el rectángulo de foco al hacer clic (se ve girado alrededor del SVG);
+   con teclado, el aviso de foco va en el filo redondo de la pandereta */
+.pandeireta, .pandeireta:focus, .pandeireta:focus-visible { outline: none; -webkit-tap-highlight-color: transparent; }
+.pandeireta:focus-visible .pandeireta__filo { stroke: var(--mostaza); stroke-width: 4; opacity: 1; }
 .pandeireta__onda { fill: none; stroke: var(--noche); stroke-width: 1.4; opacity: 0; transform-origin: 260px 260px; }
 .ferrena__disco { transform-box: fill-box; transform-origin: 50% 50%; }
 .pandeireta__parche { transform-origin: 260px 260px; }

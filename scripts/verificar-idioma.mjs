@@ -116,7 +116,7 @@ try {
   const restosEn = await textoVisibleSinCartaNiCitas(p);
   const pilladosEn = MARCAS.filter((w) => restosEn.includes(w));
   comprobar(pilladosEn.length === 0, 'inglés: sin restos de galego ni castellano fuera de la carta y las citas' + (pilladosEn.length ? ': ' + pilladosEn.join(', ') : ''));
-  for (const [ruta, esperado, prohibido] of [['/privacidad.html', 'Privacy and cookies', /Privacidade e cookies|Privacidad y cookies/], ['/aviso-legal.html', 'Legal notice', /Obxecto|Objeto/], ['/no-existe', 'This verse does not exist.', /copla n(on|o) existe/]]) {
+  for (const [ruta, esperado, prohibido] of [['/privacidad.html', 'Privacy and cookies', /Privacidade e cookies|Privacidad y cookies/], ['/aviso-legal.html', 'Legal notice', /Obxecto|Objeto/], ['/no-existe', 'This page does not exist.', /páxina non existe|página no existe/]]) {
     await p.goto(base + ruta, { waitUntil: 'load' });
     const vis = await p.evaluate(() => document.body.innerText);
     comprobar(vis.includes(esperado) && !prohibido.test(vis), 'inglés: ' + ruta + ' solo con el bloque en inglés');
